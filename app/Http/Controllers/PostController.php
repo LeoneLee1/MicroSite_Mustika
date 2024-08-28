@@ -25,14 +25,23 @@ class PostController extends Controller
         $post->judul = $request->judul;
         $post->media = $request->media;
         $post->deskripsi = $request->deskripsi;
+        $post->save();
 
-        if ($post->save()) {
+        if ($request->has('polling')) {
+            Alert::success('Berhasil!','Membuat Post.');
+            return redirect()->route('polling.create');
+        } else {
             Alert::success('Berhasil!','Membuat Post.');
             return back();
-        } else {
-            Alert::error('Gagal!','Membuat Post.');
-            return back();
         }
+
+        // if ($post->save()) {
+        //     Alert::success('Berhasil!','Membuat Post.');
+        //     return back();
+        // } else {
+        //     Alert::error('Gagal!','Membuat Post.');
+        //     return back();
+        // }
         
     }
 }

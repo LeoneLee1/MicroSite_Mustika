@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PollingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,8 +27,6 @@ Route::get('/logout',[LoginController::class,'logout'])->name('logout');
 Route::get('/login/register',[LoginController::class,'register'])->name('register');
 Route::post('/login/register/insert',[LoginController::class,'insert'])->name('register.insert');
 
-
-
 Route::get('/user',[UserController::class,'index'])->name('user');
 Route::get('/user/create',[UserController::class,'create'])->name('user.create');
 Route::post('/user/create/insert',[UserController::class,'insert'])->name('user.insert');
@@ -37,3 +36,6 @@ Route::get('/user/delete/{id}',[UserController::class,'delete'])->name('user.del
 
 Route::get('/post',[PostController::class,'index'])->name('post');
 Route::post('/post/insert',[PostController::class,'insert'])->name('post.insert');
+
+Route::get('/polling/create',[PollingController::class,'create'])->name('polling.create');
+Route::post('/polling/create/insert',[PollingController::class,'insert'])->name('polling.insert');

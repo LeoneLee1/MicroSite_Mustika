@@ -26,12 +26,12 @@
                 <div data-i18n="Analytics">Post</div>
             </a>
         </li>
-        <li class="menu-item {{ request()->is('post*') ? 'active' : '' }} mb-3">
+        {{-- <li class="menu-item {{ request()->is('post*') ? 'active' : '' }} mb-3">
             <a href="{{ route('post') }}" class="menu-link">
                 <i class="menu-icon fa fa-bars-progress"></i>
                 <div data-i18n="Analytics">Polling</div>
             </a>
-        </li>
+        </li> --}}
         <li class="menu-item {{ request()->is('user*') ? 'active' : '' }} mb-3">
             <a href="{{ route('user') }}" class="menu-link">
                 <i class="menu-icon fa fa-users"></i>

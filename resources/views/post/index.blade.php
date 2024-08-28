@@ -23,36 +23,16 @@
                             <textarea name="deskripsi" class="form-control" rows="8"></textarea>
                         </div>
                         <div class="mb-3">
-                            <input class="form-check-input" type="checkbox" value="" id="pollingCheck">
+                            <input class="form-check-input" type="checkbox" name="polling" id="pollingCheck" value="">
                             <label class="form-check-label" for="pollingCheck">
                                 Polling?
                             </label>
                         </div>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </form>
-                    <div class="mt-4" id="pollingForm" style="display: none;">
-                        <form action="" method="POST" enctype="multipart/form-data">
-                            <div class="mb-3">
-
-                            </div>
-                        </form>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
     @include('sweetalert::alert')
 @endsection
-
-@push('after-script')
-    <script>
-        document.getElementById('pollingCheck').addEventListener('change', function() {
-            var pollingForm = document.getElementById('pollingForm');
-            if (this.checked) {
-                pollingForm.style.display = 'block';
-            } else {
-                pollingForm.style.display = 'none';
-            }
-        });
-    </script>
-@endpush

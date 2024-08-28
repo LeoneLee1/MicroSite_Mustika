@@ -40,7 +40,7 @@
                     </tbody>
                 </table>
                 <div class="mt-4">
-                    {{ $data->links('pagination::simple-bootstrap-4') }}
+                    {{ $data->links('pagination::bootstrap-4') }}
                 </div>
             </div>
         </div>
