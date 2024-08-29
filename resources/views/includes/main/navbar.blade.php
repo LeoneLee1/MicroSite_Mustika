@@ -19,6 +19,12 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
+                        <a class="dropdown-item" href="#">
+                            <i class="fa fa-id-card"></i>
+                            <span class="align-middle">&nbsp;Edit Profile</span>
+                        </a>
+                    </li>
+                    <li>
                         <a class="dropdown-item" href="{{ route('logout') }}">
                             <i class="fa fa-power-off"></i>
                             <span class="align-middle">&nbsp;Log Out</span>

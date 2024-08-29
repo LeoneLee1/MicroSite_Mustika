@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\PollAnswer;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Poll extends Model
 {
@@ -14,6 +15,10 @@ class Poll extends Model
     protected $fillable = [
         'id_post',
         'soal',
-        'jawaban',
     ];
+
+    public function answers()
+    {
+        return $this->hasMany(PollAnswer::class);
+    }
 }

@@ -20,7 +20,8 @@
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Data Master</span>
         </li>
-        <li class="menu-item {{ request()->is('post*') ? 'active' : '' }} mb-3">
+        <li
+            class="menu-item {{ request()->is('post*') ? 'active' : '' }} {{ request()->is('polling/create*') ? 'active' : '' }} mb-3">
             <a href="{{ route('post') }}" class="menu-link">
                 <i class="menu-icon fa fa-blog"></i>
                 <div data-i18n="Analytics">Post</div>
@@ -32,6 +33,9 @@
                 <div data-i18n="Analytics">Polling</div>
             </a>
         </li> --}}
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Settings</span>
+        </li>
         <li class="menu-item {{ request()->is('user*') ? 'active' : '' }} mb-3">
             <a href="{{ route('user') }}" class="menu-link">
                 <i class="menu-icon fa fa-users"></i>

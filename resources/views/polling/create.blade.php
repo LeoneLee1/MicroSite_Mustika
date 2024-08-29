@@ -9,15 +9,16 @@
                 <div class="card-body">
                     <form action="{{ route('polling.insert') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <input type="text" name="id_post" value="{{ $post_id }}">
+                        <input type="hidden" name="id_post" value="{{ $post_id }}">
                         <div class="mb-3">
                             <label class="form-label">Soal</label>
-                            <input type="text" name="soal" class="form-control" required>
+                            <input type="text" name="soal" class="form-control" placeholder="Soal / Pertanyaan"
+                                required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Jawaban</label>
-                            <div id="dynamic-field-1" class="form-group dynamic-field">
-                                <input type="text" name="jawaban[]" class="form-control" required>
+                            <div id="dynamic-field-1" class="form-group dynamic-field mb-3">
+                                <input type="text" name="jawaban[]" class="form-control" placeholder="Jawaban" required>
                             </div>
                         </div>
                         <div class="mb-3 text-end">
@@ -40,8 +41,8 @@
         // Tambah field jawaban baru
         $('#add-button').click(function() {
             fieldCount++;
-            let newField = `<div id="dynamic-field-${fieldCount}" class="form-group dynamic-field">
-                            <input type="text" name="jawaban[]" class="form-control" required>
+            let newField = `<div id="dynamic-field-${fieldCount}" class="form-group dynamic-field mb-3">
+                            <input type="text" name="jawaban[]" class="form-control" placeholder="Jawaban" required>
                         </div>`;
             $('.dynamic-field:last').after(newField);
         });

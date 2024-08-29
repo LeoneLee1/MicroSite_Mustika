@@ -18,8 +18,19 @@ use App\Http\Controllers\PollingController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+
+    $post = DB::select("SELECT p.*, u.nama FROM posts p
+                        LEFT JOIN users u ON u.nik = p.nik
+                        ORDER BY p.id DESC;");
+
+    $komen = DB::select("SELECT c.*, u.nama FROM comments c
+                        LEFT JOIN users u ON u.nik = c.nik
+                        ORDER BY c.id DESC;");
+
+    return view('welcome',compact('post','komen'));
 })->middleware('auth');
+
+Route::post('/comment',[PostController::class,'komen'])->name('comment');
 
 Route::get('/login',[LoginController::class,'login'])->name('login');
 Route::post('/login/proses',[LoginController::class,'proses'])->name('login.proses');
