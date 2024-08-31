@@ -23,7 +23,7 @@
         <li
             class="menu-item {{ request()->is('post*') ? 'active' : '' }} {{ request()->is('polling/create*') ? 'active' : '' }} mb-3">
             <a href="{{ route('post') }}" class="menu-link">
-                <i class="menu-icon fa fa-blog"></i>
+                <i class="menu-icon fa fa-square-plus"></i>
                 <div data-i18n="Analytics">Post</div>
             </a>
         </li>
@@ -40,6 +40,12 @@
             <a href="{{ route('user') }}" class="menu-link">
                 <i class="menu-icon fa fa-users"></i>
                 <div data-i18n="Analytics">User</div>
+            </a>
+        </li>
+        <li class="menu-item {{ request()->is('profile*') ? 'active' : '' }} mb-3">
+            <a href="{{ route('profile') }}" class="menu-link">
+                <i class="menu-icon fa fa-user-pen"></i>
+                <div data-i18n="Analytics">Profile User</div>
             </a>
         </li>
     </ul>

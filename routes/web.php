@@ -5,6 +5,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PollingController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,18 +18,7 @@ use App\Http\Controllers\PollingController;
 |
 */
 
-Route::get('/', function () {
-
-    $post = DB::select("SELECT p.*, u.nama FROM posts p
-                        LEFT JOIN users u ON u.nik = p.nik
-                        ORDER BY p.id DESC;");
-
-    $komen = DB::select("SELECT c.*, u.nama FROM comments c
-                        LEFT JOIN users u ON u.nik = c.nik
-                        ORDER BY c.id DESC;");
-
-    return view('welcome',compact('post','komen'));
-})->middleware('auth');
+Route::get('/',[DashboardController::class,'index'])->name('/')->middleware('auth');
 
 Route::post('/comment',[PostController::class,'komen'])->name('comment');
 
@@ -44,6 +34,8 @@ Route::post('/user/create/insert',[UserController::class,'insert'])->name('user.
 Route::get('/user/edit/{id}',[UserController::class,'edit'])->name('user.edit');
 Route::post('/user/edit/update/{id}',[UserController::class,'update'])->name('user.update');
 Route::get('/user/delete/{id}',[UserController::class,'delete'])->name('user.delete');
+
+Route::get('/profile',[UserController::class,'profile'])->name('profile');
 
 Route::get('/post',[PostController::class,'index'])->name('post');
 Route::post('/post/insert',[PostController::class,'insert'])->name('post.insert');

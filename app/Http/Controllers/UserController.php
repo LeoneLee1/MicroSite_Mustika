@@ -35,6 +35,8 @@ class UserController extends Controller
         $data->nik = $request->nik;
         $data->unit = $request->unit;
         $data->password = $password;
+        $data->gender = $request->gender;
+        $data->foto = $request->foto;
         
         if ($data->save()) {
             Alert::success('Berhasil!','Membuat User baru.');
@@ -61,11 +63,15 @@ class UserController extends Controller
             $data->nama = $request->nama;
             $data->nik = $request->nik;
             $data->unit = $request->unit;
+            $data->gender = $request->gender;
+            $data->foto = $request->foto;
             $data->save();
         } else {
             $data->nama = $request->nama;
             $data->nik = $request->nik;
             $data->unit = $request->unit;
+            $data->gender = $request->gender;
+            $data->foto = $request->foto;
             $data->password = $newPassword;
             $data->save();
         }
@@ -84,5 +90,9 @@ class UserController extends Controller
             Alert::error('Gagal!','Menghapus User.');
             return back();
         }
+    }
+
+    public function profile(){
+        return view('profile.index');
     }
 }

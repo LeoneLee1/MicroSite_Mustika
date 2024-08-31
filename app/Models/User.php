@@ -22,5 +22,7 @@ class User extends Authenticatable
         'nik',
         'unit',
         'password',
+        'gender',
+        'foto',
     ];
 }

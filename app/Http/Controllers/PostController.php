@@ -20,7 +20,7 @@ class PostController extends Controller
             'nik' => 'required',
             'judul' => 'required',
             'media' => 'required',
-            'deskripsi' => 'required',
+            'deskripsi' => 'required|max:1000',
         ]);
 
         $post = new Post();
@@ -50,18 +50,14 @@ class PostController extends Controller
             'comment' => 'required|max:500',
         ]);
 
-        $comment = new Comment();
-        $comment->id_post = $request->id_post;
-        $comment->nik = $request->nik;
-        $comment->comment = $request->comment;
+        Comment::create([
+            'id_post' => $request->id_post,
+            'nik' => $request->nik,
+            'comment' => $request->comment,
+        ]);
 
-        if ($comment->save()) {
-            toast('Berhasil Komentar.','success');
-            return back();
-        } else {
-            toast('Gagal Komentar.','warning');
-            return back();
-        }
-        
+        return response()->json([
+            'success' => true,
+        ]);
     }
 }

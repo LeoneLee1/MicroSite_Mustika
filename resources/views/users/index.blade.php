@@ -19,6 +19,7 @@
                             <th scope="col">Nama</th>
                             <th scope="col">Nik</th>
                             <th scope="col">Unit</th>
+                            <th scope="col">Gender</th>
                             <th scope="col">Aksi</th>
                         </tr>
                     </thead>
@@ -29,6 +30,7 @@
                                 <td>{{ $row->nama }}</td>
                                 <td>{{ $row->nik }}</td>
                                 <td>{{ $row->unit }}</td>
+                                <td>{{ $row->gender }}</td>
                                 <td>
                                     <a href="{{ route('user.edit', $row->id) }}" class="btn btn-sm btn-info"><i
                                             class="fa fa-pencil"></i></a>
