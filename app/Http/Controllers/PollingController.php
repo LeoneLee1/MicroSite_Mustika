@@ -36,27 +36,21 @@ class PollingController extends Controller
             'jawaban' => 'required|array|min:1',
             'jawaban.*' => 'required|string|max:255',
         ]);
-
-        // Create a new Poll instance
+        
         $poll = new Poll();
         $poll->id_post = $request->id_post;
         $poll->soal = $request->soal;
 
-        // Save the poll (question)
         if ($poll->save()) {
-            // Save each answer associated with the poll
             foreach ($request->jawaban as $jawaban) {
                 $pollAnswer = new PollAnswer();
-                $pollAnswer->poll_id = $poll->id; // Associate with the poll
+                $pollAnswer->poll_id = $poll->id;
                 $pollAnswer->jawaban = $jawaban;
                 $pollAnswer->save();
             }
-
-            // Success alert and redirection
             Alert::success('Berhasil!', 'Membuat Polling.');
             return redirect('/');
         } else {
-            // Error alert and return back
             Alert::error('Gagal!', 'Membuat Polling.');
             return back();
         }

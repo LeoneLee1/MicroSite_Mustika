@@ -50,14 +50,13 @@ class PostController extends Controller
             'comment' => 'required|max:500',
         ]);
 
-        Comment::create([
-            'id_post' => $request->id_post,
-            'nik' => $request->nik,
-            'comment' => $request->comment,
-        ]);
-
-        return response()->json([
-            'success' => true,
-        ]);
+        $k = new Comment();
+        $k->id_post = $request->id_post;
+        $k->nik = $request->nik;
+        $k->comment = $request->comment;
+        $k->save();
+        
+        return response()->json($k);
     }
+
 }

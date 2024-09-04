@@ -13,13 +13,8 @@
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                        @if (Auth::user()->foto === '' || null)
-                            <img src="https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg"
-                                alt="avatar profile" class="w-px-40 h-auto rounded-circle lazyload" />
-                        @else
-                            <img src="{{ Auth::user()->foto }}" alt="avatar profile"
-                                class="w-px-40 h-auto rounded-circle lazyload">
-                        @endif
+                        <img src="https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg"
+                            alt="avatar profile" class="w-px-40 h-auto rounded-circle lazyload" />
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">

@@ -7,10 +7,15 @@
         #more {
             display: none;
         }
+
+        #komentar {
+            flex-grow: 1;
+            outline: none;
+            border: none;
+            background: transparent;
+        }
     </style>
 @endpush
-
-@section('content')
 
 @section('content')
     <div class="card">
@@ -47,11 +52,11 @@
                                 <a class="dropdown-item" href="#"><i
                                         class="fa fa-bookmark menu-icon"></i>&nbsp;Save</a>
                             </li>
-                            <li>
+                            {{-- <li>
                                 <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-eye-slash"></i>&nbsp;&nbsp;Hide</a>
-                            </li>
+                            </li> --}}
+                            {{-- <li><a class="dropdown-item" href="#"><i class="fas fa-eye-slash"></i>&nbsp;&nbsp;Hide</a>
+                            </li> --}}
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -107,7 +112,7 @@
                     @endif
                 </div>
                 <div class="text-left mt-4 mb-4">
-                    <h5 style="color: black;">{{ $item->judul }}</h5>
+                    <h5 style="color: black; font-weight: bold;">{{ $item->judul }}</h5>
                 </div>
                 <div class="text-left mt-4">
                     <span style="color: black;">
@@ -120,8 +125,7 @@
                         <a href="javascript:void(0);" class="view-more" style="display: none; color: red;">View More</a>
                     </span>
                 </div>
-
-                <div class="mt-4">
+                <div class="mt-1">
                     <div class="text-left">
                         <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $item->id }}">View
                             All
@@ -129,17 +133,98 @@
                         @include('modal.comments')
                     </div>
                 </div>
-                <div class="mt-3">
-                    <small>{{ \Carbon\Carbon::parse($item->created_at)->format('d M Y') }}</small>
-                    {{-- &nbsp;&nbsp;• --}}
-                    {{-- <a href="javascript:void(0);" onclick="translateToIndonesian({{ $item->id }})">See Translation</a> --}}
+                <div class="d-flex row justify-content-start align-items-center mt-2">
+                    @php $count = 0; @endphp
+                    @foreach ($komen as $k)
+                        @if ($k->id_post === $item->id)
+                            @php $count++; @endphp
+                            @if ($count <= 1)
+                                <div style="color: black;" class="mb-2">
+                                    <span style="font-weight: bold;">
+                                        {{ $k->nik }}
+                                    </span>{{ $k->comment }}
+                                </div>
+                            @else
+                            @break
+                        @endif
+                    @endif
+                @endforeach
+            </div>
+            <div class="mt-2">
+                <div class="d-flex justify-content-start col-sm-5">
+                    <form method="POST" action="{{ route('comment.insert') }}"
+                        class="d-flex align-items-left w-100 comment-form">
+                        @csrf
+                        <input type="hidden" name="nik" value="{{ Auth::user()->nik }}">
+                        <input type="hidden" name="id_post" value="{{ $item->id }}">
+                        <div class="input-group me-2" style="flex: 1;">
+                            <span class="input-group-text bg-white border-0 p-0" id="basic-addon1">
+                                <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
+                                    alt="User Avatar" class="w-px-40 h-auto rounded-circle lazyload"
+                                    style="object-fit: cover;" />
+                            </span>
+                            <input type="text" name="comment" id="komentar" class="form-control"
+                                style="border-radius: 50px;" placeholder="Add Comments...." required>
+                        </div>
+                        <button hidden type="submit" class="btn btn-primary btn-sm me-2"
+                            style="border-radius: 50px;">Send</button>
+                    </form>
                 </div>
-            @endforeach
-        </div>
+
+            </div>
+            <div class="mt-3">
+                <small>{{ \Carbon\Carbon::parse($item->created_at)->format('d M Y') }}</small>
+            </div>
+        @endforeach
     </div>
     @include('sweetalert::alert')
 @endsection
+
 @push('after-script')
+    <script type="text/javascript">
+        // $(document).ready(function() {
+        //     $("#send").click(function(e) {
+        //         e.preventDefault();
+        //         var data = $('#formC').serialize();
+        //         $.ajax({
+        //             type: 'POST',
+        //             url: '{{ route('comment.insert') }}',
+        //             data: data,
+        //             success: function() {
+        //                 location.reload();
+        //             }
+        //         })
+        //     });
+        // });
+        $(document).ready(function() {
+            $('.comment-form').each(function() {
+                var form = $(this);
+
+                form.on('submit', function(e) {
+                    e.preventDefault();
+
+                    var data = form.serialize();
+                    var scrollPosition = $(window).scrollTop();
+                    $.ajax({
+                        type: 'POST',
+                        url: form.attr(
+                            'action'),
+                        data: data,
+                        success: function(response) {
+                            console.log('Form submitted successfully:', response);
+                            window.location.reload();
+                        },
+                        error: function(xhr, status, error) {
+                            console.log('Error submitting form:', error);
+                        }
+                    });
+                    $(window).on('load', function() {
+                        $(window).scrollTop(scrollPosition);
+                    });
+                });
+            });
+        });
+    </script>
     <script>
         $(document).ready(function() {
             $('.text-left').each(function() {
@@ -150,7 +235,7 @@
                 if (fullText.text().length > 500) {
                     viewMoreLink.show();
                 } else {
-                    shortText.text(fullText.text()); // Menampilkan teks penuh jika kurang dari 500 karakter
+                    shortText.text(fullText.text());
                 }
             });
 
