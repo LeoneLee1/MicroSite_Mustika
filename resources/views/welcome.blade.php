@@ -127,10 +127,11 @@
                 </div>
                 <div class="mt-1">
                     <div class="text-left">
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $item->id }}">View
+                        {{-- <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $item->id }}">View
                             All
-                            Comments</a>
-                        @include('modal.comments')
+                            Comments</a> --}}
+                        <a href="{{ route('comment', $item->id) }}">View All Comments</a>
+                        {{-- @include('modal.comments') --}}
                     </div>
                 </div>
                 <div class="d-flex row justify-content-start align-items-center mt-2">
@@ -152,7 +153,7 @@
             </div>
             <div class="mt-2">
                 <div class="d-flex justify-content-start col-sm-5">
-                    <form method="POST" action="{{ route('comment.insert') }}"
+                    <form method="POST" action="{{ route('comment.insert') }}" enctype="multipart/form-data"
                         class="d-flex align-items-left w-100 comment-form">
                         @csrf
                         <input type="hidden" name="nik" value="{{ Auth::user()->nik }}">
@@ -207,9 +208,9 @@
                     var scrollPosition = $(window).scrollTop();
                     $.ajax({
                         type: 'POST',
-                        url: form.attr(
-                            'action'),
+                        url: form.attr('action'),
                         data: data,
+                        processData: false,
                         success: function(response) {
                             console.log('Form submitted successfully:', response);
                             window.location.reload();

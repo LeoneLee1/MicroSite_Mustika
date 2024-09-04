@@ -20,6 +20,7 @@ use App\Http\Controllers\DashboardController;
 
 Route::get('/',[DashboardController::class,'index'])->name('/')->middleware('auth');
 
+Route::get('/comment/{id}',[PostController::class,'viewComment'])->name('comment');
 Route::post('/comment/insert',[PostController::class,'komen'])->name('comment.insert');
 
 Route::get('/login',[LoginController::class,'login'])->name('login');

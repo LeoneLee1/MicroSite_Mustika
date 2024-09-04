@@ -30,6 +30,9 @@
             </div>
         </div>
     </div>
+    <div>
+        @yield('backButtonDown')
+    </div>
     @include('sweetalert::alert')
     @stack('before-script')
     @include('includes.main.script')

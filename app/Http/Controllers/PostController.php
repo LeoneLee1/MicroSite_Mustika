@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 use Stichoza\GoogleTranslate\GoogleTranslate;
@@ -41,6 +42,19 @@ class PostController extends Controller
             Alert::error('Gagal!','Membuat Post, Mohon Coba Lagi.');
             return back();
         }
+    }
+
+    public function viewComment($id){
+        
+        $post = Post::findOrFail($id);
+
+        $komen = DB::select("SELECT c.*, u.nama, u.foto,p.id FROM comments c
+                        LEFT JOIN users u ON u.nik = c.nik
+                        LEFT JOIN posts p ON p.id = c.id_post 
+                        WHERE p.id = '$id'
+                        ORDER BY c.id DESC;");
+
+        return view('post.komentar',compact('post','komen'));
     }
 
     public function komen(Request $request){

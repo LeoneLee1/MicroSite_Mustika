@@ -53,7 +53,7 @@
                 </div>
                 <div class="modal-footer d-flex justify-content-start">
                     <form action="{{ route('comment.insert') }}" method="POST"
-                        class="d-flex align-items-center w-100 comment-form" enctype="multipart/form-data">
+                        class="d-flex align-items-center w-100 comment-form2" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="nik" value="{{ Auth::user()->nik }}">
                         <input type="hidden" name="id_post" value="{{ $item->id }}">
@@ -66,7 +66,7 @@
                             <input type="text" name="comment" class="form-control" style="border-radius: 50px;"
                                 placeholder="Add Comments....">
                         </div>
-                        <button type="submit" class="btn btn-primary btn-sm me-2">Send</button>
+                        <button type="submit" class="btn btn-primary btn-sm me-2" id="sendForm">Send</button>
                     </form>
                     <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
                 </div>
@@ -80,10 +80,10 @@
 <script src="{{ asset('vendors/libs/jquery/jquery.js') }}"></script>
 <script>
     $(document).ready(function() {
-        $('.comment-form').each(function() {
+        $('.comment-form2').each(function() {
             var form = $(this);
 
-            form.on('submit', function(e) {
+            form.on('#sendForm', function(e) {
                 e.preventDefault();
 
                 var data = form.serialize();
@@ -95,7 +95,7 @@
                     data: data,
                     success: function(response) {
                         console.log('Form submitted successfully:', response);
-                        window.location.reload();
+                        // window.location.reload();
                     },
                     error: function(xhr, status, error) {
                         console.log('Error submitting form:', error);
