@@ -43,3 +43,5 @@ Route::post('/post/insert',[PostController::class,'insert'])->name('post.insert'
 
 Route::get('/polling/create',[PollingController::class,'create'])->name('polling.create');
 Route::post('/polling/create/insert',[PollingController::class,'insert'])->name('polling.insert');
+
+Route::post('/vote/{answerId}',[PollingCOntroller::class,'vote'])->name('vote');

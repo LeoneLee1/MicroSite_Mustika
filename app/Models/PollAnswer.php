@@ -15,6 +15,8 @@ class PollAnswer extends Model
     protected $fillable = [
         'poll_id',
         'jawaban',
+        'value',
+        'vote',
     ];
 
     public function poll()

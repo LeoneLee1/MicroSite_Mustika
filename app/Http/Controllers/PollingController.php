@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Poll;
+use App\Models\AnswerVote;
 use App\Models\PollAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class PollingController extends Controller
@@ -36,6 +38,8 @@ class PollingController extends Controller
             'jawaban' => 'required|array|min:1',
             'jawaban.*' => 'required|string|max:255',
         ]);
+
+        $nikUser = DB::select("SELECT nik FROM users");
         
         $poll = new Poll();
         $poll->id_post = $request->id_post;
@@ -47,6 +51,11 @@ class PollingController extends Controller
                 $pollAnswer->poll_id = $poll->id;
                 $pollAnswer->jawaban = $jawaban;
                 $pollAnswer->save();
+
+                DB::insert("INSERT INTO answer_vote (id_answer, jawaban, nik) 
+                            SELECT a.id AS id_answer, a.jawaban , b.nik  FROM poll_answers a JOIN users b
+                            WHERE a.jawaban = '$jawaban'");
+
             }
             Alert::success('Berhasil!', 'Membuat Polling.');
             return redirect('/');
@@ -55,4 +64,34 @@ class PollingController extends Controller
             return back();
         }
     }
+
+    public function vote($answerId, Request $request){
+        $userNik = Auth::user()->nik;
+        $existingVote = AnswerVote::where('nik', $userNik)->first();
+
+        if ($existingVote) {
+            $existingVote->delete();
+            
+            $unvote = PollAnswer::find($existingVote->jawaban);
+            if ($unvote) {
+                $unvote->value = $unvote->value > 0 ? $unvote->value - 1 : 0;
+                $unvote->save();
+            }
+        } 
+
+        AnswerVote::create([
+            'nik' => $userNik,
+            'jawaban' => $answerId,
+            'vote' => true
+        ]);
+
+        $jawabanValue = PollAnswer::find($answerId);
+        if ($jawabanValue) {
+            $jawabanValue->value += 1;
+            $jawabanValue->save();
+        }
+
+        return response()->json(['success' => true]);
+    }
+
 }
