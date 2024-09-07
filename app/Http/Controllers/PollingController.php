@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Poll;
+use App\Models\Post;
 use App\Models\AnswerVote;
 use App\Models\PollAnswer;
 use Illuminate\Http\Request;
@@ -71,17 +72,20 @@ class PollingController extends Controller
 
         if ($existingVote) {
             $existingVote->delete();
-            
-            $unvote = PollAnswer::find($existingVote->jawaban);
+
+            $unvote = PollAnswer::find($existingVote->id_jawaban);
             if ($unvote) {
                 $unvote->value = $unvote->value > 0 ? $unvote->value - 1 : 0;
                 $unvote->save();
             }
         } 
 
+        $pollAnswer = PollAnswer::find($answerId);
+
         AnswerVote::create([
             'nik' => $userNik,
-            'jawaban' => $answerId,
+            'id_jawaban' => $answerId,
+            'jawaban' => $pollAnswer->jawaban,
             'vote' => true
         ]);
 

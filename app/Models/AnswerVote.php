@@ -13,7 +13,8 @@ class AnswerVote extends Model
 
     protected $fillable = [
         'nik', 
-        'jawaban', 
+        'id_jawaban', 
+        'jawaban',
         'vote',
     ];
 }

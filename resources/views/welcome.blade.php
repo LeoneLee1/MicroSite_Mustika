@@ -14,6 +14,18 @@
             border: none;
             background: transparent;
         }
+
+        /* Tambahkan margin yang sesuai untuk mobile */
+        .answer-container {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .answer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 @endpush
 
@@ -186,15 +198,24 @@
                         </div>
                         <div class="mt-3 text-center" style="color: black;">
                             @foreach ($answers as $answer)
+                                {{-- desktop --}}
                                 <div
                                     style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                    <p style="margin: 0;">{{ $loop->index + 1 }}.&nbsp;{{ $answer->jawaban }}
+                                    <p style="margin: 0;">
+                                        <input type="checkbox" @if ($answer->voted) checked @endif>
+                                        &nbsp;{{ $answer->jawaban }}
                                     </p>
                                     <p class="btn btn-sm btn-primary" onclick="return vote({{ $answer->id }})">
                                         {{ $answer->value }}
                                     </p>
                                 </div>
                             @endforeach
+                            <div class="text-center">
+                                <a href="#" data-bs-toggle="modal"
+                                    data-bs-target="#viewVote{{ $questionId }}" class="btn btn-success">View
+                                    votes</a>
+                                @include('modal.viewVote')
+                            </div>
                         </div>
                         {{-- <div class="d-flex justify-content-start col-sm-5">
                         <form method="POST" action="{{ route('comment.insert') }}"
