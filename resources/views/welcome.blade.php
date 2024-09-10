@@ -202,10 +202,12 @@
                                 <div
                                     style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                                     <p style="margin: 0;">
-                                        <input type="checkbox" @if ($answer->voted) checked @endif>
+                                        <input type="radio" class="form-check-input"
+                                            @if ($answer->voted) checked @endif
+                                            onclick="return vote({{ $answer->id }})">
                                         &nbsp;{{ $answer->jawaban }}
                                     </p>
-                                    <p class="btn btn-sm btn-primary" onclick="return vote({{ $answer->id }})">
+                                    <p class="btn btn-sm btn-primary">
                                         {{ $answer->value }}
                                     </p>
                                 </div>

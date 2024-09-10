@@ -68,31 +68,36 @@ class PollingController extends Controller
 
     public function vote($answerId, Request $request){
         $userNik = Auth::user()->nik;
-        $existingVote = AnswerVote::where('nik', $userNik)->first();
+        
+        $existingVote = AnswerVote::where('nik',$userNik)
+                                    ->where('id_jawaban',$answerId)
+                                    ->first();
 
         if ($existingVote) {
             $existingVote->delete();
 
-            $unvote = PollAnswer::find($existingVote->id_jawaban);
-            if ($unvote) {
-                $unvote->value = $unvote->value > 0 ? $unvote->value - 1 : 0;
-                $unvote->save();
+            $jawabanValue = PollAnswer::find($answerId);
+            if ($jawabanValue) {
+                $jawabanValue->value -= 1;
+                $jawabanValue->save();
             }
-        } 
+        } else {
+            $pollAnswer = PollAnswer::find($answerId);
 
-        $pollAnswer = PollAnswer::find($answerId);
+            if ($pollAnswer) {
+                AnswerVote::create([
+                    'nik' => $userNik,
+                    'id_jawaban' => $answerId,
+                    'jawaban' => $pollAnswer->jawaban,
+                    'vote' => 1
+                ]);
+            }
 
-        AnswerVote::create([
-            'nik' => $userNik,
-            'id_jawaban' => $answerId,
-            'jawaban' => $pollAnswer->jawaban,
-            'vote' => true
-        ]);
-
-        $jawabanValue = PollAnswer::find($answerId);
-        if ($jawabanValue) {
-            $jawabanValue->value += 1;
-            $jawabanValue->save();
+            $jawabanValue = PollAnswer::find($answerId);
+            if ($jawabanValue) {
+                $jawabanValue->value += 1;
+                $jawabanValue->save();
+            }
         }
 
         return response()->json(['success' => true]);
