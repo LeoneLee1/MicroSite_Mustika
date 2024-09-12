@@ -200,7 +200,7 @@
                             @foreach ($answers as $answer)
                                 {{-- desktop --}}
                                 <div
-                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                    style="display: flex; justify-content: space-between; align-items: center; text-align: left; margin-bottom: 10px;">
                                     <p style="margin: 0;">
                                         <input type="radio" class="form-check-input"
                                             @if ($answer->voted) checked @endif
@@ -212,8 +212,17 @@
                                     </p>
                                 </div>
                             @endforeach
-                            <div class="text-center">
+                            <div class="text-center d-none d-sm-block">
                                 <a href="{{ route('vote.view', $answer->poll_id) }}" class="btn btn-success">View
+                                    votes</a>
+                                {{-- <a href="#" data-bs-toggle="modal"
+                                    data-bs-target="#viewVote{{ $questionId }}" class="btn btn-success">View
+                                    votes</a>
+                                @include('modal.viewVote') --}}
+                            </div>
+                            <div class="text-center d-block d-sm-none">
+                                <a href="{{ route('vote.view', $answer->poll_id) }}"
+                                    class="btn btn-sm btn-success">View
                                     votes</a>
                                 {{-- <a href="#" data-bs-toggle="modal"
                                     data-bs-target="#viewVote{{ $questionId }}" class="btn btn-success">View

@@ -19,7 +19,8 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item {{ request()->is('profile*') ? 'active' : '' }}"
+                            href="{{ route('profile') }}">
                             <i class="fa fa-id-card"></i>
                             <span class="align-middle">&nbsp;Edit Profile</span>
                         </a>

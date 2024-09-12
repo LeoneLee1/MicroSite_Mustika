@@ -37,16 +37,19 @@
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Settings</span>
         </li>
-        <li class="menu-item {{ request()->is('user*') ? 'active' : '' }} mb-3">
-            <a href="{{ route('user') }}" class="menu-link">
-                <i class="menu-icon fa fa-users"></i>
-                <div data-i18n="Analytics">User</div>
-            </a>
-        </li>
-        <li class="menu-item {{ request()->is('profile*') ? 'active' : '' }} mb-3">
+        @if (Auth::user()->nik === 'admin')
+            <li class="menu-item {{ request()->is('user*') ? 'active' : '' }} mb-3">
+                <a href="{{ route('user') }}" class="menu-link">
+                    <i class="menu-icon fa fa-users"></i>
+                    <div data-i18n="Analytics">User</div>
+                </a>
+            </li>
+        @endif
+        <li
+            class="menu-item {{ request()->is('profile*') ? 'active' : '' }} {{ request()->is('profile/edit*') ? 'active' : '' }} mb-3">
             <a href="{{ route('profile') }}" class="menu-link">
                 <i class="menu-icon fa fa-user-pen"></i>
-                <div data-i18n="Analytics">Profile User</div>
+                <div data-i18n="Analytics">Profile & Akun</div>
             </a>
         </li>
     </ul>

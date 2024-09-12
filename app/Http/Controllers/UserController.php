@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -93,6 +95,51 @@ class UserController extends Controller
     }
 
     public function profile(){
-        return view('profile.index');
+
+        $user = Auth::user()->nik;
+
+        $data = DB::select("SELECT * FROM users
+                            WHERE nik = '$user'");
+
+        return view('profile.index',compact('data'));
     }
+
+    public function profileEdit(){
+        $user = Auth::user()->nik;
+
+        $unit = DB::select('SELECT * FROM units
+                            ORDER BY kodeunit ASC');
+
+        $data = DB::select("SELECT * FROM users
+                            WHERE nik = '$user'");
+
+        return view('profile.edit',compact('data','unit'));
+    }
+
+    public function profileInsert(Request $request){
+        
+        $data = User::find($request->input('id'));
+
+        $id = $request->id;
+        $nama = $request->nama;
+        $nik = $request->nik;
+        $unit = $request->unit;
+        $gender = $request->gender;
+        $foto = $request->foto;
+
+        if ($unit == '' || $gender == '') {
+            $sql = DB::statement("UPDATE users SET nama='$nama', nik='$nik', foto='$foto'
+                                WHERE id = '$id'");    
+        } else {
+            $sql = DB::statement("UPDATE users SET nama='$nama', nik='$nik', unit='$unit',gender='$gender', foto='$foto'
+                                WHERE id = '$id'");
+        }
+
+        
+
+        Alert::success('Berhasil!','Mengubah Profile.');
+
+        return redirect()->route('profile');
+    }
+
 }

@@ -38,6 +38,8 @@ Route::post('/user/edit/update/{id}',[UserController::class,'update'])->name('us
 Route::get('/user/delete/{id}',[UserController::class,'delete'])->name('user.delete');
 
 Route::get('/profile',[UserController::class,'profile'])->name('profile');
+Route::get('/profile/edit',[UserController::class,'profileEdit'])->name('profile.edit');
+Route::post('/profile/edit/insert',[UserController::class,'profileInsert'])->name('profile.insert');
 
 Route::get('/post',[PostController::class,'index'])->name('post');
 Route::post('/post/insert',[PostController::class,'insert'])->name('post.insert');
