@@ -22,6 +22,7 @@ Route::get('/',[DashboardController::class,'index'])->name('/')->middleware('aut
 
 Route::get('/comment/{id}',[PostController::class,'viewComment'])->name('comment');
 Route::post('/comment/insert',[PostController::class,'komen'])->name('comment.insert');
+Route::get('/comment/delete/{id_comment}',[PostController::class,'deleteComment'])->name('comment.delete');
 
 Route::get('/login',[LoginController::class,'login'])->name('login');
 Route::post('/login/proses',[LoginController::class,'proses'])->name('login.proses');
@@ -45,4 +46,4 @@ Route::get('/polling/create',[PollingController::class,'create'])->name('polling
 Route::post('/polling/create/insert',[PollingController::class,'insert'])->name('polling.insert');
 
 Route::post('/vote/{answerId}',[PollingController::class,'vote'])->name('vote');
-Route::get('/vote/view/{id}',[PollingController::class,'viewVotes'])->name('vote.view');
+Route::get('/vote/view/{poll_id}',[PollingController::class,'viewVotes'])->name('vote.view');

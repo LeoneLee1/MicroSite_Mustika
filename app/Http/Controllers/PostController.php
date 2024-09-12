@@ -48,7 +48,7 @@ class PostController extends Controller
         
         $post = Post::findOrFail($id);
 
-        $komen = DB::select("SELECT c.*, u.nama, u.foto,p.id FROM comments c
+        $komen = DB::select("SELECT c.*, u.nama, c.id AS id_comment, u.foto,p.id FROM comments c
                         LEFT JOIN users u ON u.nik = c.nik
                         LEFT JOIN posts p ON p.id = c.id_post 
                         WHERE p.id = '$id'
@@ -71,6 +71,16 @@ class PostController extends Controller
         $k->save();
         
         return response()->json($k);
+    }
+
+    public function deleteComment($id_comment){
+
+        $data = Comment::findOrFail($id_comment);
+        $data->delete();
+
+        toast('Berhasil Menghapus','success');
+
+        return back();
     }
 
 }

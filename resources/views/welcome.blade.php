@@ -72,7 +72,7 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-flag"
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-circle-exclamation"
                                         style="color: red;"></i>&nbsp;&nbsp;Report</a>
                             </li>
                         </ul>
@@ -213,10 +213,12 @@
                                 </div>
                             @endforeach
                             <div class="text-center">
-                                <a href="#" data-bs-toggle="modal"
+                                <a href="{{ route('vote.view', $answer->poll_id) }}" class="btn btn-success">View
+                                    votes</a>
+                                {{-- <a href="#" data-bs-toggle="modal"
                                     data-bs-target="#viewVote{{ $questionId }}" class="btn btn-success">View
                                     votes</a>
-                                @include('modal.viewVote')
+                                @include('modal.viewVote') --}}
                             </div>
                         </div>
                         {{-- <div class="d-flex justify-content-start col-sm-5">

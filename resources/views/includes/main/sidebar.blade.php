@@ -11,7 +11,8 @@
     <div class="menu-inner-shadow"></div>
     <ul class="menu-inner py-1 mt-4">
         <!-- Dashboard -->
-        <li class="menu-item {{ request()->is('/*') ? 'active' : '' }} {{ request()->is('comment*') ? 'active' : '' }}">
+        <li
+            class="menu-item {{ request()->is('/*') ? 'active' : '' }} {{ request()->is('comment*') ? 'active' : '' }} {{ request()->is('vote/view*') ? 'active' : '' }}">
             <a href="/" class="menu-link">
                 <i class="menu-icon fa fa-home"></i>
                 <div data-i18n="Analytics">Dashboard</div>

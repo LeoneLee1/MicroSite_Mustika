@@ -15,6 +15,6 @@ class AnswerVote extends Model
         'nik', 
         'id_jawaban', 
         'jawaban',
-        'vote',
+        'poll_id',
     ];
 }

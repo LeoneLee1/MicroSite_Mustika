@@ -18,7 +18,7 @@ class DashboardController extends Controller
         $post = DB::select("SELECT p.*, u.nama, u.foto FROM posts p
                         LEFT JOIN users u ON u.nik = p.nik
                         ORDER BY p.id DESC;");
-
+                        
         $komen = DB::select("SELECT c.*, u.nama, u.foto FROM comments c
                         LEFT JOIN users u ON u.nik = c.nik
                         ORDER BY c.id DESC;");
@@ -30,32 +30,7 @@ class DashboardController extends Controller
                                  AND a.nik = ?
                                  ORDER BY pa.id ASC",[$user]);
 
-                                 
-        // $answers = DB::select("SELECT id FROM poll_answers");
-        // $answerIds = array_column($answers, 'id');
-
-        // $votesCount = AnswerVote::whereIn('jawaban', $answerIds)->count();
-
-        $voteCounts = [];
-
-        $answers = DB::select("SELECT DISTINCT pa.jawaban , a.nik 
-        FROM poll_answers pa
-        JOIN polls pl ON pa.poll_id = pl.id
-        LEFT JOIN answer_vote a ON a.jawaban = pa.jawaban");
-
-        foreach ($answers as $answer) {
-            $jawaban = $answer->jawaban;
-            
-            // Count the votes for this jawaban
-            $count = DB::table('answer_vote')
-                ->where('jawaban', $jawaban)
-                ->exists();
-            
-            $voteCounts[$jawaban] = $count;
-        }
-
         $pollCollection = collect($poll);
-
         $groupedPoll = $pollCollection->groupBy('id_post');
 
         return view('welcome',compact('post','komen','groupedPoll'));

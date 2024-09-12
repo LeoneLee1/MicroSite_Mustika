@@ -9,7 +9,6 @@
             <div class="modal-body">
                 <div>
                     <h4 style="color: black; font-weight: bold; text-align: center;">{{ $question }}</h4>
-                    <!-- Teks diposisikan ke kiri -->
                     <div class="table-responsive-sm">
                         <table class="table table-bordered">
                             @foreach ($answers as $answer)
@@ -21,7 +20,8 @@
                                                     class="fa fa-star"></i></th>
                                         @else
                                             <th scope="col" style="text-align: left;">
-                                                {{ $answer->value }}&nbsp;votes&nbsp;<i class="fa fa-star"></i></th>
+                                                {{ $answer->value }}&nbsp;votes&nbsp;<i class="fa fa-star"></i>
+                                            </th>
                                         @endif
                                     </tr>
                                 </thead>
