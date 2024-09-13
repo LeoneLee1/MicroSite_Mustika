@@ -15,11 +15,11 @@ class DashboardController extends Controller
 
         $user = Auth::user()->nik;
 
-        $post = DB::select("SELECT p.*, u.nama, u.foto FROM posts p
+        $post = DB::select("SELECT p.*, u.nama, u.unit,u.gender FROM posts p
                         LEFT JOIN users u ON u.nik = p.nik
                         ORDER BY p.id DESC;");
                         
-        $komen = DB::select("SELECT c.*, u.nama, u.foto FROM comments c
+        $komen = DB::select("SELECT c.*, u.nama FROM comments c
                         LEFT JOIN users u ON u.nik = c.nik
                         ORDER BY c.id DESC;");
 

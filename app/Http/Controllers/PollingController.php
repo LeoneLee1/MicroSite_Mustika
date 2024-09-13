@@ -53,9 +53,9 @@ class PollingController extends Controller
                 $pollAnswer->jawaban = $jawaban;
                 $pollAnswer->save();
 
-                DB::insert("INSERT INTO answer_vote (id_answer, jawaban, nik) 
-                            SELECT a.id AS id_answer, a.jawaban , b.nik  FROM poll_answers a JOIN users b
-                            WHERE a.jawaban = '$jawaban'");
+                // DB::insert("INSERT INTO answer_vote (id_answer, jawaban, nik) 
+                //             SELECT a.id AS id_answer, a.jawaban , b.nik  FROM poll_answers a JOIN users b
+                //             WHERE a.jawaban = '$jawaban'");
 
             }
             Alert::success('Berhasil!', 'Membuat Polling.');

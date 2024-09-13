@@ -12,13 +12,16 @@
             <div class="page__center container" style="width: 100%;">
                 @foreach ($data as $item)
                     <div class="profile_header">
-                        <div class="pic_wrapper">
+                        {{-- <div class="pic_wrapper">
                             @if ($item->foto == null || '')
                                 <img src="https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg"
                                     alt="Avatar">
                             @else
                                 <img src="{{ $item->foto }}" alt="Avatar">
                             @endif
+                        </div> --}}
+                        <div class="pic_wrapper">
+                            <img src="https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg" alt="Avatar">
                         </div>
                         <div class="name_wrapper">
                             <h2 style="color: #003366; font-weight: bold;">{{ $item->nama }}</h2>
@@ -51,8 +54,8 @@
                                             <div class="form-group" style="color: black; font-weight:bold;">
                                                 <label>Gender</label>
                                                 <select class="form-control" name="gender">
-                                                    <option value="{{ $item->gender }}" selected disabled>
-                                                        {{ $item->gender }}
+                                                    <option value="{{ $item->gender }}">
+                                                        {{ $item->gender ?? '-' }}
                                                     </option>
                                                     <option value="Pria">Pria</option>
                                                     <option value="Wanita">Wanita</option>
@@ -71,12 +74,12 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <h6 class="mt-5" style="color: black; font-weight: bold;">Foto Profil</h6>
+                                        {{-- <h6 class="mt-5" style="color: black; font-weight: bold;">Foto Profil</h6>
                                         <span class="span-helper" style="color: black;">Upload Foto Baru</span>
                                         <div class="form-group mt-3">
                                             <input type="text" name="foto" class="form-control"
                                                 value="{{ $item->foto }}" placeholder="Link Url Foto">
-                                        </div>
+                                        </div> --}}
                                         <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                                     </div>
                                     </form>

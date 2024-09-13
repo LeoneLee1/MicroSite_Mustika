@@ -125,17 +125,18 @@ class UserController extends Controller
         $nik = $request->nik;
         $unit = $request->unit;
         $gender = $request->gender;
-        $foto = $request->foto;
 
-        if ($unit == '' || $gender == '') {
-            $sql = DB::statement("UPDATE users SET nama='$nama', nik='$nik', foto='$foto'
-                                WHERE id = '$id'");    
-        } else {
-            $sql = DB::statement("UPDATE users SET nama='$nama', nik='$nik', unit='$unit',gender='$gender', foto='$foto'
+        if ($unit == '') {
+            $sql = DB::statement("UPDATE users SET nama='$nama', nik='$nik',gender='$gender'
+                                WHERE id = '$id'");
+        } elseif($gender == '') {
+            $sql = DB::statement("UPDATE users SET nama='$nama', nik='$nik',unit='$unit'
+                                WHERE id = '$id'");
+        } 
+        else {
+            $sql = DB::statement("UPDATE users SET nama='$nama', nik='$nik',unit='$unit',gender='$gender'
                                 WHERE id = '$id'");
         }
-
-        
 
         Alert::success('Berhasil!','Mengubah Profile.');
 

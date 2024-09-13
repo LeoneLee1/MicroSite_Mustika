@@ -54,27 +54,30 @@
                             <i class="fas fa-ellipsis-v"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                            <li><a class="dropdown-item" href="#"><i
-                                        class="fas fa-circle-user menu-icon"></i>&nbsp;About This
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal{{ $item->id }}"><i
+                                        class="fas fa-circle-user menu-icon"></i>&nbsp;About
+                                    This
                                     Account</a></li>
-                            <li>
+
+                            {{-- <li>
                                 <hr class="dropdown-divider">
-                            </li>
-                            <li>
+                            </li> --}}
+                            {{-- <li>
                                 <a class="dropdown-item" href="#"><i
                                         class="fa fa-bookmark menu-icon"></i>&nbsp;Save</a>
-                            </li>
+                            </li> --}}
                             {{-- <li>
                                 <hr class="dropdown-divider">
                             </li> --}}
                             {{-- <li><a class="dropdown-item" href="#"><i class="fas fa-eye-slash"></i>&nbsp;&nbsp;Hide</a>
                             </li> --}}
-                            <li>
+                            {{-- <li>
                                 <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-circle-exclamation"
+                            </li> --}}
+                            {{-- <li><a class="dropdown-item" href="#"><i class="fas fa-circle-exclamation"
                                         style="color: red;"></i>&nbsp;&nbsp;Report</a>
-                            </li>
+                            </li> --}}
                         </ul>
                     </div>
                 </div>
@@ -107,6 +110,7 @@
                             strpos($item->media, '.jpeg') !== false ||
                             strpos($item->media, '.png') !== false ||
                             strpos($item->media, 'data:image') !== false ||
+                            strpos($item->media, 'https:') !== false ||
                             strpos($item->media, '.gif') !== false)
                         <img src="{{ $item->media }}" alt="media gambar" class="img-fluid lazyload">
                     @else
@@ -254,6 +258,7 @@
             </div>
         @endforeach
     </div>
+    @include('modal.akun')
     @include('sweetalert::alert')
 @endsection
 
@@ -261,6 +266,7 @@
     <script>
         function vote(answerId) {
             console.log("Id Answer:", answerId);
+            var scrollPosition = $(window).scrollTop();
             $.ajax({
                 url: '/vote/' + answerId,
                 type: 'POST',
@@ -270,7 +276,7 @@
                 success: function(response) {
                     if (response.success) {
                         console.log("Voted");
-                        location.reload();
+                        window.location.reload();
                     } else {
                         console.error("Failed Vote");
                     }
@@ -278,6 +284,9 @@
                 error: function(xhr) {
                     console.error("Terjadi Kesalahan:", xhr.responseText);
                 }
+            });
+            $(window).on('load', function() {
+                $(window).scrollTop(scrollPosition);
             });
             return false;
         }
