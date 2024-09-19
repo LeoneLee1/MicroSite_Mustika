@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use DataTables;
+use App\Models\Unit;
 use App\Models\User;
+use App\Models\AkunRegis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -10,16 +13,26 @@ use Illuminate\Support\Facades\Hash;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class UserController extends Controller
-{
-    public function index(){
+{   
+    public function index(Request $request){
 
-        $data = User::paginate(5);
+        if ($request->ajax()) {
+            $data = DB::select("SELECT * FROM users
+                                ORDER BY nama ASC;");
+            return Datatables::of($data)
+            ->addIndexColumn()
+            ->make(true);
 
-        return view('users.index',compact('data'));
+            return response()->json();
+        }
+        return view('users.index');
     }
 
     public function create(){
-        return view('users.create');
+
+        $data = Unit::all();
+
+        return view('users.create',compact('data'));
     }
 
     public function insert(Request $request){
@@ -28,6 +41,7 @@ class UserController extends Controller
             'nik' => 'required',
             'unit' => 'required',
             'password' => 'required',
+            'role' => 'required',
         ]);
 
         $password = Hash::make($request->password);
@@ -38,7 +52,7 @@ class UserController extends Controller
         $data->unit = $request->unit;
         $data->password = $password;
         $data->gender = $request->gender;
-        $data->foto = $request->foto;
+        $data->role = $request->role;
         
         if ($data->save()) {
             Alert::success('Berhasil!','Membuat User baru.');
@@ -52,7 +66,9 @@ class UserController extends Controller
     public function edit($id){
         $data = User::findOrFail($id);
 
-        return view('users.edit',compact('data'));
+        $unit = Unit::all();
+
+        return view('users.edit',compact('data','unit'));
     }
 
     public function update(Request $request, $id){
@@ -66,14 +82,14 @@ class UserController extends Controller
             $data->nik = $request->nik;
             $data->unit = $request->unit;
             $data->gender = $request->gender;
-            $data->foto = $request->foto;
+            $data->role = $request->role;
             $data->save();
         } else {
             $data->nama = $request->nama;
             $data->nik = $request->nik;
             $data->unit = $request->unit;
             $data->gender = $request->gender;
-            $data->foto = $request->foto;
+            $data->role = $request->role;
             $data->password = $newPassword;
             $data->save();
         }
@@ -141,6 +157,92 @@ class UserController extends Controller
         Alert::success('Berhasil!','Mengubah Profile.');
 
         return redirect()->route('profile');
+    }
+
+    public function dataRegis(){
+
+        $data = AkunRegis::paginate(5);
+
+        return view('users.akunRegis',compact('data'));
+    }
+
+    public function dataRegisApprove(Request $request, $id){
+        $request->validate([
+            'nama' => 'required',
+            'nik' => 'required',
+            'password' => 'required',
+            'unit' => 'required',
+        ]); 
+
+        $password = Hash::make($request->password);
+
+        $data = new User();
+        $data->nama = $request->nama;
+        $data->nik = $request->nik;
+        $data->unit = $request->unit;
+        $data->password = $password;
+        $data->save();
+
+        // kirim pesan
+        $no_hp = $request->no_hp;
+        $pesan = "Terima kasih telah mendaftar, Website MicroSite Mustika Username: {$request->nik}, Password: {$request->password}";
+        $this->sendWa($no_hp, $pesan);
+
+        Alert::success('Berhasil!','Menyimpan Akun.');
+
+        $delete = AkunRegis::findOrFail($id);
+        $delete->delete();
+
+        return back();
+        
+    }
+
+    public function dataRegisReject($id){
+        $data = AkunRegis::findOrFail($id);
+
+        if ($data) {
+            $no_hp = $data->no_hp;
+            // kirim pesan
+            $no_hp = $data->no_hp;
+            $pesan = "Mohon maaf, untuk pendaftaran akun MicroSite Mustika anda ditolak dikarenakan tidak sesuai, mohon dicoba lagi , Terima kasih";
+            $this->sendWa($no_hp, $pesan);
+
+            $data->delete();
+
+            return back();
+        } else {
+            //
+        }
+        
+    }
+
+    private function sendWa($nowa, $pesan){
+        $api_key = 'aDOYclFtJKAKPkRVRFWyAokb4LfyRM';
+        $sender = '62882007021086';
+        $url = 'https://wa.ptmustika.my.id/send-message';
+        $param = array(
+            "api_key" => $api_key,
+            "sender" => $sender,
+            "number" => $nowa, 
+            "message" => $pesan
+        );
+    
+        $json = json_encode($param);
+    
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Content-Length: '.strlen($json)
+        ));
+    
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+        $result = curl_exec($ch);
+    
+        curl_close($ch);
     }
 
 }

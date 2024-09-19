@@ -44,6 +44,12 @@
                     <div data-i18n="Analytics">User</div>
                 </a>
             </li>
+            <li class="menu-item {{ request()->is('register/data*') ? 'active' : '' }} mb-3">
+                <a href="{{ route('user.regis') }}" class="menu-link">
+                    <i class="menu-icon fa fa-user-tag"></i>
+                    <div data-i18n="Analytics">User Register</div>
+                </a>
+            </li>
         @endif
         <li
             class="menu-item {{ request()->is('profile*') ? 'active' : '' }} {{ request()->is('profile/edit*') ? 'active' : '' }} mb-3">

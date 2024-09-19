@@ -15,6 +15,7 @@ class Poll extends Model
     protected $fillable = [
         'id_post',
         'soal',
+        'nik',
     ];
 
     public function answers()

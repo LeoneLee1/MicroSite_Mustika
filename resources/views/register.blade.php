@@ -25,10 +25,35 @@
         .swal2-container {
             z-index: 9999 !important;
         }
+
+        /* .preload {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #003366;
+            z-index: 10000;
+        }
+
+        .preload.loaded {
+            display: none;
+        }
+
+        .preload video {
+            max-width: 100%;
+            max-height: 100%;
+        } */
     </style>
 </head>
 
 <body>
+    {{-- <div class="preload" id="loadingScreen">
+        <video autoplay muted loop src="{{ asset('video/loading.mp4') }}"></video>
+    </div> --}}
     <div class="container">
         <div class="row justify-content-center" style="margin-top: 85px;">
             <div class="col col-12 col-md-4">
@@ -57,9 +82,12 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="Password" class="form-label">Password</label>
-                                <input type="password" name="password" id="Password" class="form-control"
-                                    placeholder="Password" required>
+                                <label for="No_Hp" class="form-label">Nomor HP</label>
+                                <input type="text" name="no_hp" id="No_Hp" maxlength="15" class="form-control"
+                                    placeholder="Nomor WhatsApp 085312341234" required oninput="validatePhoneNumber()">
+                                <small id="charCount" class="form-text text-muted">0/15</small> <br>
+                                <small>Nomor Whatsapp atau Nomor Handphone yang bisa dihubungi sebagai konfirmasi
+                                    nantinya!</small>
                             </div>
                             <button type="submit" class="btn btn-primary">Daftar</button>
                             <a href="{{ route('login') }}" class="btn btn-warning">Batal</a>
@@ -78,6 +106,26 @@
     <script src="{{ asset('js/main.js') }}"></script>
     <script src="{{ asset('js/dashboards-analytics.js') }}"></script>
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script>
+        function validatePhoneNumber() {
+            const inputField = document.getElementById('No_Hp');
+            const charCount = document.getElementById('charCount');
+
+            // Hanya mengizinkan angka
+            inputField.value = inputField.value.replace(/\D/g, '');
+
+            // Menampilkan jumlah karakter
+            charCount.textContent = `${inputField.value.length}/15`;
+        }
+    </script>
+    {{-- <script>
+        window.onload = function() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            setTimeout(function() {
+                loadingScreen.classList.add('loaded');
+            }, 2000);
+        };
+    </script> --}}
 </body>
 
 </html>

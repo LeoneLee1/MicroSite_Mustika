@@ -22,9 +22,29 @@
                                 class="form-control" placeholder="NIK">
                         </div>
                         <div class="mb-3">
+                            <label for="Gender" class="form-label">Gender</label>
+                            <select name="gender" class="form-control" required>
+                                <option value="{{ $data->gender }}" selected>{{ $data->gender ?? '-' }}</option>
+                                <option value="Pria">Pria</option>
+                                <option value="Wanita">Wanita</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
                             <label for="Unit" class="form-label">Unit</label>
-                            <input type="text" name="unit" value="{{ $data->unit }}" id="Unit"
-                                class="form-control" placeholder="Kode Unit">
+                            <select name="unit" class="form-control" required>
+                                <option value="{{ $data->unit }}" selected>{{ $data->unit }}</option>
+                                @foreach ($unit as $row)
+                                    <option value="{{ $row->kodeunit }}">{{ $row->kodeunit }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="Role" class="form-label">Role</label>
+                            <select name="role" class="form-control" required>
+                                <option value="{{ $data->role }}" selected>{{ $data->role ?? '-' }}</option>
+                                <option value="Admin">Admin</option>
+                                <option value="User">User</option>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="Password" class="form-label">Password</label>

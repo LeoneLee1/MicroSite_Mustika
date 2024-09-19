@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request){
+    public function index(){
 
         $user = Auth::user()->nik;
 
-        $post = DB::select("SELECT p.*, u.nama, u.unit,u.gender FROM posts p
+        $post = DB::select("SELECT p.*, u.nama, u.unit,u.gender , p.created_at AS time_post FROM posts p
                         LEFT JOIN users u ON u.nik = p.nik
                         ORDER BY p.id DESC;");
                         
@@ -23,16 +23,27 @@ class DashboardController extends Controller
                         LEFT JOIN users u ON u.nik = c.nik
                         ORDER BY c.id DESC;");
 
-        $poll = DB::select("SELECT pl.*, pa.jawaban, pa.poll_id, p.judul, p.id, pa.id, pa.value, a.nik AS voted, a.created_at AS time_vote FROM polls pl
-								 LEFT JOIN poll_answers pa ON pa.poll_id = pl.id
-								 LEFT JOIN posts p ON p.id = pl.id_post
-                                 LEFT JOIN answer_vote a ON a.jawaban = pa.jawaban
-                                 AND a.nik = ?
-                                 ORDER BY pa.id ASC",[$user]);
+        $poll = DB::select("SELECT pl.* FROM polls pl;");
 
-        $pollCollection = collect($poll);
-        $groupedPoll = $pollCollection->groupBy('id_post');
+        $jawaban = DB::select("SELECT a.*, an.nik AS voted , a.value FROM poll_answers a
+                                LEFT JOIN polls p ON p.id = a.poll_id
+                                LEFT JOIN answer_vote an ON an.jawaban = a.jawaban
+                                AND an.nik = '$user'
+                                ORDER BY a.id ASC;");
 
-        return view('welcome',compact('post','komen','groupedPoll'));
+        $jawabanModal = DB::select("SELECT 
+                                    pl.jawaban,
+                                    pl.value, 
+                                    pl.id_post,
+                                    pl.poll_id,
+                                    GROUP_CONCAT(a.nik SEPARATOR ', ') AS nik_list,
+                                    GROUP_CONCAT(DATE_FORMAT(a.created_at, '%e/%c/%y %H:%i') ORDER BY a.created_at SEPARATOR ', ') AS time_vote
+                                FROM poll_answers pl
+                                LEFT JOIN answer_vote a 
+                                    ON a.id_jawaban = pl.id
+                                GROUP BY pl.jawaban, pl.value, pl.id_post, pl.poll_id, pl.id
+										  ORDER BY pl.id ASC;");
+
+        return view('welcome',compact('post','komen','poll','jawaban','jawabanModal'));
     }
 }

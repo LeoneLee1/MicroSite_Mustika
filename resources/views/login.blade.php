@@ -25,11 +25,35 @@
         .swal2-container {
             z-index: 9999 !important;
         }
+
+        /* .preload {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            z-index: 10000;
+        }
+
+        .preload.loaded {
+            display: none;
+        }
+
+        .preload video {
+            max-width: 100%;
+            max-height: 100%;
+        } */
     </style>
 </head>
 
 <body>
-
+    {{-- <div class="preload" id="loadingScreen">
+        <video autoplay muted loop src="{{ asset('video/loading.mp4') }}"></video>
+    </div> --}}
     <div class="container">
         <div class="row justify-content-center" style="margin-top: 85px;">
             <div class="col col-12 col-md-4">
@@ -71,6 +95,14 @@
     <script src="{{ asset('js/main.js') }}"></script>
     <script src="{{ asset('js/dashboards-analytics.js') }}"></script>
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+    {{-- <script>
+        window.onload = function() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            setTimeout(function() {
+                loadingScreen.classList.add('loaded');
+            }, 2000);
+        };
+    </script> --}}
     @include('sweetalert::alert')
 </body>
 

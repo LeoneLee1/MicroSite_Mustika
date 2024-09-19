@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Unit;
 use App\Models\User;
+use App\Models\AkunRegis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -37,26 +38,37 @@ class LoginController extends Controller
         $request->validate([
             'nama' => 'required',
             'nik' => 'required',
+            'no_hp' => 'required',
             'unit' => 'required',
-            'password' => 'required',
         ]);
 
-        $password = Hash::make($request->password);
-
-        $register = new User();
+        $register = new AkunRegis();
         $register->nama = $request->nama;
         $register->nik = $request->nik;
+        $register->no_hp = $this->no_wa($request->no_hp);
         $register->unit = $request->unit;
-        $register->password = $password;
 
         if ($register->save()) {
-            Alert::success('Berhasil!','Membuat Akun.');
-            return redirect()->route('login');
+            return view('informasi-sukses');
         } else {
             Alert::error('Gagal!','Membuat Akun, Silahkann Coba Lagi.');
             return back();
         }
     }
+    
+    private function no_wa($nohp){
+        $nohp = trim($nohp); 
+        if(!preg_match("/[^+0-9]/", $nohp)){
+            if(substr($nohp, 0, 2) == "62"){
+                return $nohp; 
+            }
+            else if(substr($nohp, 0, 1) == "0"){
+                return "62" . substr($nohp, 1); 
+            }
+        }
+        return $nohp; 
+    }
+
 
     public function logout(){
         Auth::logout();

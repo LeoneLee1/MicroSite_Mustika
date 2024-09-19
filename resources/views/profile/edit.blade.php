@@ -66,7 +66,7 @@
                                         <div class="form-group" style="color: black; font-weight:bold;">
                                             <label>Unit</label>
                                             <select class="form-control" name="unit">
-                                                <option value="{{ $item->unit }}" selected disabled>
+                                                <option value="{{ $item->unit }}">
                                                     {{ $item->unit }}
                                                 </option>
                                                 @foreach ($unit as $u)

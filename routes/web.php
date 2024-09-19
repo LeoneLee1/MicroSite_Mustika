@@ -37,6 +37,10 @@ Route::get('/user/edit/{id}',[UserController::class,'edit'])->name('user.edit');
 Route::post('/user/edit/update/{id}',[UserController::class,'update'])->name('user.update');
 Route::get('/user/delete/{id}',[UserController::class,'delete'])->name('user.delete');
 
+Route::get('/register/data',[UserController::class,'dataRegis'])->name('user.regis');
+Route::post('/register/data/approve/{id}',[UserController::class,'dataRegisApprove'])->name('user.approve');
+Route::get('/register/data/reject/{id}',[UserController::class,'dataRegisReject'])->name('user.reject');
+
 Route::get('/profile',[UserController::class,'profile'])->name('profile');
 Route::get('/profile/edit',[UserController::class,'profileEdit'])->name('profile.edit');
 Route::post('/profile/edit/insert',[UserController::class,'profileInsert'])->name('profile.insert');

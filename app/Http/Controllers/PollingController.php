@@ -14,14 +14,17 @@ use RealRashid\SweetAlert\Facades\Alert;
 class PollingController extends Controller
 {
     public function create(){
-        // $post_id = DB::select("SELECT * FROM posts
-        //                     ORDER BY id DESC
-        //                     LIMIT 1");
+        $user = Auth::user()->nik;
+        // $post = DB::select("SELECT * FROM posts
+        //                         WHERE nik = '$user'
+        //                         ORDER BY id DESC
+        //                         LIMIT 1");
 
         $post = DB::table('posts')
+                    ->where('nik', $user)
                     ->orderBy('id','desc')
                     ->first();
-
+        // dd($post);
         if($post){
             $post_id = $post->id;
         } else {
@@ -33,37 +36,66 @@ class PollingController extends Controller
 
     public function insert(Request $request)
     {
+        // $request->validate([
+        //     'id_post' => 'required',
+        //     'soal' => 'required|string|max:255',
+        //     'jawaban' => 'required|array|min:1',
+        //     'jawaban.*' => 'required|string|max:255',
+        // ]);
+        
+        // $poll = new Poll();
+        // $poll->id_post = $request->id_post;
+        // $poll->nik = $request->nik;
+        // $poll->soal = $request->soal;
+
+        // if ($poll->save()) {
+        //     foreach ($request->jawaban as $jawaban) {
+        //         $pollAnswer = new PollAnswer();
+        //         $pollAnswer->poll_id = $poll->id;
+        //         $pollAnswer->jawaban = $jawaban;
+        //         $pollAnswer->save();
+
+        //     }
+        //     Alert::success('Berhasil!', 'Membuat Polling.');
+        //     return redirect('/');
+        // } else {
+        //     Alert::error('Gagal!', 'Membuat Polling.');
+        //     return back();
+        // }
+
+
+        // Validasi input
         $request->validate([
             'id_post' => 'required',
-            'soal' => 'required|string|max:255',
+            'soal' => 'required|array|min:1',
+            'soal.*' => 'required|string|max:255',
             'jawaban' => 'required|array|min:1',
-            'jawaban.*' => 'required|string|max:255',
+            'jawaban.*' => 'required|array|min:1',
+            'jawaban.*.*' => 'required|string|max:255', 
         ]);
 
-        $nikUser = DB::select("SELECT nik FROM users");
-        
-        $poll = new Poll();
-        $poll->id_post = $request->id_post;
-        $poll->soal = $request->soal;
+        foreach ($request->soal as $key => $soal) {
+            $poll = new Poll();
+            $poll->id_post = $request->id_post;
+            $poll->nik = $request->nik;
+            $poll->soal = $soal;
 
-        if ($poll->save()) {
-            foreach ($request->jawaban as $jawaban) {
-                $pollAnswer = new PollAnswer();
-                $pollAnswer->poll_id = $poll->id;
-                $pollAnswer->jawaban = $jawaban;
-                $pollAnswer->save();
-
-                // DB::insert("INSERT INTO answer_vote (id_answer, jawaban, nik) 
-                //             SELECT a.id AS id_answer, a.jawaban , b.nik  FROM poll_answers a JOIN users b
-                //             WHERE a.jawaban = '$jawaban'");
-
+            if ($poll->save()) {
+                foreach ($request->jawaban[$key] as $jawaban) {
+                    $pollAnswer = new PollAnswer();
+                    $pollAnswer->poll_id = $poll->id;
+                    $pollAnswer->id_post = $poll->id_post;
+                    $pollAnswer->jawaban = $jawaban;
+                    $pollAnswer->save();
+                }
+            } else {
+                Alert::error('Gagal!', 'Membuat Polling.');
+                return back();
             }
-            Alert::success('Berhasil!', 'Membuat Polling.');
-            return redirect('/');
-        } else {
-            Alert::error('Gagal!', 'Membuat Polling.');
-            return back();
         }
+
+        Alert::success('Berhasil!', 'Membuat Polling.');
+        return redirect('/'); 
     }
 
     public function vote($answerId, Request $request){
