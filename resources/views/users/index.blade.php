@@ -25,27 +25,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- @foreach ($data as $row)
-                            <tr>
-                                <th scope="row">{{ $loop->index + 1 }}</th>
-                                <td>{{ $row->nama }}</td>
-                                <td>{{ $row->nik }}</td>
-                                <td>{{ $row->unit }}</td>
-                                <td>{{ $row->gender ?? '-' }}</td>
-                                <td>{{ $row->role ?? '-' }}</td>
-                                <td>
-                                    <a href="{{ route('user.edit', $row->id) }}" class="btn btn-sm btn-info"><i
-                                            class="fa fa-pencil"></i></a>
-                                    <a href="{{ route('user.delete', $row->id) }}" class="btn btn-sm btn-danger"
-                                        onclick="return confirmDelete()"><i class="fa fa-trash"></i></a>
-                                </td>
-                            </tr>
-                        @endforeach --}}
                     </tbody>
                 </table>
-                {{-- <div class="mt-4">
-                    {{ $data->links('pagination::bootstrap-4') }}
-                </div> --}}
             </div>
         </div>
     </div>
@@ -53,10 +34,9 @@
 @endsection
 
 @push('after-script')
-    <script type="text/javascript">
-        $(function() {
-
-            var table = $('#users-table').DataTable({
+    <script>
+        $(document).ready(function() {
+            $('#users-table').DataTable({
                 processing: true,
                 serverSide: true,
                 pageLength: 5,
@@ -64,46 +44,54 @@
                     [5, 50, 100, -1],
                     [5, 50, 100, "All"]
                 ],
-                ajax: "{{ route('user') }}",
+                ajax: '{{ route('user.json') }}',
                 columns: [{
+                        name: 'DT_RowIndex',
                         data: 'DT_RowIndex',
-                        name: 'DT_RowIndex'
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'nama',
-                        name: 'nama'
+                        name: 'nama',
+                        className: 'text-center'
                     },
                     {
                         data: 'nik',
-                        name: 'nik'
+                        name: 'nik',
+                        className: 'text-center'
                     },
                     {
                         data: 'unit',
-                        name: 'unit'
+                        name: 'unit',
+                        className: 'text-center'
                     },
                     {
                         data: 'gender',
-                        name: 'gender'
+                        name: 'gender',
+                        className: 'text-center'
                     },
                     {
                         data: 'role',
-                        name: 'role'
+                        name: 'role',
+                        className: 'text-center'
                     },
                     {
-                        data: 'action',
                         name: 'action',
+                        data: 'id',
                         orderable: false,
                         searchable: false,
                         render: function(data, type, row) {
-                            return '<a href="/user/edit/' + data +
-                                '" class="btn btn-sm btn-info"><i class="fa fa-pencil-alt"></i></a>&nbsp;&nbsp;' +
-                                '<a href="/user/delete/' + data +
-                                '" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>';
-                        }
-                    },
+                            return '<a href="user/edit/' + data +
+                                '" class="btn btn-info btn-sm"><i class="fas fa-pencil-alt"></i></a>&nbsp;&nbsp;' +
+                                '<a href="user/delete/' + data +
+                                '" class="btn btn-danger btn-sm" onclick="return confirmDelete()"><i class="fas fa-trash"></i></a>';
+                        },
+                        className: 'text-center'
+                    }
                 ],
+                order: [1, 'ASC']
             });
-
         });
     </script>
     <script>

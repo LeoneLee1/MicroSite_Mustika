@@ -14,24 +14,26 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class UserController extends Controller
 {   
-    public function index(Request $request){
 
-        if ($request->ajax()) {
-            $data = DB::select("SELECT * FROM users
-                                ORDER BY nama ASC;");
-            return Datatables::of($data)
-            ->addIndexColumn()
-            ->make(true);
+    public function json(){
+        $data = User::all();
 
-            return response()->json();
-        }
+        return DataTables::of($data)
+        ->addIndexColumn()
+        ->make(true);
+    }
+
+    public function jsonRegis(){
+        $data = AkunRegis::all();
+
+        return DataTables::of($data)
+        ->addIndexColumn()
+        ->make(true);
+    }
+
+    public function index(){
         return view('users.index');
     }
-    // public function index(){
-
-    //     $data = User::paginate(5);
-    //     return view('users.index',compact('data'));
-    // }
 
     public function create(){
 
@@ -76,13 +78,20 @@ class UserController extends Controller
         return view('users.edit',compact('data','unit'));
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nama' => 'required',
+            'nik' => 'required',
+            'unit' => 'required',
+            'gender' => 'nullable',
+            'role' => 'required',
+            'password' => 'nullable',
+        ]);
 
         $data = User::findOrFail($id);
-        
-        $newPassword = Hash::make($request->password);
 
-        if ($request->password = '') {
+        if ($request->password === '' || $request->password === null) {
             $data->nama = $request->nama;
             $data->nik = $request->nik;
             $data->unit = $request->unit;
@@ -90,6 +99,7 @@ class UserController extends Controller
             $data->role = $request->role;
             $data->save();
         } else {
+            $newPassword = Hash::make($request->password);
             $data->nama = $request->nama;
             $data->nik = $request->nik;
             $data->unit = $request->unit;
@@ -99,9 +109,10 @@ class UserController extends Controller
             $data->save();
         }
 
-        Alert::success('Berhasil!','Merubah Data User.');
+        Alert::success('Berhasil!', 'Merubah Data User.');
         return redirect('/user');
     }
+
 
     public function delete($id){
         $data = User::findOrFail($id);
@@ -166,10 +177,22 @@ class UserController extends Controller
 
     public function dataRegis(){
 
-        $data = AkunRegis::paginate(5);
+        // $data = DB::select("SELECT * FROM akun_regis
+        //                     ORDER BY id;");
+
+        $data = AkunRegis::paginate(10);
 
         return view('users.akunRegis',compact('data'));
     }
+
+    // public function dataRegisCari(Request $request){
+
+    //     $cari = $request->cari;
+
+    //     $nama = DB::table('akun_regis')
+    //         ->where('nama','like',"%".$cari."%")
+    //         ->paginate();
+    // }
 
     public function dataRegisApprove(Request $request, $id){
         $request->validate([
@@ -212,7 +235,8 @@ class UserController extends Controller
             $pesan = "Mohon maaf, untuk pendaftaran akun MicroSite Mustika anda ditolak dikarenakan tidak sesuai, mohon dicoba lagi , Terima kasih";
             $this->sendWa($no_hp, $pesan);
 
-            $data->delete();
+            $data->sofdel = 1;
+            $data->save();
 
             return back();
         } else {

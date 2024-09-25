@@ -42,12 +42,14 @@ Route::post('/post/insert',[PostController::class,'insert'])->name('post.insert'
 
 // USER CONTROLLER
 Route::get('/user',[UserController::class,'index'])->name('user');
+Route::get('/user/json',[UserController::class,'json'])->name('user.json');
 Route::get('/user/create',[UserController::class,'create'])->name('user.create');
 Route::post('/user/create/insert',[UserController::class,'insert'])->name('user.insert');
 Route::get('/user/edit/{id}',[UserController::class,'edit'])->name('user.edit');
 Route::post('/user/edit/update/{id}',[UserController::class,'update'])->name('user.update');
 Route::get('/user/delete/{id}',[UserController::class,'delete'])->name('user.delete');
 Route::get('/register/data',[UserController::class,'dataRegis'])->name('user.regis');
+// Route::get('/register/data/cari',[UserController::class,'dataRegisCari'])->name('user.regis.cari');
 Route::post('/register/data/approve/{id}',[UserController::class,'dataRegisApprove'])->name('user.approve');
 Route::get('/register/data/reject/{id}',[UserController::class,'dataRegisReject'])->name('user.reject');
 Route::get('/profile',[UserController::class,'profile'])->name('profile');
