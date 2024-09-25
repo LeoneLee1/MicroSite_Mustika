@@ -27,6 +27,11 @@ class UserController extends Controller
         }
         return view('users.index');
     }
+    // public function index(){
+
+    //     $data = User::paginate(5);
+    //     return view('users.index',compact('data'));
+    // }
 
     public function create(){
 

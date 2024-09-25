@@ -9,7 +9,7 @@
         <div class="col col-12 col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('user.edit', $data->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('user.update', $data->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
                             <label for="Nama" class="form-label">Nama</label>
@@ -23,7 +23,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="Gender" class="form-label">Gender</label>
-                            <select name="gender" class="form-control" required>
+                            <select name="gender" class="form-control">
                                 <option value="{{ $data->gender }}" selected>{{ $data->gender ?? '-' }}</option>
                                 <option value="Pria">Pria</option>
                                 <option value="Wanita">Wanita</option>
@@ -40,10 +40,11 @@
                         </div>
                         <div class="mb-3">
                             <label for="Role" class="form-label">Role</label>
-                            <select name="role" class="form-control" required>
+                            <select name="role" class="form-control">
                                 <option value="{{ $data->role }}" selected>{{ $data->role ?? '-' }}</option>
                                 <option value="Admin">Admin</option>
                                 <option value="User">User</option>
+                                <option value="Pengamat">Pengamat</option>
                             </select>
                         </div>
                         <div class="mb-3">

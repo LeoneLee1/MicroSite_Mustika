@@ -78,24 +78,26 @@
                     </div> --}}
                 </div>
             @endforeach
-            <div class="d-flex justify-content-start">
-                <form action="{{ route('comment.insert') }}" method="POST"
-                    class="d-flex align-items-center w-100 comment-form" enctype="multipart/form-data">
-                    @csrf
-                    <input type="hidden" name="nik" value="{{ Auth::user()->nik }}">
-                    <input type="hidden" name="id_post" value="{{ $post->id }}">
-                    <div class="input-group me-2" style="flex: 1;">
-                        <span class="input-group-text bg-white border-0 p-0" id="basic-addon1">
-                            <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
-                                alt="User Avatar" class="w-px-30 h-auto rounded-circle lazyload"
-                                style="width: 50px; height: 50px; object-fit: cover;" />
-                        </span>
-                        <input type="text" name="comment" class="form-control" style="border-radius: 50px;"
-                            placeholder="Add Comments...." id="komentar">
-                    </div>
-                    {{-- <button type="submit" class="btn btn-primary btn-sm me-2" id="sendForm">Send</button> --}}
-                </form>
-            </div>
+            @if (!Auth::user()->role === 'Pengamat')
+                <div class="d-flex justify-content-start">
+                    <form action="{{ route('comment.insert') }}" method="POST"
+                        class="d-flex align-items-center w-100 comment-form" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" name="nik" value="{{ Auth::user()->nik }}">
+                        <input type="hidden" name="id_post" value="{{ $post->id }}">
+                        <div class="input-group me-2" style="flex: 1;">
+                            <span class="input-group-text bg-white border-0 p-0" id="basic-addon1">
+                                <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
+                                    alt="User Avatar" class="w-px-30 h-auto rounded-circle lazyload"
+                                    style="width: 50px; height: 50px; object-fit: cover;" />
+                            </span>
+                            <input type="text" name="comment" class="form-control" style="border-radius: 50px;"
+                                placeholder="Add Comments...." id="komentar">
+                        </div>
+                        {{-- <button type="submit" class="btn btn-primary btn-sm me-2" id="sendForm">Send</button> --}}
+                    </form>
+                </div>
+            @endif
         </div>
     </div>
 @endsection

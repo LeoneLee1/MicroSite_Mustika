@@ -17,7 +17,6 @@ class PollAnswer extends Model
         'id_post',
         'jawaban',
         'value',
-        'vote',
     ];
 
     public function poll()

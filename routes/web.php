@@ -5,6 +5,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PollingController;
+use App\Http\Controllers\AnalisisController;
 use App\Http\Controllers\DashboardController;
 
 /*
@@ -18,38 +19,53 @@ use App\Http\Controllers\DashboardController;
 |
 */
 
+// DASHBOARD CONTROLLER
 Route::get('/',[DashboardController::class,'index'])->name('/')->middleware('auth');
+Route::get('/chart/json/{id}',[DashboardController::class,'chart'])->name('chart.json');
+Route::post('/like/{postId}',[DashboardController::class,'like'])->name('like.post');
 
-Route::get('/comment/{id}',[PostController::class,'viewComment'])->name('comment');
-Route::post('/comment/insert',[PostController::class,'komen'])->name('comment.insert');
-Route::get('/comment/delete/{id_comment}',[PostController::class,'deleteComment'])->name('comment.delete');
-
+// LOGIN CONTROLLER
 Route::get('/login',[LoginController::class,'login'])->name('login');
 Route::post('/login/proses',[LoginController::class,'proses'])->name('login.proses');
 Route::get('/logout',[LoginController::class,'logout'])->name('logout');
 Route::get('/login/register',[LoginController::class,'register'])->name('register');
 Route::post('/login/register/insert',[LoginController::class,'insert'])->name('register.insert');
 
+
+// POST CONTROLLER
+Route::get('/comment/{id}',[PostController::class,'viewComment'])->name('comment');
+Route::post('/comment/insert',[PostController::class,'komen'])->name('comment.insert');
+Route::get('/comment/delete/{id_comment}',[PostController::class,'deleteComment'])->name('comment.delete');
+Route::get('/post',[PostController::class,'index'])->name('post');
+Route::post('/post/insert',[PostController::class,'insert'])->name('post.insert');
+
+
+// USER CONTROLLER
 Route::get('/user',[UserController::class,'index'])->name('user');
 Route::get('/user/create',[UserController::class,'create'])->name('user.create');
 Route::post('/user/create/insert',[UserController::class,'insert'])->name('user.insert');
 Route::get('/user/edit/{id}',[UserController::class,'edit'])->name('user.edit');
 Route::post('/user/edit/update/{id}',[UserController::class,'update'])->name('user.update');
 Route::get('/user/delete/{id}',[UserController::class,'delete'])->name('user.delete');
-
 Route::get('/register/data',[UserController::class,'dataRegis'])->name('user.regis');
 Route::post('/register/data/approve/{id}',[UserController::class,'dataRegisApprove'])->name('user.approve');
 Route::get('/register/data/reject/{id}',[UserController::class,'dataRegisReject'])->name('user.reject');
-
 Route::get('/profile',[UserController::class,'profile'])->name('profile');
 Route::get('/profile/edit',[UserController::class,'profileEdit'])->name('profile.edit');
 Route::post('/profile/edit/insert',[UserController::class,'profileInsert'])->name('profile.insert');
 
-Route::get('/post',[PostController::class,'index'])->name('post');
-Route::post('/post/insert',[PostController::class,'insert'])->name('post.insert');
 
+// POLLING CONTROLLER
 Route::get('/polling/create',[PollingController::class,'create'])->name('polling.create');
 Route::post('/polling/create/insert',[PollingController::class,'insert'])->name('polling.insert');
-
 Route::post('/vote/{answerId}',[PollingController::class,'vote'])->name('vote');
 Route::get('/vote/view/{poll_id}',[PollingController::class,'viewVotes'])->name('vote.view');
+
+
+// ANALISIS CONTROLLER
+Route::get('/analysis',[AnalisisController::class,'chart'])->name('analysis');
+Route::get('/fetch_data/jawaban',[AnalisisController::class,'fetchDataJawaban'])->name('fetchData.jawaban');
+Route::get('/fetch_data/user',[AnalisisController::class,'fetchDataUser'])->name('fetchData.user');
+
+
+

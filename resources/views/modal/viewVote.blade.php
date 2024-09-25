@@ -10,32 +10,6 @@
                 <h4 style="color: black; font-weight: bold; text-align: center;">{{ $p->soal }}</h4>
                 <div class="table-responsive-sm">
                     <table class="table table-bordered">
-                        {{-- @foreach ($jawabanModal as $a)
-                            @if ($a->id_post == $item->id)
-                                @if ($a->poll_id == $p->id)
-                                    <thead>
-                                        <tr>
-                                            <th scope="col" style="color: black; font-weight: bold;">
-                                                {{ $a->jawaban }}</th>
-                                            <th scope="col" style="min-width: 200px; color:black;">
-                                                {{ $a->value }}&nbsp;votes&nbsp;<i class="fa fa-star"></i></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            @if ($a->nik_list === null || '')
-                                            @else
-                                                <td style="color: black;">{!! nl2br(e(str_replace(',', "\n\n", $a->nik_list))) !!}</td>
-                                            @endif
-                                            @if ($a->time_vote === null || '')
-                                            @else
-                                                <td style="color: black;">{!! nl2br(e(str_replace(',', "\n\n", $a->time_vote))) !!}</td>
-                                        </tr>
-                                @endif
-                                </tbody>
-                            @endif
-                        @endif
-                        @endforeach --}}
                         <thead>
                             <tr>
                                 <th scope="col">Jawaban</th>
