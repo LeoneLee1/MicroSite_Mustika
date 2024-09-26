@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Polling Web - PT Mustika Jaya Lestari')
+@section('title', 'Post - PT Mustika Jaya Lestari')
 
 @push('after-style')
     <style>
@@ -16,19 +16,12 @@
 @endpush
 
 @section('navbar-item')
-    <div class="navbar-nav align-items-center">
-        <div class="nav-item d-flex align-items-center">
-            <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchPost"><i
-                    class="fa fa-search"></i>&nbsp;&nbsp;Search Post</a>
-
-        </div>
-    </div>
+    <a href="{{ route('/') }}" class="btn btn-info"><i class="fa fa-arrow-left"></i>&nbsp;Back</a>
 @endsection
 
 @section('content')
-    @include('modal.cariPost')
-    @foreach ($post as $item)
-        <div class="card mb-3">
+    @foreach ($data as $item)
+        <div class="card">
             <div class="card-body">
                 <div class="row">
                     <div class="d-flex justify-content-between align-items-center mt-4">
@@ -44,20 +37,6 @@
                                 <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
                                     alt class="w-px-50 h-auto rounded-circle lazyload" />&nbsp;{{ $item->nama }}
                             </strong>
-                        </div>
-                        <div class="dropdown">
-                            <button class="btn btn-link text-dark" type="button" id="dropdownMenuButton"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal{{ $item->id }}"><i
-                                            class="fas fa-circle-user menu-icon"
-                                            style="color: rgb(105, 105, 247)"></i>&nbsp;About
-                                        This
-                                        Account</a></li>
-                            </ul>
                         </div>
                     </div>
                     <div class="text-center">
@@ -203,74 +182,47 @@
                                         <div class="text-center mb-4">
                                             <h4 style="font-weight: bold; color: black;">{{ $p->soal }}</h4>
                                         </div>
-                                        <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <div class="row">
-                                                        <div class="col-md-8">
-                                                            @foreach ($jawaban as $a)
-                                                                @if ($a->id_post == $item->id && $a->poll_id == $p->id)
-                                                                    <div
-                                                                        class="mb-2 d-flex justify-content-between align-items-center">
-                                                                        <div class="form-check">
-                                                                            @if (Auth::user()->role === 'Pengamat')
-                                                                                <input type="radio"
-                                                                                    id="option{{ $a->id }}"
-                                                                                    name="poll{{ $p->id }}"
-                                                                                    class="form-check-input" disabled
-                                                                                    @if ($a->voted) checked @endif
-                                                                                    onclick="return vote({{ $a->id }})">
-                                                                            @else
-                                                                                <input type="radio"
-                                                                                    id="option{{ $a->id }}"
-                                                                                    name="poll{{ $p->id }}"
-                                                                                    class="form-check-input"
-                                                                                    @if ($a->voted) checked @endif
-                                                                                    onclick="return vote({{ $a->id }})">
-                                                                            @endif
-                                                                            <label class="form-check-label"
-                                                                                for="option{{ $a->id }}">{{ $a->jawaban }}</label>
-                                                                        </div>
-                                                                        <span
-                                                                            class="badge bg-primary">{{ $a->value }}</span>
-                                                                    </div>
-                                                                @endif
-                                                            @endforeach
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                @foreach ($jawaban as $a)
+                                                    @if ($a->id_post == $item->id && $a->poll_id == $p->id)
+                                                        <div
+                                                            class="mb-2 d-flex justify-content-between align-items-center">
+                                                            <div class="form-check">
+                                                                <input type="radio" id="option{{ $a->id }}"
+                                                                    name="poll{{ $p->id }}"
+                                                                    class="form-check-input"
+                                                                    @if (Auth::user()->role === 'Pengamat') disabled @endif
+                                                                    @if ($a->voted) checked @endif
+                                                                    onclick="return vote({{ $a->id }})">
+                                                                <label class="form-check-label"
+                                                                    for="option{{ $a->id }}">{{ $a->jawaban }}</label>
+                                                            </div>
+                                                            <span class="badge bg-primary">{{ $a->value }}</span>
                                                         </div>
-                                                        @foreach ($poll as $p)
-                                                            @if ($p->id_post == $item->id)
-                                                                <div class="col-md-4">
-                                                                    <div
-                                                                        style="position: relative; height:250px; width:100%;">
-                                                                        <canvas
-                                                                            id="myChart{{ $p->id }}"></canvas>
-                                                                    </div>
-                                                                </div>
-                                                            @endif
-                                                        @endforeach
-                                                    </div>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="chart-container">
+                                                    <canvas id="myChart{{ $p->id }}"></canvas>
                                                 </div>
                                             </div>
                                         </div>
-                                        @if ($p->id_post == $item->id)
-                                            <div class="text-center mb-4">
-                                                <a href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#viewVote{{ $p->id }}"
-                                                    class="btn btn-success">View
-                                                    votes</a>
-                                            </div>
-                                            @include('modal.viewVote')
-                                        @endif
+                                        <div class="text-center mt-4">
+                                            <a href="#" data-bs-toggle="modal"
+                                                data-bs-target="#viewVote{{ $p->id }}"
+                                                class="btn btn-success">View votes</a>
+                                        </div>
+                                        @include('modal.viewVote')
                                     </div>
                                 </div>
                             @endif
                         @endforeach
                     </div>
                 </div>
-                @include('modal.akun')
             </div>
         </div>
-    </div>
 @endforeach
 @endsection
 
@@ -278,37 +230,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 <script>
-    function like(postId) {
-        console.log("Id Post:", postId);
-        var scrollPosition = $(window).scrollTop();
-        $.ajax({
-            url: '/like/' + postId,
-            type: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            success: function(response) {
-                if (response.success) {
-                    console.log("Liked");
-                    window.location.reload();
-                } else {
-                    console.error("Failed Like");
-                }
-            },
-            error: function(xhr) {
-                console.error("Terjadi Kesalahan:", xhr.responseText);
-            }
-        });
-        $(window).on('load', function() {
-            $(window).scrollTop(scrollPosition);
-        });
-        return false;
-    }
-</script>
-<script>
     const polling = @json($polling);
 
-    // Group polling data by poll_id
     const groupedPolling = polling.reduce((acc, item) => {
         if (!acc[item.poll_id]) {
             acc[item.poll_id] = [];
@@ -364,7 +287,7 @@
                         color: '#fff',
                         font: {
                             weight: 'bold',
-                            size: 11
+                            size: 10
                         },
                         formatter: (value, ctx) => {
                             const dataset = ctx.chart.data.datasets[0];

@@ -83,4 +83,69 @@ class PostController extends Controller
         return back();
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $posts = Post::where('judul', 'LIKE', "%{$query}%")
+                    ->orWhere('deskripsi', 'LIKE', "%{$query}%")
+                    ->get();
+        return response()->json($posts);
+    }
+
+    public function lihat($id)
+    {
+        $user = Auth::user()->nik;
+        $userRole = Auth::user()->role;
+
+        $postQuery = "SELECT p.*, u.nama, u.unit, u.gender, p.created_at AS time_post, l.nik AS liked 
+                FROM posts p
+                LEFT JOIN users u ON u.nik = p.nik
+                LEFT JOIN post_like l ON l.id_post = p.id AND l.nik = ?
+                WHERE p.id = ?";
+
+        $queryParams = [$user, $id];
+
+        if ($userRole === "Pengamat") {
+            $postQuery = "SELECT p.*, u.nama, u.unit, u.gender, p.created_at AS time_post, l.nik AS liked 
+                    FROM posts p
+                    LEFT JOIN users u ON u.nik = p.nik
+                    LEFT JOIN post_like l ON l.id_post = p.id AND l.nik = ?
+                    WHERE p.id = ? AND p.created_at <= DATE_SUB(NOW(), INTERVAL 24 HOUR)";
+        }
+
+        $data = DB::select($postQuery, $queryParams);
+
+        // Sisa kode tetap sama
+        $komen = DB::select("SELECT c.*, u.nama FROM comments c
+                            LEFT JOIN users u ON u.nik = c.nik
+                            ORDER BY c.id DESC");
+
+        $poll = DB::select("SELECT pl.* FROM polls pl");
+
+        $jawaban = DB::select("SELECT a.*, an.nik AS voted , a.value FROM poll_answers a
+                LEFT JOIN polls p ON p.id = a.poll_id
+                LEFT JOIN answer_vote an ON an.jawaban = a.jawaban AND an.nik = ?
+                ORDER BY a.id ASC", [$user]);
+
+        $polling = DB::select("SELECT pa.jawaban, pa.id_post, pa.poll_id, p.id, pl.id , pa.value 
+                FROM poll_answers pa
+                LEFT JOIN posts p ON p.id = pa.id_post
+                LEFT JOIN polls pl ON pl.id = pa.poll_id
+                WHERE p.id = '$id';");
+
+        $jawabanModal = DB::select("SELECT 
+                    pl.jawaban,
+                    pl.value, 
+                    pl.id_post,
+                    pl.poll_id,
+                    GROUP_CONCAT(a.nik SEPARATOR ', ') AS nik_list,
+                    GROUP_CONCAT(DATE_FORMAT(a.created_at, '%e/%c/%y %H:%i') ORDER BY a.created_at SEPARATOR ', ') AS time_vote
+                FROM poll_answers pl
+                LEFT JOIN answer_vote a ON a.id_jawaban = pl.id
+                GROUP BY pl.jawaban, pl.value, pl.id_post, pl.poll_id, pl.id
+                ORDER BY pl.id ASC");
+
+        return view('post.lihat', compact('data', 'komen', 'poll', 'jawaban', 'polling', 'jawabanModal'));
+    }
+
 }

@@ -38,6 +38,8 @@ Route::post('/comment/insert',[PostController::class,'komen'])->name('comment.in
 Route::get('/comment/delete/{id_comment}',[PostController::class,'deleteComment'])->name('comment.delete');
 Route::get('/post',[PostController::class,'index'])->name('post');
 Route::post('/post/insert',[PostController::class,'insert'])->name('post.insert');
+Route::get('/post/lihat/{id}',[PostController::class,'lihat'])->name('post.lihat');
+Route::get('/search', [PostController::class, 'search'])->name('post.search');
 
 
 // USER CONTROLLER
@@ -66,8 +68,6 @@ Route::get('/vote/view/{poll_id}',[PollingController::class,'viewVotes'])->name(
 
 // ANALISIS CONTROLLER
 Route::get('/analysis',[AnalisisController::class,'chart'])->name('analysis');
-Route::get('/fetch_data/jawaban',[AnalisisController::class,'fetchDataJawaban'])->name('fetchData.jawaban');
-Route::get('/fetch_data/user',[AnalisisController::class,'fetchDataUser'])->name('fetchData.user');
 
 
 

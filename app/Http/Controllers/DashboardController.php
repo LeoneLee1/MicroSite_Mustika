@@ -15,14 +15,35 @@ class DashboardController extends Controller
     public function index(Request $request){
 
         $user = Auth::user()->nik;
+        $userRole = Auth::user()->role;
 
         $total_user = DB::select("SELECT COUNT(*) AS total_users FROM users;");
 
-        $post = DB::select("SELECT p.*, u.nama, u.unit,u.gender , p.created_at AS time_post, l.nik AS liked FROM posts p
-                        LEFT JOIN users u ON u.nik = p.nik
-                        LEFT JOIN post_like l ON l.id_post = p.id
-                        AND l.nik = '$user'
-                        ORDER BY p.id DESC;");
+        $currentTime = now();
+
+        $postQuery = "SELECT p.*, u.nama, u.unit, u.gender, p.created_at AS time_post, l.nik AS liked 
+                  FROM posts p
+                  LEFT JOIN users u ON u.nik = p.nik
+                  LEFT JOIN post_like l ON l.id_post = p.id AND l.nik = ?
+                  WHERE 1=1";
+
+        $queryParams = [$user];
+
+        if ($userRole === "Pengamat") {
+            $postQuery .= " AND p.created_at <= DATE_SUB(?, INTERVAL 24 HOUR)";
+            $queryParams[] = $currentTime;
+        }
+
+        $postQuery .= " ORDER BY p.id DESC";
+
+        $post = DB::select($postQuery, $queryParams);
+
+        // $post = DB::select("SELECT p.*, u.nama, u.unit,u.gender , p.created_at AS time_post, l.nik AS liked FROM posts p
+        //                 LEFT JOIN users u ON u.nik = p.nik
+        //                 LEFT JOIN post_like l ON l.id_post = p.id
+        //                 AND l.nik = '$user'
+        //                 ORDER BY p.id DESC;");
+        
                         
         $komen = DB::select("SELECT c.*, u.nama FROM comments c
                         LEFT JOIN users u ON u.nik = c.nik
@@ -54,6 +75,7 @@ class DashboardController extends Controller
 										  ORDER BY pl.id ASC;");
 
         return view('welcome',compact('post','komen','poll','jawaban','jawabanModal','total_user','polling'));
+
     }
 
     public function chart($id){

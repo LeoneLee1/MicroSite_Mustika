@@ -6,6 +6,7 @@
         </a>
     </div>
     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+        @yield('navbar-item')
         <ul class="navbar-nav flex-row align-items-center ms-auto">
             <li class="nav-item lh-1 me-3">
                 <p class="mt-3">Hi, {{ Auth::user()->nama }}</p>
