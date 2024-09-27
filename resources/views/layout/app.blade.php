@@ -66,8 +66,13 @@
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
                                     data-bs-toggle="dropdown">
                                     <div class="avatar avatar-online">
-                                        <img src="https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg"
-                                            alt="avatar profile" class="w-px-40 h-auto rounded-circle lazyload" />
+                                        @if (Auth::user()->foto == '' || null)
+                                            <img src="https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg"
+                                                alt="avatar profile" class="w-px-40 h-auto rounded-circle lazyload" />
+                                        @else
+                                            <img src="{{ asset('img/foto/' . Auth::user()->foto) }}"
+                                                alt="avatar profile" class="w-px-40 h-auto rounded-circle lazyload" />
+                                        @endif
                                     </div>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
@@ -103,6 +108,8 @@
     @include('sweetalert::alert')
     @stack('before-script')
     @include('includes.main.script')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.2.6/js/dataTables.responsive.min.js"></script>
     @stack('after-script')

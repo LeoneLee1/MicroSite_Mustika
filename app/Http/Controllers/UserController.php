@@ -148,9 +148,15 @@ class UserController extends Controller
         return view('profile.edit',compact('data','unit'));
     }
 
-    public function profileInsert(Request $request){
-        
-        $data = User::find($request->input('id'));
+    public function profileInsert(Request $request)
+    {   
+        $request->validate([
+            'foto' => 'nullable|image|mimes:png,jpg|max:2048',
+            'nama' => 'required|string|max:255',
+            'nik' => 'required|string|max:255',
+            'unit' => 'nullable|string|max:255',
+            'gender' => 'nullable|string|max:10'
+        ]);
 
         $id = $request->id;
         $nama = $request->nama;
@@ -158,19 +164,36 @@ class UserController extends Controller
         $unit = $request->unit;
         $gender = $request->gender;
 
-        if ($unit == '') {
-            $sql = DB::statement("UPDATE users SET nama='$nama', nik='$nik',gender='$gender'
-                                WHERE id = '$id'");
-        } elseif($gender == '') {
-            $sql = DB::statement("UPDATE users SET nama='$nama', nik='$nik',unit='$unit'
-                                WHERE id = '$id'");
-        } 
-        else {
-            $sql = DB::statement("UPDATE users SET nama='$nama', nik='$nik',unit='$unit',gender='$gender'
-                                WHERE id = '$id'");
+        $user = DB::table('users')->where('id', $id)->first();
+
+        if ($request->hasFile('foto')) {
+            if ($user->foto) {
+                $oldFilePath = public_path('img/foto/' . $user->foto);
+                if (file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                }
+            }
+
+            $file = $request->file('foto');
+            $foto_name = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('img/foto'), $foto_name);
+        } else {
+            $foto_name = $user->foto;
         }
 
-        Alert::success('Berhasil!','Mengubah Profile.');
+        $dataToUpdate = [
+            'nama' => $nama,
+            'nik' => $nik,
+            'unit' => $unit,
+            'gender' => $gender,
+            'foto' => $foto_name
+        ];
+
+        DB::table('users')
+            ->where('id', $id)
+            ->update($dataToUpdate);
+
+        Alert::success('Berhasil!', 'Mengubah Profile.');
 
         return redirect()->route('profile');
     }

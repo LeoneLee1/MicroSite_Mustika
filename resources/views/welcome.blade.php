@@ -12,40 +12,100 @@
         input[type="radio"]:disabled+label {
             color: #000000;
         }
+
+        /* Container for spinner */
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+
+        /* Spinner styles */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 5px solid rgba(0, 0, 0, 0.2);
+            border-top-color: #3498db;
+            /* Custom color */
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Animation for spinner rotation */
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Smooth fade-in effect for new content */
+        .infinite-scroll>* {
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
     </style>
 @endpush
 
 @section('navbar-item')
-    <div class="navbar-nav align-items-center">
-        <div class="nav-item d-flex align-items-center">
-            <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchPost"><i
-                    class="fa fa-search"></i>&nbsp;&nbsp;Search Post</a>
-
-        </div>
+    <div class="d-none d-sm-block">
+        <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchPost"><i
+                class="fa fa-search"></i>&nbsp;&nbsp;Search Post</a>
+    </div>
+    <div class="d-block d-sm-none">
+        <a href="#" data-bs-toggle="modal" data-bs-target="#searchPost" class="btn btn-primary btn-sm"><i
+                class="fa fa-search"></i>&nbsp;&nbsp;Search</a>
     </div>
 @endsection
 
 @section('content')
     @include('modal.cariPost')
     @foreach ($post as $item)
-        <div class="card mb-3">
+        <div class="card mb-3 infinite-scroll" id="infinite-scroll">
             <div class="card-body">
                 <div class="row">
                     <div class="d-flex justify-content-between align-items-center mt-4">
-                        <div class="text-left d-none d-sm-block">
-                            <strong style="color: black;">
-                                <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
-                                    alt class="w-px-50 h-auto rounded-circle lazyload" />&nbsp;{{ $item->nama }}
-                            </strong>&nbsp;&nbsp;•
-                            {{ \Carbon\Carbon::parse($item->time_post)->format('d M Y') }}
-                        </div>
-                        <div class="text-left d-block d-sm-none">
-                            <strong style="color: black;">
-                                <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
-                                    alt class="w-px-50 h-auto rounded-circle lazyload" />&nbsp;{{ $item->nama }}
-                            </strong>
-                        </div>
-                        <div class="dropdown">
+                        @if ($item->foto == '' || null)
+                            <div class="text-left d-none d-sm-block">
+                                <strong style="color: black;">
+                                    <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
+                                        alt class="w-px-40 h-auto rounded-circle lazyload" />&nbsp;&nbsp;{{ $item->nama }}
+                                </strong>&nbsp;&nbsp;•
+                                {{ \Carbon\Carbon::parse($item->time_post)->format('d M Y') }}
+                            </div>
+                            <div class="text-left d-block d-sm-none">
+                                <strong style="color: black;">
+                                    <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
+                                        alt class="w-px-40 h-auto rounded-circle lazyload" />&nbsp;&nbsp;{{ $item->nama }}
+                                </strong>
+                            </div>
+                        @else
+                            <div class="text-left d-none d-sm-block">
+                                <strong style="color: black;">
+                                    <img src="{{ asset('img/foto/' . $item->foto) }}" alt
+                                        class="w-px-40 h-auto rounded-circle lazyload" />&nbsp;{{ $item->nama }}
+                                </strong>&nbsp;&nbsp;•
+                                {{ \Carbon\Carbon::parse($item->time_post)->format('d M Y') }}
+                            </div>
+                            <div class="text-left d-block d-sm-none">
+                                <strong style="color: black;">
+                                    <img src="{{ asset('img/foto/' . $item->foto) }}" alt
+                                        class="w-px-40 h-auto rounded-circle lazyload" />&nbsp;{{ $item->nama }}
+                                </strong>
+                            </div>
+                        @endif
+                        {{-- <div class="dropdown">
                             <button class="btn btn-link text-dark" type="button" id="dropdownMenuButton"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-ellipsis-v"></i>
@@ -58,7 +118,7 @@
                                         This
                                         Account</a></li>
                             </ul>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="text-center">
                         @if (strpos($item->media, '.mp4') !== false ||
@@ -169,7 +229,8 @@
                             @endif
                         @endif
                     @endforeach
-                    @if (!Auth::user()->role === 'Pengamat')
+                    @if (Auth::user()->role == 'Pengamat')
+                    @else
                         <div class="mt-2">
                             <div class="d-flex justify-content-start col-sm-5">
                                 <form method="POST" action="{{ route('comment.insert') }}"
@@ -179,14 +240,21 @@
                                     <input type="hidden" name="id_post" value="{{ $item->id }}">
                                     <div class="input-group me-2" style="flex: 1;">
                                         <span class="input-group-text bg-white border-0 p-0" id="basic-addon1">
-                                            <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
-                                                alt="User Avatar" class="w-px-40 h-auto rounded-circle lazyload"
-                                                style="object-fit: cover;" />
+                                            @if (Auth::user()->foto == '' || null)
+                                                <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
+                                                    alt="User Avatar" class="w-px-40 h-auto rounded-circle lazyload"
+                                                    style="object-fit: cover;" />
+                                            @else
+                                                <img src="{{ asset('img/foto/' . Auth::user()->foto) }}"
+                                                    alt="User Avatar" class="w-px-40 h-auto rounded-circle lazyload"
+                                                    style="object-fit: cover;" />
+                                            @endif
                                         </span>
                                         <input type="text" name="comment" id="komentar" class="form-control"
-                                            style="border-radius: 50px;" placeholder="Add Comments...." required>
+                                            style="border-radius: 50px; margin-left: 10px;"
+                                            placeholder="Add Comments...." required>
                                     </div>
-                                    <button hidden type="submit" class="btn btn-primary btn-sm me-2"
+                                    <button type="submit" class="btn btn-primary btn-sm me-2"
                                         style="border-radius: 50px;">Send</button>
                                 </form>
                             </div>
@@ -266,6 +334,7 @@
                             @endif
                         @endforeach
                     </div>
+                    {{ $post->links('pagination::bootstrap-4') }}
                 </div>
                 @include('modal.akun')
             </div>
@@ -275,40 +344,141 @@
 @endsection
 
 @push('after-script')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-<script>
-    function like(postId) {
-        console.log("Id Post:", postId);
-        var scrollPosition = $(window).scrollTop();
-        $.ajax({
-            url: '/like/' + postId,
-            type: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            success: function(response) {
-                if (response.success) {
-                    console.log("Liked");
-                    window.location.reload();
-                } else {
-                    console.error("Failed Like");
-                }
-            },
-            error: function(xhr) {
-                console.error("Terjadi Kesalahan:", xhr.responseText);
+<script src="{{ asset('js/jquery.jscroll.min.js') }}"></script>
+<script type="text/javascript">
+    $('ul.pagination').hide();
+    $(function() {
+        $('.infinite-scroll').jscroll({
+            autoTrigger: true,
+            loadingHtml: `
+                <div class="loading-container">
+                    <div class="spinner"></div>
+                    <p style="text-align: center; margin-top: 10px;">Loading more content...</p>
+                </div>`,
+            padding: 0,
+            nextSelector: '.pagination li.active + li a',
+            contentSelector: 'div.infinite-scroll',
+            callback: function() {
+                $('ul.pagination').remove();
+                $('.infinite-scroll').children().css('opacity', 0).animate({
+                    opacity: 1
+                }, 500);
+                initializeCharts(); // Inisialisasi ulang chart setelah konten baru dimuat
             }
         });
-        $(window).on('load', function() {
-            $(window).scrollTop(scrollPosition);
+    });
+
+    function initializeCharts() {
+        const polling = @json($polling);
+
+        const groupedPolling = polling.reduce((acc, item) => {
+            if (!acc[item.poll_id]) {
+                acc[item.poll_id] = [];
+            }
+            acc[item.poll_id].push(item);
+            return acc;
+        }, {});
+
+        function truncateLabel(label, maxLength = 15) {
+            return label.length > maxLength ? label.slice(0, maxLength) + '...' : label;
+        }
+
+        Chart.register(ChartDataLabels);
+
+        Object.entries(groupedPolling).forEach(([pollId, items]) => {
+            const xValues = items.map(item => item.jawaban);
+            const yValues = items.map(item => item.value);
+            const truncatedLabels = xValues.map(label => truncateLabel(label));
+            const barColors = [
+                "#3498db", "#2ecc71", "#e74c3c", "#f39c12", "#9b59b6",
+                "#1abc9c", "#d35400", "#34495e", "#16a085", "#2980b9"
+            ];
+
+            const canvasId = "myChart" + pollId;
+            const canvasElement = document.getElementById(canvasId);
+
+            if (canvasElement) {
+                new Chart(canvasElement, {
+                    type: "pie",
+                    data: {
+                        labels: xValues,
+                        datasets: [{
+                            backgroundColor: barColors.slice(0, xValues.length),
+                            data: yValues
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.parsed || 0;
+                                        const dataset = context.dataset;
+                                        const total = dataset.data.reduce((acc, data) => acc + data,
+                                            0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return `${label}: ${value} (${percentage}%)`;
+                                    }
+                                }
+                            },
+                            datalabels: {
+                                color: '#fff',
+                                font: {
+                                    weight: 'bold',
+                                    size: 11
+                                },
+                                formatter: (value, ctx) => {
+                                    const dataset = ctx.chart.data.datasets[0];
+                                    const total = dataset.data.reduce((acc, data) => acc + data, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return percentage + '%';
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                console.warn(`Canvas element with ID ${canvasId} not found.`);
+            }
         });
-        return false;
     }
+
+    // Inisialisasi chart saat dokumen pertama kali dimuat
+    $(document).ready(function() {
+        initializeCharts();
+    });
 </script>
-<script>
+{{-- <script type="text/javascript">
+    $('ul.pagination').hide();
+    $(function() {
+        $('.infinite-scroll').jscroll({
+            autoTrigger: true,
+            loadingHtml: `
+                <div class="loading-container">
+                    <div class="spinner"></div>
+                    <p style="text-align: center; margin-top: 10px;">Loading more content...</p>
+                </div>`,
+            padding: 0,
+            nextSelector: '.pagination li.active + li a',
+            contentSelector: 'div.infinite-scroll',
+            callback: function() {
+                $('ul.pagination').remove();
+                $('.infinite-scroll').children().css('opacity', 0).animate({
+                    opacity: 1
+                }, 500);
+            }
+        });
+    });
+</script> --}}
+{{-- <script>
     const polling = @json($polling);
 
-    // Group polling data by poll_id
     const groupedPolling = polling.reduce((acc, item) => {
         if (!acc[item.poll_id]) {
             acc[item.poll_id] = [];
@@ -377,6 +547,34 @@
             }
         });
     });
+</script> --}}
+<script>
+    function like(postId) {
+        console.log("Id Post:", postId);
+        var scrollPosition = $(window).scrollTop();
+        $.ajax({
+            url: '/like/' + postId,
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    console.log("Liked");
+                    window.location.reload();
+                } else {
+                    console.error("Failed Like");
+                }
+            },
+            error: function(xhr) {
+                console.error("Terjadi Kesalahan:", xhr.responseText);
+            }
+        });
+        $(window).on('load', function() {
+            $(window).scrollTop(scrollPosition);
+        });
+        return false;
+    }
 </script>
 <script>
     function vote(answerId) {

@@ -16,6 +16,7 @@ class Poll extends Model
         'id_post',
         'soal',
         'nik',
+        'voting',
     ];
 
     public function answers()

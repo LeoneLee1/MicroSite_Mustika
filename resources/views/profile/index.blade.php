@@ -22,7 +22,12 @@
                             @endif
                         </div> --}}
                         <div class="pic_wrapper">
-                            <img src="https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg" alt="Avatar">
+                            @if ($item->foto == '' || null)
+                                <img src="https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg"
+                                    alt="Avatar">
+                            @else
+                                <img src="{{ asset('img/foto/' . $item->foto) }}" alt="Avatar">
+                            @endif
                         </div>
                         <div class="name_wrapper">
                             <h2 style="color: #003366; font-weight: bold;">{{ $item->nama }}</h2>

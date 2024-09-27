@@ -21,22 +21,42 @@ class DashboardController extends Controller
 
         $currentTime = now();
 
-        $postQuery = "SELECT p.*, u.nama, u.unit, u.gender, p.created_at AS time_post, l.nik AS liked 
-                  FROM posts p
-                  LEFT JOIN users u ON u.nik = p.nik
-                  LEFT JOIN post_like l ON l.id_post = p.id AND l.nik = ?
-                  WHERE 1=1";
+        // QUERY MYSQL
+        // $postQuery = "SELECT p.*, u.nama, u.unit, u.gender, p.created_at AS time_post, l.nik AS liked 
+        //           FROM posts p
+        //           LEFT JOIN users u ON u.nik = p.nik
+        //           LEFT JOIN post_like l ON l.id_post = p.id AND l.nik = ?
+        //           WHERE 1=1";
 
-        $queryParams = [$user];
+        // $queryParams = [$user];
+
+        // if ($userRole === "Pengamat") {
+        //     $postQuery .= " AND p.created_at <= DATE_SUB(?, INTERVAL 24 HOUR)";
+        //     $queryParams[] = $currentTime;
+        // }
+
+        // $postQuery .= " ORDER BY p.id DESC";
+
+        // $post = DB::select($postQuery, $queryParams);
+
+        // ORM QUERY
+        $postQuery = DB::table('posts as p')
+        ->select('p.*', 'u.nama', 'u.unit', 'u.gender','u.foto', 'p.created_at as time_post', 'l.nik as liked')
+        ->leftJoin('users as u', 'u.nik', '=', 'p.nik')
+        ->leftJoin('post_like as l', function($join) use ($user) {
+            $join->on('l.id_post', '=', 'p.id')
+                ->where('l.nik', '=', $user);
+        })
+        ->whereRaw('1=1');
 
         if ($userRole === "Pengamat") {
-            $postQuery .= " AND p.created_at <= DATE_SUB(?, INTERVAL 24 HOUR)";
-            $queryParams[] = $currentTime;
+        $postQuery->where('p.created_at', '<=', DB::raw('DATE_SUB(?, INTERVAL 24 HOUR)', [$currentTime]));
         }
 
-        $postQuery .= " ORDER BY p.id DESC";
+        $postQuery->orderBy('p.id', 'DESC');
 
-        $post = DB::select($postQuery, $queryParams);
+        $post = $postQuery->paginate(5);
+
 
         // $post = DB::select("SELECT p.*, u.nama, u.unit,u.gender , p.created_at AS time_post, l.nik AS liked FROM posts p
         //                 LEFT JOIN users u ON u.nik = p.nik

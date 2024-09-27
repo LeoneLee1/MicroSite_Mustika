@@ -16,7 +16,8 @@
 @endpush
 
 @section('navbar-item')
-    <a href="{{ route('/') }}" class="btn btn-info"><i class="fa fa-arrow-left"></i>&nbsp;Back</a>
+    <a href="javascript:void(0)" onclick="window.history.go(-1); return false;" class="btn btn-info"><i
+            class="fa fa-arrow-left"></i>&nbsp;Back</a>
 @endsection
 
 @section('content')

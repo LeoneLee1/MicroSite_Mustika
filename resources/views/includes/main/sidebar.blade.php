@@ -33,6 +33,12 @@
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Settings</span>
         </li>
+        <li class="menu-item {{ request()->is('analysis*') ? 'active' : '' }} mb-3">
+            <a href="{{ route('analysis') }}" class="menu-link">
+                <i class="menu-icon fa fa-chart-simple"></i>
+                <div data-i18n="Analytics">Analysis</div>
+            </a>
+        </li>
         @if (Auth::user()->role === 'Admin')
             <li class="menu-item {{ request()->is('user*') ? 'active' : '' }} mb-3">
                 <a href="{{ route('user') }}" class="menu-link">
@@ -44,12 +50,6 @@
                 <a href="{{ route('user.regis') }}" class="menu-link">
                     <i class="menu-icon fa fa-user-tag"></i>
                     <div data-i18n="Analytics">User Register</div>
-                </a>
-            </li>
-            <li class="menu-item {{ request()->is('analysis*') ? 'active' : '' }} mb-3">
-                <a href="{{ route('analysis') }}" class="menu-link">
-                    <i class="menu-icon fa fa-chart-simple"></i>
-                    <div data-i18n="Analytics">Analysis</div>
                 </a>
             </li>
         @endif

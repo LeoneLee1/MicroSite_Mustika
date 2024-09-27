@@ -32,45 +32,59 @@
             @foreach ($komen as $row)
                 <div class="comment">
                     <div class="d-flex justify-content-between align-items-center mt-4">
-                        <div class="text-left d-none d-sm-block">
-                            <strong>
-                                <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
-                                    alt class="w-px-50 h-auto rounded-circle lazyload" />
-                                &nbsp;{{ $row->nik }}
-                            </strong>
-                            &nbsp;&nbsp;• {{ \Carbon\Carbon::parse($row->created_at)->format('d M Y') }}
-                        </div>
-                        <div class="text-left d-block d-sm-none">
-                            <strong>
-                                <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
-                                    alt class="w-px-50 h-auto rounded-circle lazyload" />
-                                &nbsp;{{ $row->nik }}
-                            </strong>
-                            &nbsp;&nbsp;• {{ \Carbon\Carbon::parse($row->created_at)->format('d M') }}
-                        </div>
-                        <div class="dropdown">
-                            <button class="btn btn-link text-dark" type="button" id="dropdownMenuButton"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                                @if ($row->nik == Auth::user()->nik)
+                        @if ($row->foto == '' || null)
+                            <div class="text-left d-none d-sm-block">
+                                <strong>
+                                    <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
+                                        alt class="w-px-30 h-auto rounded-circle lazyload" />
+                                    &nbsp;{{ $row->nik }}
+                                </strong>
+                                &nbsp;&nbsp;• {{ \Carbon\Carbon::parse($row->created_at)->format('d M Y') }}
+                            </div>
+                            <div class="text-left d-block d-sm-none">
+                                <strong>
+                                    <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
+                                        alt class="w-px-30 h-auto rounded-circle lazyload" />
+                                    &nbsp;{{ $row->nik }}
+                                </strong>
+                                &nbsp;&nbsp;• {{ \Carbon\Carbon::parse($row->created_at)->format('d M') }}
+                            </div>
+                        @else
+                            <div class="text-left d-none d-sm-block">
+                                <strong>
+                                    <img src="{{ asset('img/foto/' . $row->foto) }}" alt
+                                        class="w-px-30 h-auto rounded-circle lazyload" />
+                                    &nbsp;{{ $row->nik }}
+                                </strong>
+                                &nbsp;&nbsp;• {{ \Carbon\Carbon::parse($row->created_at)->format('d M Y') }}
+                            </div>
+                            <div class="text-left d-block d-sm-none">
+                                <strong>
+                                    <img src="{{ asset('img/foto/' . $row->foto) }}" alt
+                                        class="w-px-30 h-auto rounded-circle lazyload" />
+                                    &nbsp;{{ $row->nik }}
+                                </strong>
+                                &nbsp;&nbsp;• {{ \Carbon\Carbon::parse($row->created_at)->format('d M') }}
+                            </div>
+                        @endif
+                        @if (Auth::user()->nik == $row->nik)
+                            <div class="dropdown">
+                                <button class="btn btn-link text-dark" type="button" id="dropdownMenuButton"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                                     <li>
                                         <a class="dropdown-item" href="{{ route('comment.delete', $row->id_comment) }}"
                                             onclick="return confirmDelete()"><i class="fa fa-trash menu-icon"
                                                 style="color: red;"></i>&nbsp;Delete</a>
                                     </li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                @endif
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-circle-exclamation"
-                                            style="color: red;"></i>&nbsp;&nbsp;Report</a>
-                                </li>
-                            </ul>
-                        </div>
+                                </ul>
+                            </div>
+                        @else
+                        @endif
                     </div>
-                    <div class="text-left" style="margin-left: 20px;">
+                    <div class="text-left" style="margin-left: 35px;">
                         <p>{!! nl2br(e($row->comment)) !!}</p>
                     </div>
                     {{-- <div class="text-left mb-3">
@@ -78,8 +92,9 @@
                     </div> --}}
                 </div>
             @endforeach
-            @if (!Auth::user()->role === 'Pengamat')
-                <div class="d-flex justify-content-start">
+            @if (Auth::user()->role == 'Pengamat')
+            @else
+                <div class="d-flex justify-content-start col-sm-5">
                     <form action="{{ route('comment.insert') }}" method="POST"
                         class="d-flex align-items-center w-100 comment-form" enctype="multipart/form-data">
                         @csrf
@@ -87,14 +102,20 @@
                         <input type="hidden" name="id_post" value="{{ $post->id }}">
                         <div class="input-group me-2" style="flex: 1;">
                             <span class="input-group-text bg-white border-0 p-0" id="basic-addon1">
-                                <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
-                                    alt="User Avatar" class="w-px-30 h-auto rounded-circle lazyload"
-                                    style="width: 50px; height: 50px; object-fit: cover;" />
+                                @if (Auth::user()->foto == '' || null)
+                                    <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
+                                        alt="User Avatar" class="w-px-30 h-auto rounded-circle lazyload"
+                                        style="object-fit: cover;" />
+                                @else
+                                    <img src="{{ asset('img/foto/' . Auth::user()->foto) }}" alt="User Avatar"
+                                        class="w-px-30 h-auto rounded-circle lazyload" style="object-fit: cover;" />
+                                @endif
                             </span>
                             <input type="text" name="comment" class="form-control" style="border-radius: 50px;"
                                 placeholder="Add Comments...." id="komentar">
                         </div>
-                        {{-- <button type="submit" class="btn btn-primary btn-sm me-2" id="sendForm">Send</button> --}}
+                        <button type="submit" class="btn btn-primary btn-sm me-2" id="sendForm"
+                            style="border-radius: 50px;">Send</button>
                     </form>
                 </div>
             @endif

@@ -104,6 +104,8 @@ class PollingController extends Controller
 
         $pollAnswer = PollAnswer::find($answerId);
 
+        $poll = Poll::findOrFail($pollAnswer->poll_id);
+
         if (!$pollAnswer) {
             return response()->json(['success' => false, 'message' => 'Answer not found'], 404);
         }
@@ -119,9 +121,11 @@ class PollingController extends Controller
                 $pollAnswer->value -= 1;
                 $pollAnswer->save();
 
+                $poll->voting -= 1;
+                $poll->save();
+
                 return response()->json(['success' => true, 'message' => 'Vote removed']);
             } else {
-
                 $oldAnswer = PollAnswer::find($existingVote->id_jawaban);
                 if ($oldAnswer) {
                     $oldAnswer->value -= 1;
@@ -149,6 +153,9 @@ class PollingController extends Controller
 
             $pollAnswer->value += 1;
             $pollAnswer->save();
+
+            $poll->voting += 1;
+            $poll->save();
 
             return response()->json(['success' => true, 'message' => 'Vote added']);
         }
