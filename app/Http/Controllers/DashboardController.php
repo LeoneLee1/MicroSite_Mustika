@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Post;
+use App\Models\Save;
 use App\Models\PostLike;
 use App\Models\AnswerVote;
 use App\Models\PollAnswer;
@@ -110,6 +112,8 @@ class DashboardController extends Controller
     public function like($postId, Request $request){
         $userNik = Auth::user()->nik;
 
+        $time = Carbon::now();
+
         $post = Post::find($postId);
 
         if (!$post) {
@@ -158,6 +162,30 @@ class DashboardController extends Controller
 
             return response()->json(['success' => true, 'message' => 'Like added']);
         }
+    }
+
+    public function save(Request $request,$id){
+        $userNik = Auth::user()->nik;
+
+        $time = Carbon::now();
+        
+        $existingSave = Save::where('nik',$userNik)
+                                    ->where('id_post',$id)
+                                    ->first();
+
+        if ($existingSave) {
+            return response()->json(['error' => true, 'message' => 'Postingan ini sudah disaved']);
+        } else {
+            Save::create([
+                'id_post' => $id,
+                'nik' => $userNik,
+                'created_at' => $time,
+                'updated_at' => $time,
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Saved Post']);
+        }
+
     }
 
 }

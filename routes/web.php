@@ -23,6 +23,7 @@ use App\Http\Controllers\DashboardController;
 Route::get('/',[DashboardController::class,'index'])->name('/')->middleware('auth');
 Route::get('/chart/json/{id}',[DashboardController::class,'chart'])->name('chart.json');
 Route::post('/like/{postId}',[DashboardController::class,'like'])->name('like.post');
+Route::post('/save/{id}',[DashboardController::class,'save'])->name('save');
 
 // LOGIN CONTROLLER
 Route::get('/login',[LoginController::class,'login'])->name('login');
@@ -40,6 +41,11 @@ Route::get('/post',[PostController::class,'index'])->name('post');
 Route::post('/post/insert',[PostController::class,'insert'])->name('post.insert');
 Route::get('/post/lihat/{id}',[PostController::class,'lihat'])->name('post.lihat');
 Route::get('/search', [PostController::class, 'search'])->name('post.search');
+Route::get('/post/edit/{id}', [PostController::class, 'edit'])->name('post.edit');
+Route::post('/post/edit/update/{id}', [PostController::class, 'update'])->name('post.update');
+Route::post('/post/edit/update/soal/{id_post}', [PostController::class, 'updateSoal'])->name('post.update.soal');
+Route::post('/post/edit/update/jawaban/{id_post}', [PostController::class, 'updateJawaban'])->name('post.update.jawaban');
+Route::get('/post/delete/{id}',[PostController::class,'delete'])->name('post.delete');
 
 
 // USER CONTROLLER
@@ -55,6 +61,8 @@ Route::get('/register/data',[UserController::class,'dataRegis'])->name('user.reg
 Route::post('/register/data/approve/{id}',[UserController::class,'dataRegisApprove'])->name('user.approve');
 Route::get('/register/data/reject/{id}',[UserController::class,'dataRegisReject'])->name('user.reject');
 Route::get('/profile',[UserController::class,'profile'])->name('profile');
+Route::get('/profile/tersimpan',[UserController::class,'tersimpan'])->name('profile.tersimpan');
+Route::get('/profile/tersimpan/delete/{id}',[UserController::class,'tesimpanDelete'])->name('profile.tersimpanDelete');
 Route::get('/profile/edit',[UserController::class,'profileEdit'])->name('profile.edit');
 Route::post('/profile/edit/insert',[UserController::class,'profileInsert'])->name('profile.insert');
 

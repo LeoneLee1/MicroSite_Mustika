@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DataTables;
+use App\Models\Save;
 use App\Models\Unit;
 use App\Models\User;
 use App\Models\AkunRegis;
@@ -133,7 +134,11 @@ class UserController extends Controller
         $data = DB::select("SELECT * FROM users
                             WHERE nik = '$user'");
 
-        return view('profile.index',compact('data'));
+        $post = DB::select("SELECT * FROM posts
+                            WHERE nik = '$user'
+                            ORDER BY id DESC;");
+
+        return view('profile.index',compact('data','post'));
     }
 
     public function profileEdit(){
@@ -295,6 +300,32 @@ class UserController extends Controller
         $result = curl_exec($ch);
     
         curl_close($ch);
+    }
+
+    public function tersimpan(){
+        $user = Auth::user()->nik;
+
+        $data = DB::select("SELECT * FROM users
+                            WHERE nik = '$user'");
+        
+        $save = DB::select("SELECT s.*, p.judul, p.media, p.deskripsi FROM saves s
+                            LEFT JOIN posts p ON p.id = s.id_post
+                            WHERE s.nik = '$user'");
+
+        return view('profile.tersimpan',compact('data','save'));
+    }
+
+    public function tesimpanDelete($id){
+        $data = Save::findOrFail($id);
+        
+        if ($data->delete()) {
+            Alert::success('Berhasil!','Menghapus Postingan yang tersimpan.');
+            return back();
+        } else {
+            Alert::error('Gagal!','Menghapus Postingan yang tersimpan.');
+            return back();
+        }
+        
     }
 
 }

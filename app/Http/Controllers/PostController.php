@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Poll;
 use App\Models\Post;
 use App\Models\Comment;
+use App\Models\PollAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -154,6 +156,79 @@ class PostController extends Controller
                 ORDER BY pl.id ASC");
 
         return view('post.lihat', compact('data', 'komen', 'poll', 'jawaban', 'polling', 'jawabanModal'));
+    }
+
+    public function edit($id){
+        
+        $post = Post::findOrFail($id);
+
+        $poll = DB::select("SELECT * FROM polls
+                            WHERE id_post = '$id';");
+
+        $jawaban = DB::select("SELECT * FROM poll_answers
+                                WHERE id_post = '$id';");
+
+        return view('post.edit',compact('post','poll','jawaban'));
+    }
+
+    public function update(Request $request, $id){
+        $request->validate([
+            'judul' => 'required',
+            'media' => 'required',
+            'deskripsi' => 'required',
+        ]);
+
+        $data = Post::findOrFail($id);
+        $data->judul = $request->judul;
+        $data->media = $request->media;
+        $data->deskripsi = $request->deskripsi;
+
+        if ($data->save()) {
+            Alert::success('Berhasil!','Mengubah Post.');
+            return back();
+        } else {
+            Alert::error('Gagal!','Mengubah Post.');
+            return back();
+        }
+    }
+
+    // public function updateSoal(Request $request, $id_post){
+    //     $request->validate([
+    //         'soal' => 'required',
+    //     ]);
+
+    //     $data = Poll::findOrFail($id_post);
+    //     $data->soal = $request->soal;
+
+    //     if ($data->save()) {
+    //         Alert::success('Berhasil!', 'Soal polling telah diperbarui.');
+    //         return back();
+    //     } else {
+    //         Alert::error('Gagal!', 'Soal polling gagal diperbarui.');
+    //         return back();
+    //     }
+    // }
+
+    // public function updateJawaban(Request $request, $id_post){
+    //     $request->validate([
+    //         'jawaban' => 'required',
+    //     ]);
+
+    //     $data = DB::select("SELECT * FROM poll_answers
+    //                         WHERE id_post = '$id_post'");
+    //     $data->jawaban = $request->jawaban;
+
+    //     if ($data->save()) {
+    //         Alert::success('Berhasil!', 'Jawaban polling telah diperbarui.');
+    //         return back();
+    //     } else {
+    //         Alert::error('Gagal!', 'Jawaban polling gagal diperbarui.');
+    //         return back();
+    //     }
+    // }
+
+    public function delete($id){
+        //
     }
 
 }

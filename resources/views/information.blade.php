@@ -48,7 +48,7 @@
                             <span>Total Likes in Every Media</span>
                         @endforeach
                     </div>
-                    <p class="mb-3">Lastest Media :</p>
+                    <p class="mb-3">Top Media :</p>
                     <ul class="p-0 m-0 list-unstyled">
                         @foreach ($lastest_post_like as $last)
                             <li class="d-flex mb-4 pb-1 border-bottom">
@@ -99,7 +99,7 @@
                             <span>Total Comments in Every Media</span>
                         @endforeach
                     </div>
-                    <p class="mb-3">Lastest Media :</p>
+                    <p class="mb-3">Top Media :</p>
                     <ul class="p-0 m-0 list-unstyled">
                         @foreach ($lastest_post_comment as $last)
                             <li class="d-flex mb-4 pb-1 border-bottom">
@@ -150,7 +150,7 @@
                             <span>Total Voting in Every Media</span>
                         @endforeach
                     </div>
-                    <p class="mb-3">Lastest Media :</p>
+                    <p class="mb-3">Top Media :</p>
                     <ul class="p-0 m-0 list-unstyled">
                         @foreach ($lastest_post_voting as $last)
                             <li class="d-flex mb-4 pb-1 border-bottom">

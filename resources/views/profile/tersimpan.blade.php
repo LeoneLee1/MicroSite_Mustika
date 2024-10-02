@@ -68,16 +68,17 @@
             <div class="container">
                 <header class="d-flex justify-content-center">
                     <ul class="nav nav-pills">
+                        <li class="nav-item"><a href="{{ route('profile') }}" class="nav-link">Postingan</a></li>
                         <li class="nav-item"><a href="#"
-                                class="nav-link {{ request()->is('profile*') ? 'active' : '' }}">Postingan</a></li>
-                        <li class="nav-item"><a href="{{ route('profile.tersimpan') }}" class="nav-link">Tersimpan</a></li>
+                                class="nav-link {{ request()->is('profile/tersimpan*') ? 'active' : '' }}">Tersimpan</a>
+                        </li>
                     </ul>
                 </header>
             </div>
             <div class="card-body">
-                @if ($post === null || collect($post)->isEmpty())
+                @if ($save === null || collect($save)->isEmpty())
                     <div class="text-center mb-4">
-                        <span>You haven't posted anything yet</span>
+                        <span>You haven't saved anything yet</span>
                     </div>
                 @else
                     <div class="row">
@@ -88,13 +89,11 @@
                                         <th scope="col">No</th>
                                         <th scope="col">Judul</th>
                                         <th scope="col">Media</th>
-                                        <th scope="col">Like</th>
-                                        <th scope="col">Comment</th>
                                         <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($post as $p)
+                                    @foreach ($save as $p)
                                         <tr class="text-center">
                                             <th scope="col">{{ $loop->index + 1 }}</th>
                                             <td title="{{ $p->judul }}">{!! Str::limit($p->judul, 15, '....') !!}</td>
@@ -149,14 +148,10 @@
                                                     @endif
                                                 @endif
                                             </td>
-                                            <td>{{ $p->like }}</td>
-                                            <td>{{ $p->komen }}</td>
                                             <td>
-                                                <a href="{{ route('post.edit', $p->id) }}" class="btn btn-sm btn-info"><i
-                                                        class="fa fa-pencil-alt"></i></a>
-                                                <a href="{{ route('post.lihat', $p->id) }}"
+                                                <a href="{{ route('post.lihat', $p->id_post) }}"
                                                     class="btn btn-sm btn-warning"><i class="fa fa-eye"></i></a>
-                                                <a href="{{ route('post.delete', $p->id) }}"
+                                                <a href="{{ route('profile.tersimpanDelete', $p->id) }}"
                                                     onclick="return confirmDelete()" class="btn btn-sm btn-danger"><i
                                                         class="fa fa-trash"></i></a>
                                             </td>
@@ -175,11 +170,11 @@
 @push('after-script')
     <script>
         function confirmDelete() {
-            if (confirm("Apakah kamu yakin ingin menghapus?")) {
-                console.log("Delete confirmed!");
+            if (confirm("Apakah yakin ingin menghapus?")) {
+                console.log("Berhasil menghapus");
                 return true;
             } else {
-                console.log("Delete canceled!");
+                console.log("Batal Menghapus");
                 return false;
             }
         }

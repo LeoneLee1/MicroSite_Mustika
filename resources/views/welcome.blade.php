@@ -105,20 +105,18 @@
                                 </strong>
                             </div>
                         @endif
-                        {{-- <div class="dropdown">
+                        <div class="dropdown">
                             <button class="btn btn-link text-dark" type="button" id="dropdownMenuButton"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-ellipsis-v"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal{{ $item->id }}"><i
-                                            class="fas fa-circle-user menu-icon"
-                                            style="color: rgb(105, 105, 247)"></i>&nbsp;About
-                                        This
-                                        Account</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="return save({{ $item->id }})"><i
+                                            class="fas fa-bookmark menu-icon"
+                                            style="color: rgb(105, 105, 247)"></i>&nbsp;Simpan</a></li>
+                                </li>
                             </ul>
-                        </div> --}}
+                        </div>
                     </div>
                     <div class="text-center">
                         @if (strpos($item->media, '.mp4') !== false ||
@@ -454,100 +452,39 @@
         initializeCharts();
     });
 </script>
-{{-- <script type="text/javascript">
-    $('ul.pagination').hide();
-    $(function() {
-        $('.infinite-scroll').jscroll({
-            autoTrigger: true,
-            loadingHtml: `
-                <div class="loading-container">
-                    <div class="spinner"></div>
-                    <p style="text-align: center; margin-top: 10px;">Loading more content...</p>
-                </div>`,
-            padding: 0,
-            nextSelector: '.pagination li.active + li a',
-            contentSelector: 'div.infinite-scroll',
-            callback: function() {
-                $('ul.pagination').remove();
-                $('.infinite-scroll').children().css('opacity', 0).animate({
-                    opacity: 1
-                }, 500);
-            }
-        });
-    });
-</script> --}}
-{{-- <script>
-    const polling = @json($polling);
 
-    const groupedPolling = polling.reduce((acc, item) => {
-        if (!acc[item.poll_id]) {
-            acc[item.poll_id] = [];
-        }
-        acc[item.poll_id].push(item);
-        return acc;
-    }, {});
-
-    function truncateLabel(label, maxLength = 15) {
-        return label.length > maxLength ? label.slice(0, maxLength) + '...' : label;
-    }
-
-    Chart.register(ChartDataLabels);
-
-    Object.entries(groupedPolling).forEach(([pollId, items]) => {
-        const xValues = items.map(item => item.jawaban);
-        const yValues = items.map(item => item.value);
-        const truncatedLabels = xValues.map(label => truncateLabel(label));
-        const barColors = [
-            "#3498db", "#2ecc71", "#e74c3c", "#f39c12", "#9b59b6",
-            "#1abc9c", "#d35400", "#34495e", "#16a085", "#2980b9"
-        ];
-
-        new Chart("myChart" + pollId, {
-            type: "pie",
-            data: {
-                labels: xValues,
-                datasets: [{
-                    backgroundColor: barColors.slice(0, xValues.length),
-                    data: yValues
-                }]
+<script>
+    function save(Id) {
+        console.log("Id Post:", Id);
+        var scrollPosition = $(window).scrollTop();
+        $.ajax({
+            url: '/save/' + Id,
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.label || '';
-                                const value = context.parsed || 0;
-                                const dataset = context.dataset;
-                                const total = dataset.data.reduce((acc, data) => acc + data, 0);
-                                const percentage = ((value / total) * 100).toFixed(1);
-                                return `${label}: ${value} (${percentage}%)`;
-                            }
-                        }
-                    },
-                    datalabels: {
-                        color: '#fff',
-                        font: {
-                            weight: 'bold',
-                            size: 11
-                        },
-                        formatter: (value, ctx) => {
-                            const dataset = ctx.chart.data.datasets[0];
-                            const total = dataset.data.reduce((acc, data) => acc + data, 0);
-                            const percentage = ((value / total) * 100).toFixed(1);
-                            return percentage + '%';
-                        }
-                    }
+            success: function(response) {
+                if (response.success) {
+                    console.log("Saved");
+                    alert("Berhasil menyimpan postingan.");
+                    return true;
+                    window.location.reload();
+                } else {
+                    console.error("Failed Saved");
+                    alert("Postingan ini sudah tersimpan.");
+                    return false;
                 }
+            },
+            error: function(xhr) {
+                console.error("Terjadi Kesalahan:", xhr.responseText);
             }
         });
-    });
-</script> --}}
+        $(window).on('load', function() {
+            $(window).scrollTop(scrollPosition);
+        });
+        return false;
+    }
+</script>
 <script>
     function like(postId) {
         console.log("Id Post:", postId);
@@ -664,4 +601,98 @@
         });
     });
 </script>
+{{-- <script type="text/javascript">
+    $('ul.pagination').hide();
+    $(function() {
+        $('.infinite-scroll').jscroll({
+            autoTrigger: true,
+            loadingHtml: `
+                <div class="loading-container">
+                    <div class="spinner"></div>
+                    <p style="text-align: center; margin-top: 10px;">Loading more content...</p>
+                </div>`,
+            padding: 0,
+            nextSelector: '.pagination li.active + li a',
+            contentSelector: 'div.infinite-scroll',
+            callback: function() {
+                $('ul.pagination').remove();
+                $('.infinite-scroll').children().css('opacity', 0).animate({
+                    opacity: 1
+                }, 500);
+            }
+        });
+    });
+</script> --}}
+{{-- <script>
+    const polling = @json($polling);
+
+    const groupedPolling = polling.reduce((acc, item) => {
+        if (!acc[item.poll_id]) {
+            acc[item.poll_id] = [];
+        }
+        acc[item.poll_id].push(item);
+        return acc;
+    }, {});
+
+    function truncateLabel(label, maxLength = 15) {
+        return label.length > maxLength ? label.slice(0, maxLength) + '...' : label;
+    }
+
+    Chart.register(ChartDataLabels);
+
+    Object.entries(groupedPolling).forEach(([pollId, items]) => {
+        const xValues = items.map(item => item.jawaban);
+        const yValues = items.map(item => item.value);
+        const truncatedLabels = xValues.map(label => truncateLabel(label));
+        const barColors = [
+            "#3498db", "#2ecc71", "#e74c3c", "#f39c12", "#9b59b6",
+            "#1abc9c", "#d35400", "#34495e", "#16a085", "#2980b9"
+        ];
+
+        new Chart("myChart" + pollId, {
+            type: "pie",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: barColors.slice(0, xValues.length),
+                    data: yValues
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const dataset = context.dataset;
+                                const total = dataset.data.reduce((acc, data) => acc + data, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    },
+                    datalabels: {
+                        color: '#fff',
+                        font: {
+                            weight: 'bold',
+                            size: 11
+                        },
+                        formatter: (value, ctx) => {
+                            const dataset = ctx.chart.data.datasets[0];
+                            const total = dataset.data.reduce((acc, data) => acc + data, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return percentage + '%';
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script> --}}
 @endpush
