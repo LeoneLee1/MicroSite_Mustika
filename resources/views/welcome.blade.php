@@ -175,27 +175,52 @@
                             <h5 style="color: black; font-weight: bold;">{{ $item->judul }}</h5>
                         </div>
                         <div class="d-flex justify-content-start mt-2">
-                            @if ($item->liked)
-                                <button class="btn btn-outline-danger me-3 d-flex align-items-center"
-                                    style="border-radius: 50px;" onclick="return like({{ $item->id }})">
-                                    <i class="fas fa-heart me-2"></i>
-                                    <span>Like</span>
-                                    <span class="badge bg-danger ms-2">{{ $item->like }}</span>
-                                </button>
+                            @if (Auth::user()->role == 'Pengamat')
+                                @if ($item->liked)
+                                    <div class="btn btn-outline-danger me-3 d-flex align-items-center"
+                                        style="border-radius: 50px;">
+                                        <i class="fas fa-heart me-2"></i>
+                                        <span>Like</span>
+                                        <span class="badge bg-danger ms-2">{{ $item->like }}</span>
+                                    </div>
+                                @else
+                                    <div class="btn btn-outline-secondary me-3 d-flex align-items-center"
+                                        style="border-radius: 50px;">
+                                        <i class="fas fa-heart me-2"></i>
+                                        <span>Like</span>
+                                        <span class="badge bg-secondary ms-2">{{ $item->like }}</span>
+                                    </div>
+                                @endif
+                                <a href="{{ route('comment', $item->id) }}"
+                                    class="btn btn-outline-primary d-flex align-items-center" style="border-radius: 50px;">
+                                    <i class="fas fa-comment me-2"></i>
+                                    <span>Comment</span>
+                                    <span class="badge bg-primary ms-2">{{ $item->komen }}</span>
+                                </a>
                             @else
-                                <button class="btn btn-outline-secondary me-3 d-flex align-items-center"
-                                    style="border-radius: 50px;" onclick="return like({{ $item->id }})">
-                                    <i class="fas fa-heart me-2"></i>
-                                    <span>Like</span>
-                                    <span class="badge bg-secondary ms-2">{{ $item->like }}</span>
-                                </button>
+                                @if ($item->liked)
+                                    <button class="btn btn-outline-danger me-3 d-flex align-items-center"
+                                        style="border-radius: 50px;">
+                                        <i class="fas fa-heart me-2"></i>
+                                        <span>Like</span>
+                                        <span class="badge bg-danger ms-2">{{ $item->like }}</span>
+                                    </button>
+                                @else
+                                    <button class="btn btn-outline-secondary me-3 d-flex align-items-center"
+                                        style="border-radius: 50px;" onclick="return like({{ $item->id }})">
+                                        <i class="fas fa-heart me-2"></i>
+                                        <span>Like</span>
+                                        <span class="badge bg-secondary ms-2">{{ $item->like }}</span>
+                                    </button>
+                                @endif
+                                <a href="{{ route('comment', $item->id) }}"
+                                    class="btn btn-outline-primary d-flex align-items-center" style="border-radius: 50px;">
+                                    <i class="fas fa-comment me-2"></i>
+                                    <span>Comment</span>
+                                    <span class="badge bg-primary ms-2">{{ $item->komen }}</span>
+                                </a>
                             @endif
-                            <a href="{{ route('comment', $item->id) }}"
-                                class="btn btn-outline-primary d-flex align-items-center" style="border-radius: 50px;">
-                                <i class="fas fa-comment me-2"></i>
-                                <span>Comment</span>
-                                {{-- <span class="badge bg-primary ms-2">{{ $item->comments_count ?? 0 }}</span> --}}
-                            </a>
+
                         </div>
                         <div class="text-left mt-4">
                             <span style="color: black;">
@@ -323,7 +348,8 @@
                                                     class="btn btn-success">View
                                                     votes</a>
                                                     @include('modal.viewVote') --}}
-                                                <a href="{{ route('viewVote', $p->id) }}" class="btn btn-success">View
+                                                <a href="{{ route('viewVote', $p->id) }}"
+                                                    class="btn btn-success">View
                                                     votes</a>
                                             </div>
                                         @endif
