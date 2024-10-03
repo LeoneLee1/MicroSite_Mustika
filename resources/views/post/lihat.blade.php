@@ -26,18 +26,46 @@
             <div class="card-body">
                 <div class="row">
                     <div class="d-flex justify-content-between align-items-center mt-4">
-                        <div class="text-left d-none d-sm-block">
-                            <strong style="color: black;">
-                                <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
-                                    alt class="w-px-50 h-auto rounded-circle lazyload" />&nbsp;{{ $item->nama }}
-                            </strong>&nbsp;&nbsp;•
-                            {{ \Carbon\Carbon::parse($item->time_post)->format('d M Y') }}
-                        </div>
-                        <div class="text-left d-block d-sm-none">
-                            <strong style="color: black;">
-                                <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
-                                    alt class="w-px-50 h-auto rounded-circle lazyload" />&nbsp;{{ $item->nama }}
-                            </strong>
+                        @if ($item->foto == '' || null)
+                            <div class="text-left d-none d-sm-block">
+                                <strong style="color: black;">
+                                    <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
+                                        alt class="w-px-40 h-auto rounded-circle lazyload" />&nbsp;&nbsp;{{ $item->nama }}
+                                </strong>&nbsp;&nbsp;•
+                                {{ \Carbon\Carbon::parse($item->time_post)->format('d M Y') }}
+                            </div>
+                            <div class="text-left d-block d-sm-none">
+                                <strong style="color: black;">
+                                    <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
+                                        alt class="w-px-40 h-auto rounded-circle lazyload" />&nbsp;&nbsp;{{ $item->nama }}
+                                </strong>
+                            </div>
+                        @else
+                            <div class="text-left d-none d-sm-block">
+                                <strong style="color: black;">
+                                    <img src="{{ asset('img/foto/' . $item->foto) }}" alt
+                                        class="w-px-40 h-auto rounded-circle lazyload" />&nbsp;{{ $item->nama }}
+                                </strong>&nbsp;&nbsp;•
+                                {{ \Carbon\Carbon::parse($item->time_post)->format('d M Y') }}
+                            </div>
+                            <div class="text-left d-block d-sm-none">
+                                <strong style="color: black;">
+                                    <img src="{{ asset('img/foto/' . $item->foto) }}" alt
+                                        class="w-px-40 h-auto rounded-circle lazyload" />&nbsp;{{ $item->nama }}
+                                </strong>
+                            </div>
+                        @endif
+                        <div class="dropdown">
+                            <button class="btn btn-link text-dark" type="button" id="dropdownMenuButton"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                                <li><a class="dropdown-item" href="#" onclick="return save({{ $item->id }})"><i
+                                            class="fas fa-bookmark menu-icon"
+                                            style="color: rgb(105, 105, 247)"></i>&nbsp;Simpan</a></li>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div class="text-center">
@@ -230,6 +258,38 @@
 @push('after-script')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<script>
+    function save(Id) {
+        console.log("Id Post:", Id);
+        var scrollPosition = $(window).scrollTop();
+        $.ajax({
+            url: '/save/' + Id,
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    console.log("Saved");
+                    alert("Berhasil menyimpan postingan.");
+                    return true;
+                    window.location.reload();
+                } else {
+                    console.error("Failed Saved");
+                    alert("Postingan ini sudah tersimpan.");
+                    return false;
+                }
+            },
+            error: function(xhr) {
+                console.error("Terjadi Kesalahan:", xhr.responseText);
+            }
+        });
+        $(window).on('load', function() {
+            $(window).scrollTop(scrollPosition);
+        });
+        return false;
+    }
+</script>
 <script>
     const polling = @json($polling);
 

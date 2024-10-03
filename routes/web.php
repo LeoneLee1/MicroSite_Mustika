@@ -24,6 +24,7 @@ Route::get('/',[DashboardController::class,'index'])->name('/')->middleware('aut
 Route::get('/chart/json/{id}',[DashboardController::class,'chart'])->name('chart.json');
 Route::post('/like/{postId}',[DashboardController::class,'like'])->name('like.post');
 Route::post('/save/{id}',[DashboardController::class,'save'])->name('save');
+Route::get('/viewVote/{id}',[DashboardController::class,'viewVote'])->name('viewVote');
 
 // LOGIN CONTROLLER
 Route::get('/login',[LoginController::class,'login'])->name('login');

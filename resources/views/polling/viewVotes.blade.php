@@ -1,14 +1,18 @@
-<!-- Modal -->
-@foreach ($poll as $p)
-    @if ($p->id_post == $item->id)
-        <div class="modal fade" id="viewVote{{ $p->id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
+@extends('layout.app')
+
+@section('title', 'Pendarasa - PT Mustika Jaya Lestari')
+
+@section('navbar-item')
+    <a href="javascript:void(0)" onclick="window.history.go(-1); return false;" class="btn btn-info"><i
+            class="fa fa-arrow-left"></i>&nbsp;Back</a>
+@endsection
+
+@section('content')
+    @foreach ($post as $item)
+        @foreach ($poll as $p)
+            @if ($p->id_post == $item->id)
+                <div class="card">
+                    <div class="card-body">
                         <h4 style="color: black; font-weight: bold; text-align: center;">{{ $p->soal }}</h4>
                         <div class="table-responsive-sm">
                             <table class="table table-bordered">
@@ -39,7 +43,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    @endif
-@endforeach
+            @endif
+        @endforeach
+    @endforeach
+@endsection

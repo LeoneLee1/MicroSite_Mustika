@@ -107,7 +107,7 @@ class PostController extends Controller
         $user = Auth::user()->nik;
         $userRole = Auth::user()->role;
 
-        $postQuery = "SELECT p.*, u.nama, u.unit, u.gender, p.created_at AS time_post, l.nik AS liked 
+        $postQuery = "SELECT p.*, u.nama, u.unit, u.gender,u.foto, p.created_at AS time_post, l.nik AS liked 
                 FROM posts p
                 LEFT JOIN users u ON u.nik = p.nik
                 LEFT JOIN post_like l ON l.id_post = p.id AND l.nik = ?

@@ -206,9 +206,9 @@ class UserController extends Controller
     public function dataRegis(){
 
         // $data = DB::select("SELECT * FROM akun_regis
-        //                     ORDER BY id;");
+        //                     ORDER BY id DESC;");
 
-        $data = AkunRegis::paginate(10);
+        $data = AkunRegis::OrderBy('id','desc')->paginate(10);
 
         return view('users.akunRegis',compact('data'));
     }
