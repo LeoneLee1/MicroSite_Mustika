@@ -81,6 +81,8 @@ Route::get('/analysis',[AnalisisController::class,'chart'])->name('analysis');
 
 // ACTIVITY CONTROLLER
 Route::get('/activity',[ActivityController::class,'index'])->name('activity');
-
-
+Route::get('/activity/likes',[ActivityController::class,'likes'])->name('activity.likes');
+Route::get('/activity/comments',[ActivityController::class,'comments'])->name('activity.comments');
+Route::get('/activity/posts',[ActivityController::class,'posts'])->name('activity.posts');
+Route::get('/activity/voting',[ActivityController::class,'voting'])->name('activity.voting');
 

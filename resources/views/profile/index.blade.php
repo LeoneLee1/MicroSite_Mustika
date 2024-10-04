@@ -95,7 +95,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($post as $p)
-                                        <tr class="text-center">
+                                        <tr class="text-center" style="color: black;">
                                             <th scope="col">{{ $loop->index + 1 }}</th>
                                             <td title="{{ $p->judul }}">{!! Str::limit($p->judul, 15, '....') !!}</td>
                                             <td>
