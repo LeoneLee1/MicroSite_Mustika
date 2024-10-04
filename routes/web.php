@@ -5,6 +5,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PollingController;
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\AnalisisController;
 use App\Http\Controllers\DashboardController;
 
@@ -77,6 +78,9 @@ Route::get('/vote/view/{poll_id}',[PollingController::class,'viewVotes'])->name(
 
 // ANALISIS CONTROLLER
 Route::get('/analysis',[AnalisisController::class,'chart'])->name('analysis');
+
+// ACTIVITY CONTROLLER
+Route::get('/activity',[ActivityController::class,'index'])->name('activity');
 
 
 

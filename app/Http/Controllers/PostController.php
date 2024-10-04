@@ -50,7 +50,7 @@ class PostController extends Controller
         
         $post = Post::findOrFail($id);
 
-        $komen = DB::select("SELECT c.*, u.nama, u.foto, c.id AS id_comment,p.id FROM comments c
+        $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' ELSE u.nama END AS nama, u.foto, c.id AS id_comment,p.id FROM comments c
                         LEFT JOIN users u ON u.nik = c.nik
                         LEFT JOIN posts p ON p.id = c.id_post 
                         WHERE p.id = '$id'
@@ -107,7 +107,7 @@ class PostController extends Controller
         $user = Auth::user()->nik;
         $userRole = Auth::user()->role;
 
-        $postQuery = "SELECT p.*, u.nama, u.unit, u.gender,u.foto, p.created_at AS time_post, l.nik AS liked 
+        $postQuery = "SELECT p.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' ELSE u.nama END AS nama, u.unit, u.gender,u.foto, p.created_at AS time_post, l.nik AS liked 
                 FROM posts p
                 LEFT JOIN users u ON u.nik = p.nik
                 LEFT JOIN post_like l ON l.id_post = p.id AND l.nik = ?
@@ -116,7 +116,7 @@ class PostController extends Controller
         $queryParams = [$user, $id];
 
         if ($userRole === "Pengamat") {
-            $postQuery = "SELECT p.*, u.nama, u.unit, u.gender, p.created_at AS time_post, l.nik AS liked 
+            $postQuery = "SELECT p.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' ELSE u.nama END AS nama, u.unit, u.gender,u.foto, p.created_at AS time_post, l.nik AS liked 
                     FROM posts p
                     LEFT JOIN users u ON u.nik = p.nik
                     LEFT JOIN post_like l ON l.id_post = p.id AND l.nik = ?
@@ -126,7 +126,7 @@ class PostController extends Controller
         $data = DB::select($postQuery, $queryParams);
 
         // Sisa kode tetap sama
-        $komen = DB::select("SELECT c.*, u.nama FROM comments c
+        $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' ELSE u.nama END AS nama FROM comments c
                             LEFT JOIN users u ON u.nik = c.nik
                             ORDER BY c.id DESC");
 

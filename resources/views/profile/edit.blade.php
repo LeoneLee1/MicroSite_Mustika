@@ -45,11 +45,6 @@
                                                     name="nama">
                                             </div>
                                             <div class="form-group" style="color: black; font-weight:bold;">
-                                                <label>Username / NIK</label>
-                                                <input type="text" class="form-control" value="{{ $item->nik }}"
-                                                    name="nik">
-                                            </div>
-                                            <div class="form-group" style="color: black; font-weight:bold;">
                                                 <label>Gender</label>
                                                 <select class="form-control" name="gender">
                                                     <option value="{{ $item->gender }}">
@@ -59,20 +54,22 @@
                                                     <option value="Wanita">Wanita</option>
                                                 </select>
                                             </div>
+                                            <div class="form-group" style="color: black; font-weight:bold;">
+                                                <label>Unit</label>
+                                                <select class="form-control" name="unit">
+                                                    <option value="{{ $item->unit }}">
+                                                        {{ $item->unit }}
+                                                    </option>
+                                                    @foreach ($unit as $u)
+                                                        <option value="{{ $u->kodeunit }}">{{ $u->kodeunit }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <Button type="submit" class="btn btn-primary">Simpan Perubahan Tanpa
+                                                Foto</Button>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="form-group" style="color: black; font-weight:bold;">
-                                            <label>Unit</label>
-                                            <select class="form-control" name="unit">
-                                                <option value="{{ $item->unit }}">
-                                                    {{ $item->unit }}
-                                                </option>
-                                                @foreach ($unit as $u)
-                                                    <option value="{{ $u->kodeunit }}">{{ $u->kodeunit }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <h6 class="mt-5" style="color: black; font-weight: bold;">Foto Profil</h6>
+                                        <h6 class="mt-2" style="color: black; font-weight: bold;">Foto Profil</h6>
                                         {{-- <div class="form-group mt-3">
                                             <input type="file" name="foto" class="form-control">
                                         </div> --}}
@@ -81,7 +78,7 @@
                                                 accept="image/*">
                                             <img id="imagePreview" style="display: none; width: 100%; margin-top: 10px;">
                                         </div>
-                                        <button type="button" id="cropButton" class="btn btn-secondary"
+                                        <button type="button" id="cropButton" class="btn btn    -secondary"
                                             style="display: none;">Crop Image</button>
                                         <button type="submit" id="submitButton" class="btn btn-primary"
                                             style="display: none;">Simpan Perubahan</button>

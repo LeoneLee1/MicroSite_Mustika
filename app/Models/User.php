@@ -23,6 +23,7 @@ class User extends Authenticatable
         'unit',
         'password',
         'gender',
+        'role',
         'foto',
     ];
 }

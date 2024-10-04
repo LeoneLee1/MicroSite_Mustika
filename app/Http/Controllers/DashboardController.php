@@ -19,11 +19,28 @@ class DashboardController extends Controller
         $user = Auth::user()->nik;
         $userRole = Auth::user()->role;
         $currentTime = Carbon::now();
-        $total_user = DB::select("SELECT COUNT(*) AS total_users FROM users;");
 
         // ORM QUERY
+        // $postQuery = DB::table('posts as p')
+        // ->select('p.*', 'u.nama', 'u.unit', 'u.gender','u.foto', 'p.created_at as time_post', 'l.nik as liked')
+        // ->leftJoin('users as u', 'u.nik', '=', 'p.nik')
+        // ->leftJoin('post_like as l', function($join) use ($user) {
+        //     $join->on('l.id_post', '=', 'p.id')
+        //         ->where('l.nik', '=', $user);
+        // })
+        // ->whereRaw('1=1');
+        
+        // ORM QUERY
         $postQuery = DB::table('posts as p')
-        ->select('p.*', 'u.nama', 'u.unit', 'u.gender','u.foto', 'p.created_at as time_post', 'l.nik as liked')
+        ->select(
+            'p.*', 
+            DB::raw("CASE WHEN u.role = 'Anonymous' THEN 'NoName' ELSE u.nama END AS nama"),
+            'u.unit', 
+            'u.gender', 
+            'u.foto', 
+            'p.created_at as time_post',
+            'l.nik as liked'
+        )
         ->leftJoin('users as u', 'u.nik', '=', 'p.nik')
         ->leftJoin('post_like as l', function($join) use ($user) {
             $join->on('l.id_post', '=', 'p.id')
@@ -32,7 +49,6 @@ class DashboardController extends Controller
         ->whereRaw('1=1');
 
         if ($userRole === "Pengamat") {
-        // $postQuery->where('p.created_at', '<=', DB::raw('DATE_SUB(?, INTERVAL 24 HOUR)', [$currentTime]));
             $postQuery->where('p.created_at', '<=', DB::raw("DATE_SUB('" . $currentTime . "', INTERVAL 24 HOUR)"));
         }
 
@@ -40,7 +56,7 @@ class DashboardController extends Controller
 
         $post = $postQuery->paginate(5);
         
-        $komen = DB::select("SELECT c.*, u.nama FROM comments c
+        $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' ELSE u.nama END AS nama FROM comments c
                         LEFT JOIN users u ON u.nik = c.nik
                         ORDER BY c.id DESC;");
 
@@ -69,7 +85,7 @@ class DashboardController extends Controller
                                 GROUP BY pl.jawaban, pl.value, pl.id_post, pl.poll_id, pl.id
 										  ORDER BY pl.id ASC;");
 
-
+        $total_user = DB::select("SELECT COUNT(*) AS total_users FROM users;");
         // QUERY MYSQL
         // $postQuery = "SELECT p.*, u.nama, u.unit, u.gender, p.created_at AS time_post, l.nik AS liked 
         //           FROM posts p
@@ -218,10 +234,11 @@ class DashboardController extends Controller
 
         $jawabanModal = DB::select("SELECT 
                                     pl.jawaban, pl.value, pl.id_post, pl.poll_id,
-                                    GROUP_CONCAT(a.nik SEPARATOR ', ') AS nik_list,
+                                    GROUP_CONCAT(CASE WHEN u.role = 'Anonymous' THEN 'NoName' ELSE u.nama END SEPARATOR ', ') AS nik_list,
                                     GROUP_CONCAT(DATE_FORMAT(a.created_at, '%e/%c/%y %H:%i') ORDER BY a.created_at SEPARATOR ', ') AS time_vote
                                     FROM poll_answers pl
                                     LEFT JOIN answer_vote a ON a.id_jawaban = pl.id
+                                    LEFT JOIN users u ON u.nik = a.nik
                                     GROUP BY pl.jawaban, pl.value, pl.id_post, pl.poll_id, pl.id
                                     ORDER BY pl.id ASC;");
 

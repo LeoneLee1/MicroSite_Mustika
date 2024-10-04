@@ -17,7 +17,7 @@ class UserController extends Controller
 {   
 
     public function json(){
-        $data = User::all();
+        $data = User::orderBy('id','DESC')->get();
 
         return DataTables::of($data)
         ->addIndexColumn()
@@ -228,6 +228,7 @@ class UserController extends Controller
             'nik' => 'required',
             'password' => 'required',
             'unit' => 'required',
+            'role' => 'required',
         ]); 
 
         $password = Hash::make($request->password);
@@ -236,6 +237,7 @@ class UserController extends Controller
         $data->nama = $request->nama;
         $data->nik = $request->nik;
         $data->unit = $request->unit;
+        $data->role = $request->role;
         $data->password = $password;
         $data->save();
 

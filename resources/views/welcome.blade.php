@@ -200,7 +200,7 @@
                             @else
                                 @if ($item->liked)
                                     <button class="btn btn-outline-danger me-3 d-flex align-items-center"
-                                        style="border-radius: 50px;">
+                                        style="border-radius: 50px;" onclick="return like({{ $item->id }})">
                                         <i class="fas fa-heart me-2"></i>
                                         <span>Like</span>
                                         <span class="badge bg-danger ms-2">{{ $item->like }}</span>
@@ -214,13 +214,13 @@
                                     </button>
                                 @endif
                                 <a href="{{ route('comment', $item->id) }}"
-                                    class="btn btn-outline-primary d-flex align-items-center" style="border-radius: 50px;">
+                                    class="btn btn-outline-primary d-flex align-items-center"
+                                    style="border-radius: 50px;">
                                     <i class="fas fa-comment me-2"></i>
                                     <span>Comment</span>
                                     <span class="badge bg-primary ms-2">{{ $item->komen }}</span>
                                 </a>
                             @endif
-
                         </div>
                         <div class="text-left mt-4">
                             <span style="color: black;">
@@ -247,7 +247,7 @@
                                     @if ($count <= 1)
                                         <div style="color: black;" class="mb-2">
                                             <span style="font-weight: bold;">
-                                                {{ $k->nik }}
+                                                {{ $k->nama }}
                                             </span>{{ $k->comment }}
                                         </div>
                                     @else
@@ -470,15 +470,14 @@
             }
         });
     }
-
     // Inisialisasi chart saat dokumen pertama kali dimuat
     $(document).ready(function() {
         initializeCharts();
     });
 </script>
-
 <script>
     function save(Id) {
+        event.preventDefault();
         console.log("Id Post:", Id);
         var scrollPosition = $(window).scrollTop();
         $.ajax({
@@ -511,6 +510,7 @@
 </script>
 <script>
     function like(postId) {
+        event.preventDefault();
         console.log("Id Post:", postId);
         var scrollPosition = $(window).scrollTop();
         $.ajax({
@@ -539,6 +539,7 @@
 </script>
 <script>
     function vote(answerId) {
+        event.preventDefault();
         console.log("Id Answer:", answerId);
         var scrollPosition = $(window).scrollTop();
         $.ajax({

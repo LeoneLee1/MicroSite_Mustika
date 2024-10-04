@@ -67,7 +67,7 @@
                                             <h6 class="mb-0" title="{{ $last->judul }}">
                                                 {!! Str::limit($last->judul, 15, '....') !!}
                                             </h6>
-                                            <small class="text-muted">{{ $last->nik }}</small>
+                                            <small class="text-muted">{{ $last->nama }}</small>
                                         </a>
                                     </div>
                                     <div class="user-progress">
@@ -118,7 +118,7 @@
                                             <h6 class="mb-0" title="{{ $last->judul }}">
                                                 {!! Str::limit($last->judul, 15, '....') !!}
                                             </h6>
-                                            <small class="text-muted">{{ $last->nik }}</small>
+                                            <small class="text-muted">{{ $last->nama }}</small>
                                         </a>
                                     </div>
                                     <div class="user-progress">
@@ -169,7 +169,7 @@
                                             <h6 class="mb-0" title="{{ $last->judul }}">
                                                 {!! Str::limit($last->judul, 15, '....') !!}
                                             </h6>
-                                            <small class="text-muted">{{ $last->nik }}</small>
+                                            <small class="text-muted">{{ $last->nama }}</small>
                                         </a>
                                     </div>
                                     <div class="user-progress">

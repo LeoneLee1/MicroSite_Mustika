@@ -22,17 +22,17 @@ class AnalisisController extends Controller
 
         $total_voting = DB::select("SELECT COUNT(*) AS total_vote from answer_vote;");
 
-        $lastest_post_like = DB::select("SELECT p.*, u.foto FROM posts p
+        $lastest_post_like = DB::select("SELECT p.*, u.foto, CASE WHEN u.role = 'Anonymous' THEN 'NoName' ELSE u.nama END AS nama FROM posts p
                                     LEFT JOIN users u ON u.nik = p.nik
                                     ORDER BY p.like DESC, p.id DESC
                                     LIMIT 4;");
                                     
-        $lastest_post_comment = DB::select("SELECT p.*, u.foto FROM posts p
+        $lastest_post_comment = DB::select("SELECT p.*, u.foto, CASE WHEN u.role = 'Anonymous' THEN 'NoName' ELSE u.nama END AS nama FROM posts p
                                     LEFT JOIN users u ON u.nik = p.nik
                                     ORDER BY p.komen DESC, p.id DESC
                                     LIMIT 4;");
 
-        $lastest_post_voting = DB::select("SELECT p.*, u.foto, pl.voting FROM posts p
+        $lastest_post_voting = DB::select("SELECT p.*, u.foto, CASE WHEN u.role = 'Anonymous' THEN 'NoName' ELSE u.nama END AS nama, pl.voting FROM posts p
                                             LEFT JOIN users u ON u.nik = p.nik
                                             LEFT JOIN polls pl ON pl.id_post = p.id
                                             ORDER BY pl.voting DESC, p.id DESC

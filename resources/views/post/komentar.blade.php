@@ -37,7 +37,7 @@
                                 <strong>
                                     <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
                                         alt class="w-px-30 h-auto rounded-circle lazyload" />
-                                    &nbsp;{{ $row->nik }}
+                                    &nbsp;{{ $row->nama }}
                                 </strong>
                                 &nbsp;&nbsp;• {{ \Carbon\Carbon::parse($row->created_at)->format('d M Y') }}
                             </div>
@@ -45,7 +45,7 @@
                                 <strong>
                                     <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
                                         alt class="w-px-30 h-auto rounded-circle lazyload" />
-                                    &nbsp;{{ $row->nik }}
+                                    &nbsp;{{ $row->nama }}
                                 </strong>
                                 &nbsp;&nbsp;• {{ \Carbon\Carbon::parse($row->created_at)->format('d M') }}
                             </div>
@@ -54,7 +54,7 @@
                                 <strong>
                                     <img src="{{ asset('img/foto/' . $row->foto) }}" alt
                                         class="w-px-30 h-auto rounded-circle lazyload" />
-                                    &nbsp;{{ $row->nik }}
+                                    &nbsp;{{ $row->nama }}
                                 </strong>
                                 &nbsp;&nbsp;• {{ \Carbon\Carbon::parse($row->created_at)->format('d M Y') }}
                             </div>
@@ -62,7 +62,7 @@
                                 <strong>
                                     <img src="{{ asset('img/foto/' . $row->foto) }}" alt
                                         class="w-px-30 h-auto rounded-circle lazyload" />
-                                    &nbsp;{{ $row->nik }}
+                                    &nbsp;{{ $row->nama }}
                                 </strong>
                                 &nbsp;&nbsp;• {{ \Carbon\Carbon::parse($row->created_at)->format('d M') }}
                             </div>

@@ -39,6 +39,12 @@
                 <div data-i18n="Analytics">Analysis</div>
             </a>
         </li>
+        <li class="menu-item {{ request()->is('activity*') ? 'active' : '' }} mb-3">
+            <a href="{{ route('activity') }}" class="menu-link">
+                <i class="menu-icon fa fa-chart-line"></i>
+                <div data-i18n="Analytics">Your activity</div>
+            </a>
+        </li>
         @if (Auth::user()->role === 'Admin')
             <li class="menu-item {{ request()->is('user*') ? 'active' : '' }} mb-3">
                 <a href="{{ route('user') }}" class="menu-link">

@@ -122,27 +122,51 @@
                         <h5 style="color: black; font-weight: bold;">{{ $item->judul }}</h5>
                     </div>
                     <div class="d-flex justify-content-start mt-2">
-                        @if ($item->liked)
-                            <button class="btn btn-outline-danger me-3 d-flex align-items-center"
-                                style="border-radius: 50px;" onclick="return like({{ $item->id }})">
-                                <i class="fas fa-heart me-2"></i>
-                                <span>Like</span>
-                                <span class="badge bg-danger ms-2">{{ $item->like }}</span>
-                            </button>
+                        @if (Auth::user()->role == 'Pengamat')
+                            @if ($item->liked)
+                                <div class="btn btn-outline-danger me-3 d-flex align-items-center"
+                                    style="border-radius: 50px;">
+                                    <i class="fas fa-heart me-2"></i>
+                                    <span>Like</span>
+                                    <span class="badge bg-danger ms-2">{{ $item->like }}</span>
+                                </div>
+                            @else
+                                <div class="btn btn-outline-secondary me-3 d-flex align-items-center"
+                                    style="border-radius: 50px;">
+                                    <i class="fas fa-heart me-2"></i>
+                                    <span>Like</span>
+                                    <span class="badge bg-secondary ms-2">{{ $item->like }}</span>
+                                </div>
+                            @endif
+                            <a href="{{ route('comment', $item->id) }}"
+                                class="btn btn-outline-primary d-flex align-items-center" style="border-radius: 50px;">
+                                <i class="fas fa-comment me-2"></i>
+                                <span>Comment</span>
+                                <span class="badge bg-primary ms-2">{{ $item->komen }}</span>
+                            </a>
                         @else
-                            <button class="btn btn-outline-secondary me-3 d-flex align-items-center"
-                                style="border-radius: 50px;" onclick="return like({{ $item->id }})">
-                                <i class="fas fa-heart me-2"></i>
-                                <span>Like</span>
-                                <span class="badge bg-secondary ms-2">{{ $item->like }}</span>
-                            </button>
+                            @if ($item->liked)
+                                <button class="btn btn-outline-danger me-3 d-flex align-items-center"
+                                    style="border-radius: 50px;" onclick="return like({{ $item->id }})">
+                                    <i class="fas fa-heart me-2"></i>
+                                    <span>Like</span>
+                                    <span class="badge bg-danger ms-2">{{ $item->like }}</span>
+                                </button>
+                            @else
+                                <button class="btn btn-outline-secondary me-3 d-flex align-items-center"
+                                    style="border-radius: 50px;" onclick="return like({{ $item->id }})">
+                                    <i class="fas fa-heart me-2"></i>
+                                    <span>Like</span>
+                                    <span class="badge bg-secondary ms-2">{{ $item->like }}</span>
+                                </button>
+                            @endif
+                            <a href="{{ route('comment', $item->id) }}"
+                                class="btn btn-outline-primary d-flex align-items-center" style="border-radius: 50px;">
+                                <i class="fas fa-comment me-2"></i>
+                                <span>Comment</span>
+                                <span class="badge bg-primary ms-2">{{ $item->komen }}</span>
+                            </a>
                         @endif
-                        <a href="{{ route('comment', $item->id) }}"
-                            class="btn btn-outline-primary d-flex align-items-center" style="border-radius: 50px;">
-                            <i class="fas fa-comment me-2"></i>
-                            <span>Comment</span>
-                            {{-- <span class="badge bg-primary ms-2">{{ $item->comments_count ?? 0 }}</span> --}}
-                        </a>
                     </div>
                     <div class="text-left mt-4">
                         <span style="color: black;">
@@ -169,7 +193,7 @@
                                 @if ($count <= 1)
                                     <div style="color: black;" class="mb-2">
                                         <span style="font-weight: bold;">
-                                            {{ $k->nik }}
+                                            {{ $k->nama }}
                                         </span>{{ $k->comment }}
                                     </div>
                                 @else
@@ -177,7 +201,8 @@
                             @endif
                         @endif
                     @endforeach
-                    @if (!Auth::user()->role === 'Pengamat')
+                    @if (Auth::user()->role == 'Pengamat')
+                    @else
                         <div class="mt-2">
                             <div class="d-flex justify-content-start col-sm-5">
                                 <form method="POST" action="{{ route('comment.insert') }}"
@@ -187,14 +212,21 @@
                                     <input type="hidden" name="id_post" value="{{ $item->id }}">
                                     <div class="input-group me-2" style="flex: 1;">
                                         <span class="input-group-text bg-white border-0 p-0" id="basic-addon1">
-                                            <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
-                                                alt="User Avatar" class="w-px-40 h-auto rounded-circle lazyload"
-                                                style="object-fit: cover;" />
+                                            @if (Auth::user()->foto == '' || null)
+                                                <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
+                                                    alt="User Avatar" class="w-px-40 h-auto rounded-circle lazyload"
+                                                    style="object-fit: cover;" />
+                                            @else
+                                                <img src="{{ asset('img/foto/' . Auth::user()->foto) }}"
+                                                    alt="User Avatar" class="w-px-40 h-auto rounded-circle lazyload"
+                                                    style="object-fit: cover;" />
+                                            @endif
                                         </span>
                                         <input type="text" name="comment" id="komentar" class="form-control"
-                                            style="border-radius: 50px;" placeholder="Add Comments...." required>
+                                            style="border-radius: 50px; margin-left: 10px;"
+                                            placeholder="Add Comments...." required>
                                     </div>
-                                    <button hidden type="submit" class="btn btn-primary btn-sm me-2"
+                                    <button type="submit" class="btn btn-primary btn-sm me-2"
                                         style="border-radius: 50px;">Send</button>
                                 </form>
                             </div>
@@ -239,11 +271,13 @@
                                             </div>
                                         </div>
                                         <div class="text-center mt-4">
-                                            <a href="#" data-bs-toggle="modal"
+                                            {{-- <a href="#" data-bs-toggle="modal"
                                                 data-bs-target="#viewVote{{ $p->id }}"
-                                                class="btn btn-success">View votes</a>
+                                                class="btn btn-success">View votes</a> --}}
+                                            {{-- @include('modal.viewVote') --}}
+                                            <a href="{{ route('viewVote', $p->id) }}" class="btn btn-success">View
+                                                votes</a>
                                         </div>
-                                        @include('modal.viewVote')
                                     </div>
                                 </div>
                             @endif
@@ -278,6 +312,34 @@
                     console.error("Failed Saved");
                     alert("Postingan ini sudah tersimpan.");
                     return false;
+                }
+            },
+            error: function(xhr) {
+                console.error("Terjadi Kesalahan:", xhr.responseText);
+            }
+        });
+        $(window).on('load', function() {
+            $(window).scrollTop(scrollPosition);
+        });
+        return false;
+    }
+</script>
+<script>
+    function like(postId) {
+        console.log("Id Post:", postId);
+        var scrollPosition = $(window).scrollTop();
+        $.ajax({
+            url: '/like/' + postId,
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    console.log("Liked");
+                    window.location.reload();
+                } else {
+                    console.error("Failed Like");
                 }
             },
             error: function(xhr) {

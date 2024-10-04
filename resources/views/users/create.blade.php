@@ -44,6 +44,8 @@
                                 <option value="" disabled selected>Pilih Role</option>
                                 <option value="Admin">Admin</option>
                                 <option value="User">User</option>
+                                <option value="Pengamat">Pengamat</option>
+                                <option value="Anonymous">Anonymous</option>
                             </select>
                         </div>
                         <div class="mb-3">

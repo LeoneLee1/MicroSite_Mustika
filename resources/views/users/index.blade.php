@@ -90,7 +90,6 @@
                         className: 'text-center'
                     }
                 ],
-                order: [1, 'ASC']
             });
         });
     </script>

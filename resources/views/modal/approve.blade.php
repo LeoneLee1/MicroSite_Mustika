@@ -33,6 +33,16 @@
                             </div>
                         </div>
                         <div class="mb-3">
+                            <label for="Role" class="form-label">Role</label>
+                            <select name="role" class="form-control" required>
+                                <option value="" disabled selected>Pilih Role</option>
+                                <option value="Admin">Admin</option>
+                                <option value="User">User</option>
+                                <option value="Pengamat">Pengamat</option>
+                                <option value="Anonymous">Anonymous</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
                             <div class="form-group">
                                 <label style="color: black;">Password</label>
                                 <input type="text" name="password" class="form-control"
