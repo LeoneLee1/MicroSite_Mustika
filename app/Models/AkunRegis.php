@@ -16,6 +16,5 @@ class AkunRegis extends Model
         'nik',
         'unit',
         'no_hp',
-        'sofdel',
     ];
 }

@@ -3,8 +3,7 @@
 @section('title', 'Voting - PT Mustika Jaya Lestari')
 
 @section('navbar-item')
-    <a href="javascript:void(0)" onclick="window.history.go(-1); return false;" class="btn btn-info"><i
-            class="fa fa-arrow-left"></i>&nbsp;Back</a>
+    <a href="{{ route('activity') }}" class="btn btn-info"><i class="fa fa-arrow-left"></i>&nbsp;Back</a>
 @endsection
 
 @section('content')
@@ -30,7 +29,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($voting as $p)
-                                    <tr class="text-center" style="color: black;">
+                                    <tr style="color: black;">
                                         <th scope="col">{{ $loop->index + 1 }}</th>
                                         <td title="{{ $p->judul }}">{!! Str::limit($p->judul, 15, '....') !!}</td>
                                         <td>

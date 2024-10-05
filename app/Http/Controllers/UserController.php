@@ -203,24 +203,23 @@ class UserController extends Controller
         return redirect()->route('profile');
     }
 
-    public function dataRegis(){
+    public function dataRegisJson(){
+        $data = AkunRegis::orderBy('id','DESC')->get();
 
-        // $data = DB::select("SELECT * FROM akun_regis
-        //                     ORDER BY id DESC;");
-
-        $data = AkunRegis::OrderBy('id','desc')->paginate(10);
-
-        return view('users.akunRegis',compact('data'));
+        return DataTables::of($data)
+        ->addIndexColumn()
+        ->make(true);
     }
 
-    // public function dataRegisCari(Request $request){
+    public function dataRegis(){
+        return view('users.akunRegis');
+    }
+    public function dataRegisSee($id){
 
-    //     $cari = $request->cari;
+        $data = AkunRegis::findOrFail($id);
 
-    //     $nama = DB::table('akun_regis')
-    //         ->where('nama','like',"%".$cari."%")
-    //         ->paginate();
-    // }
+        return view('users.approve',compact('data'));
+    }
 
     public function dataRegisApprove(Request $request, $id){
         $request->validate([
@@ -265,8 +264,7 @@ class UserController extends Controller
             $pesan = "Mohon maaf, untuk pendaftaran akun MicroSite Mustika anda ditolak dikarenakan tidak sesuai, mohon dicoba lagi , Terima kasih";
             $this->sendWa($no_hp, $pesan);
 
-            $data->sofdel = 1;
-            $data->save();
+            $data->delete();
 
             return back();
         } else {

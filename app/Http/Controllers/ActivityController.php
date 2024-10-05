@@ -68,6 +68,15 @@ class ActivityController extends Controller
                                 LEFT JOIN posts p ON p.id = pl.id_post
                                 WHERE a.nik = '$user'
                                 ORDER BY a.id DESC;");
+
+        // $voting = DB::table('answer_vote as a')
+        //                     ->select('a.*','p.judul','p.media','s.soal','pl.id_post as post_id')
+        //                     ->leftJoin('poll_answers as pl','pl.id','=','a.id_jawaban')
+        //                     ->leftJoin('polls as s','s.id','=','a.poll_id')
+        //                     ->leftJoin('posts as p','p.id','=','pl.id_post')
+        //                     ->where('a.nik',$user)
+        //                     ->orderBy('a.id','desc')
+        //                     ->get();
     
         return view('activity.voting',compact('voting'));
     }
