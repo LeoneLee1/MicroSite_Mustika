@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Polling - PT Mustika Jaya Lestari')
+@section('title', 'Polling - Pendarasa')
 
 @section('content')
     <div class="row justify-content-center">

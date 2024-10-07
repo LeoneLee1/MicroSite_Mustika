@@ -1,8 +1,8 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-    <div class="app-brand demo">
+    <div class="app-brand">
         <a href="/" class="app-brand-link mt-2">
-            <img src="{{ asset('img/logo oval mustika.png') }}" alt="logo"
-                style="max-width: 120px; min-width: 120px; margin-left: 25px;">
+            <img src="{{ asset('img/logo pendarasa.png') }}" alt="logo"
+                style="max-width: 100px; height: auto; margin-left: 45px;">
         </a>
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
             <i class="bx bx-chevron-left bx-sm align-middle"></i>

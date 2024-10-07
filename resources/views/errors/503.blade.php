@@ -5,142 +5,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/logo pendarasa.png') }}">
     <title>Pendar Rasa - Dalam Perbaikan</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400&display=swap');
-
-        body,
-        html {
-            height: 100%;
+        body {
             margin: 0;
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            overflow: hidden;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f3f3f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
         .container {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        }
-
-        h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3.5em;
-            color: #2c3e50;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .image-container {
-            width: 90%;
-            max-width: 800px;
-            height: 60vh;
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-        }
-
-        .image-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .image-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 30%, rgba(0, 0, 0, 0.3) 70%, rgba(0, 0, 0, 0.7) 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px;
-            color: white;
             text-align: center;
+            background-color: #000;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
 
-        .description {
-            font-size: 1.2em;
-            line-height: 1.6;
-            margin-bottom: 10px;
+        .image-section img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
 
-        .maintenance-text {
+        .text-section h1 {
+            font-size: 2em;
+            margin: 0;
+            padding: 10px;
+        }
+
+        .text-section p {
             font-size: 1em;
-            line-height: 1.4;
+            margin: 10px 0;
         }
 
-        .glow {
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes glow {
-            from {
-                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #e60073, 0 0 20px #e60073, 0 0 35px #e60073;
-            }
-
-            to {
-                text-shadow: 0 0 10px #fff, 0 0 20px #ff4da6, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6;
-            }
-        }
-
-        .particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        .particle {
-            position: absolute;
-            display: block;
-            pointer-events: none;
-            animation: float 15s infinite ease-in-out;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0) rotate(0deg);
-            }
-
-            50% {
-                transform: translateY(-20px) rotate(180deg);
-            }
+        .construction {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ffcc00;
         }
     </style>
+
 </head>
 
 <body>
     <div class="container">
-        <div class="particles"></div>
-        <h1 class="glow">PENDAR RASA</h1>
-        <div class="image-container">
-            <img src="https://i.ibb.co.com/72wxWRs/image.jpg" alt="Wanita tersenyum di ladang" />
-            <div class="image-overlay">
-                <div class="description">
-                    Membingkai pendaran rasa yang tak tampak dalam kehidupan sehari-hari melalui seni bertutur
-                </div>
-                <div class="maintenance-text">
-                    <p>Mohon maaf, saat ini kami sedang melakukan perbaikan untuk meningkatkan pengalaman Anda.</p>
-                    <p>Silakan kembali dalam beberapa saat untuk menikmati cerita-cerita penuh makna dari kami.</p>
-                </div>
-            </div>
+        <div class="image-section">
+            <img src="https://i.ibb.co.com/F3pm3CZ/IMG-7245-1.jpg" alt="Pendar Rasa">
+        </div>
+        <div class="text-section">
+            <p>Membingkai pendaran rasa yang tak tampak dalam kehidupan sehari-hari melalui seni bertutur</p>
+            <p class="construction">⚙️Under Construction⚙️</p>
         </div>
     </div>
     <script>

@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/logo oval mustika.png') }}">
-    <title>Login - PT Mustika Jaya Lestari</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/logo pendarasa.png') }}">
+    <title>Login - Pendarasa</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -59,10 +59,10 @@
             <div class="col col-12 col-md-4">
                 <div class="card">
                     <div class="card-body">
-                        {{-- <div class="text-center">
-                            <img src="{{ asset('img/logo oval mustika.png') }}" alt="logo"
+                        <div class="text-center">
+                            <img src="{{ asset('img/logo pendarasa.png') }}" alt="logo"
                                 style="max-width: 150px; min-width: 150px;">
-                        </div> --}}
+                        </div>
                         <form action="{{ route('login.proses') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">

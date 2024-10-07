@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Terima Kasih Telah Mendaftar</title>
-    <link rel="icon" type="image/x-icon" href="{{ asset('img/logo oval mustika.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/logo pendarasa.png') }}">
     <style>
         body {
             display: flex;

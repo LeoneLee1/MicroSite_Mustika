@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Activity - PT Mustika Jaya Lestari')
+@section('title', 'Activity - Pendarasa')
 
 @section('content')
     <div class="card mb-3">

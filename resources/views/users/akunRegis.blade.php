@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Data Register Account - PT Mustika Jaya Lestari')
+@section('title', 'Data Register Account - Pendarasa')
 
 @section('content')
     <div class="card">

@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Polling Web - PT Mustika Jaya Lestari')
+@section('title', 'Polling Web - Pendarasa')
 
 @push('after-style')
     <style>

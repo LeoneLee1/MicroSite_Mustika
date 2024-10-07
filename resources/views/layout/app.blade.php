@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/logo oval mustika.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/logo pendarasa.png') }}">
     <title>@yield('title')</title>
     @stack('before-style')
     @include('includes.main.style')
@@ -49,7 +49,6 @@
         <div class="layout-container">
             @include('includes.main.sidebar')
             <div class="layout-page">
-                {{-- @include('includes.main.navbar') --}}
                 <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
                     id="layout-navbar">
                     <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">

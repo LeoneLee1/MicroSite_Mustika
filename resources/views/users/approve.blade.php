@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Approve - PT Mustika Jaya Lestari')
+@section('title', 'Approve - Pendarasa')
 
 @section('navbar-item')
     <a href="javascript:void(0)" onclick="window.history.go(-1); return false;" class="btn btn-info"><i

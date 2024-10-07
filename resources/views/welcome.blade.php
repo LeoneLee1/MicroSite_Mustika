@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Pendarasa - PT Mustika Jaya Lestari')
+@section('title', 'Pendarasa')
 
 @push('after-style')
     <style>

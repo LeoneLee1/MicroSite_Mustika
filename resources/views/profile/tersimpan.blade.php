@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'User Profile - PT Mustika Jaya Lestari')
+@section('title', 'User Profile - Pendarasa')
 
 @push('after-style')
     <link rel="stylesheet" href="{{ asset('css/profile.css') }}">

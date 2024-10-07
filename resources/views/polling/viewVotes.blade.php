@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Pendarasa - PT Mustika Jaya Lestari')
+@section('title', 'Pendarasa')
 
 @section('navbar-item')
     <a href="javascript:void(0)" onclick="window.history.go(-1); return false;" class="btn btn-info"><i

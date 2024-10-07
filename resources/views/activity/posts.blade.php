@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Posts - PT Mustika Jaya Lestari')
+@section('title', 'Posts - Pendarasa')
 
 @section('navbar-item')
     <a href="{{ route('activity') }}" class="btn btn-info"><i class="fa fa-arrow-left"></i>&nbsp;Back</a>

@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'User Create - PT Mustika Jaya Lestari')
+@section('title', 'User Create - Pendarasa')
 
 @section('content')
 
