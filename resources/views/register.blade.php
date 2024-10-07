@@ -68,9 +68,9 @@
                                     placeholder="Nama Lengkap" required>
                             </div>
                             <div class="mb-3">
-                                <label for="Nik" class="form-label">NIK</label>
+                                <label for="Nik" class="form-label">Username / NIK</label>
                                 <input type="text" name="nik" id="Nik" class="form-control"
-                                    placeholder="NIK" required>
+                                    placeholder="Username / NIK" required>
                             </div>
                             <div class="mb-3">
                                 <label for="Unit" class="form-label">Unit</label>

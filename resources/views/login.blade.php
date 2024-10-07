@@ -59,16 +59,16 @@
             <div class="col col-12 col-md-4">
                 <div class="card">
                     <div class="card-body">
-                        <div class="text-center">
+                        {{-- <div class="text-center">
                             <img src="{{ asset('img/logo oval mustika.png') }}" alt="logo"
                                 style="max-width: 150px; min-width: 150px;">
-                        </div>
+                        </div> --}}
                         <form action="{{ route('login.proses') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
-                                <label for="Nik" class="form-label">NIK</label>
+                                <label for="Nik" class="form-label">Username / NIK</label>
                                 <input type="text" name="nik" id="Nik" class="form-control"
-                                    placeholder="NIK" required>
+                                    placeholder="Username / NIK" required>
                             </div>
                             <div class="mb-3">
                                 <label for="Password" class="form-label">Password</label>

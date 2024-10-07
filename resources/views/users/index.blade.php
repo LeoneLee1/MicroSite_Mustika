@@ -17,7 +17,7 @@
                         <tr>
                             <th scope="col">No</th>
                             <th scope="col">Nama</th>
-                            <th scope="col">Nik</th>
+                            <th scope="col">Username / Nik</th>
                             <th scope="col">Unit</th>
                             <th scope="col">Gender</th>
                             <th scope="col">Role</th>

@@ -17,7 +17,7 @@
                                 class="form-control" placeholder="Nama Lengkap">
                         </div>
                         <div class="mb-3">
-                            <label for="Nik" class="form-label">Nik</label>
+                            <label for="Nik" class="form-label">Username / Nik</label>
                             <input type="text" name="nik" value="{{ $data->nik }}" id="Nik"
                                 class="form-control" placeholder="NIK">
                         </div>

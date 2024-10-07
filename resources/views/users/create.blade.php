@@ -17,9 +17,9 @@
                                 placeholder="Nama Lengkap">
                         </div>
                         <div class="mb-3">
-                            <label for="Nik" class="form-label">Nik</label>
-                            <input type="text" name="nik" id="Nik" class="form-control" placeholder="NIK"
-                                required>
+                            <label for="Nik" class="form-label">Username / Nik</label>
+                            <input type="text" name="nik" id="Nik" class="form-control"
+                                placeholder="Username / NIK" required>
                         </div>
                         <div class="mb-3">
                             <label for="Unit" class="form-label">Unit</label>
