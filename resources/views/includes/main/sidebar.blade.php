@@ -1,7 +1,7 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand">
         <a href="/" class="app-brand-link mt-2">
-            <img src="{{ asset('img/logo pendarasa.png') }}" alt="logo"
+            <img src="{{ asset('img/logo pendarasa.jpg') }}" alt="logo"
                 style="max-width: 100px; height: auto; margin-left: 45px;">
         </a>
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">

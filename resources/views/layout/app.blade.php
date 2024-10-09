@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/logo pendarasa.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/logo pendarasa.jpg') }}">
     <title>@yield('title')</title>
     @stack('before-style')
     @include('includes.main.style')

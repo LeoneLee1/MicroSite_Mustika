@@ -250,7 +250,7 @@ class UserController extends Controller
         $delete = AkunRegis::findOrFail($id);
         $delete->delete();
 
-        return back();
+        return redirect()->route('user.regis');
         
     }
 
