@@ -65,12 +65,12 @@
                             <div class="mb-3">
                                 <label for="Nama" class="form-label">Nama</label>
                                 <input type="text" name="nama" id="Nama" class="form-control"
-                                    placeholder="Nama Lengkap" required>
+                                    oninput="this.value = this.value.toUpperCase()" placeholder="Nama Lengkap" required>
                             </div>
                             <div class="mb-3">
-                                <label for="Nik" class="form-label">Username / NIK</label>
-                                <input type="text" name="nik" id="Nik" class="form-control"
-                                    placeholder="Username / NIK" required>
+                                <label class="form-label">NIK</label>
+                                <input type="text" name="nik" id="autoInput" class="form-control"
+                                    oninput="this.value = this.value.toUpperCase()" placeholder="NIK" required>
                             </div>
                             <div class="mb-3">
                                 <label for="Unit" class="form-label">Unit</label>
@@ -97,6 +97,7 @@
             </div>
         </div>
     </div>
+    @include('sweetalert::alert')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('vendors/libs/popper/popper.js') }}"></script>
     <script src="{{ asset('vendors/js/bootstrap.js') }}"></script>
@@ -118,14 +119,16 @@
             charCount.textContent = `${inputField.value.length}/15`;
         }
     </script>
-    {{-- <script>
-        window.onload = function() {
-            const loadingScreen = document.getElementById('loadingScreen');
-            setTimeout(function() {
-                loadingScreen.classList.add('loaded');
-            }, 2000);
-        };
-    </script> --}}
+    <script>
+        document.getElementById("autoInput").addEventListener("keydown", function(e) {
+            const txt = this.value;
+            // prevent more than 12 characters, ignore the spacebar, allow the backspace
+            if ((txt.length == 20 || e.which == 40) & e.which !== 8) e.preventDefault();
+            // add spaces after 3 & 7 characters, allow the backspace
+            if ((txt.length == 4 || txt.length == 8) && e.which !== 8)
+                this.value = this.value + ".";
+        });
+    </script>
 </body>
 
 </html>

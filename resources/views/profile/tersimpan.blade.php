@@ -39,7 +39,7 @@
                                             <span class="profile_content">{{ $item->nama }}</span>
                                         </div>
                                         <div class="profile_column">
-                                            <span class="profile_title">Username / NIK</span>
+                                            <span class="profile_title">NIK</span>
                                             <span class="profile_content">{{ $item->nik }}</span>
                                         </div>
                                         <div class="profile_column">

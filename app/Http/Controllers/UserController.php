@@ -242,7 +242,7 @@ class UserController extends Controller
 
         // kirim pesan
         $no_hp = $request->no_hp;
-        $pesan = "Terima kasih telah mendaftar, Website MicroSite Mustika Username: {$request->nik}, Password: {$request->password}";
+        $pesan = "Terima kasih telah mendaftar, Website MicroSite Pendar rasa Username: {$request->nik}, Password: {$request->password}";
         $this->sendWa($no_hp, $pesan);
 
         Alert::success('Berhasil!','Menyimpan Akun.');
@@ -261,7 +261,7 @@ class UserController extends Controller
             $no_hp = $data->no_hp;
             // kirim pesan
             $no_hp = $data->no_hp;
-            $pesan = "Mohon maaf, untuk pendaftaran akun MicroSite Mustika anda ditolak dikarenakan tidak sesuai, mohon dicoba lagi , Terima kasih";
+            $pesan = "Mohon maaf, untuk pendaftaran akun MicroSite Pendar rasa anda ditolak dikarenakan tidak sesuai, mohon dicoba lagi , Terima kasih";
             $this->sendWa($no_hp, $pesan);
 
             $data->delete();

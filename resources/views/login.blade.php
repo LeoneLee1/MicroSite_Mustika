@@ -66,9 +66,9 @@
                         <form action="{{ route('login.proses') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
-                                <label for="Nik" class="form-label">Username / NIK</label>
+                                <label for="Nik" class="form-label">NIK</label>
                                 <input type="text" name="nik" id="Nik" class="form-control"
-                                    placeholder="Username / NIK" required>
+                                    placeholder="NIK" required>
                             </div>
                             <div class="mb-3">
                                 <label for="Password" class="form-label">Password</label>

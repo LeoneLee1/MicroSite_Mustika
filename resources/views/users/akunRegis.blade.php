@@ -11,7 +11,7 @@
                         <tr>
                             <th scope="col" style="color: black; font-weight: bold;">No</th>
                             <th scope="col" style="color: black; font-weight: bold;">Nama</th>
-                            <th scope="col" style="color: black; font-weight: bold;">Username / Nik</th>
+                            <th scope="col" style="color: black; font-weight: bold;">Nik</th>
                             <th scope="col" style="color: black; font-weight: bold;">Nomor Hp</th>
                             <th scope="col" style="color: black; font-weight: bold;">Unit</th>
                             <th scope="col" style="color: black; font-weight: bold;">Aksi</th>
@@ -54,13 +54,13 @@
                         className: 'text-center'
                     },
                     {
-                        data: 'unit',
-                        name: 'unit',
+                        data: 'no_hp',
+                        name: 'no_hp',
                         className: 'text-center'
                     },
                     {
-                        data: 'no_hp',
-                        name: 'no_hp',
+                        data: 'unit',
+                        name: 'unit',
                         className: 'text-center'
                     },
                     {

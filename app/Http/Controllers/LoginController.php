@@ -42,17 +42,24 @@ class LoginController extends Controller
             'unit' => 'required',
         ]);
 
-        $register = new AkunRegis();
-        $register->nama = $request->nama;
-        $register->nik = $request->nik;
-        $register->no_hp = $this->no_wa($request->no_hp);
-        $register->unit = $request->unit;
+        $cekNik = User::where('nik',$request->nik)->first();
 
-        if ($register->save()) {
-            return view('informasi-sukses');
+        if ($cekNik) {
+            Alert::error('Gagal!','Mohon Maaf NIK yang anda masukkan sudah terdaftar.');
+            return redirect()->back();
         } else {
-            Alert::error('Gagal!','Membuat Akun, Silahkann Coba Lagi.');
-            return back();
+            $register = new AkunRegis();
+            $register->nama = $request->nama;
+            $register->nik = $request->nik;
+            $register->no_hp = $this->no_wa($request->no_hp);
+            $register->unit = $request->unit;
+    
+            if ($register->save()) {
+                return view('informasi-sukses');
+            } else {
+                Alert::error('Gagal!','Membuat Akun, Silahkann Coba Lagi.');
+                return redirect()->back();
+            }
         }
     }
     

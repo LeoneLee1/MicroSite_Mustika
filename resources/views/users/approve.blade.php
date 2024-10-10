@@ -24,7 +24,7 @@
                         </div>
                         <div class="mb-3">
                             <div class="form-group">
-                                <label style="color: black;">Username / Nik</label>
+                                <label style="color: black;">Nik</label>
                                 <input type="text" name="nik" class="form-control" value="{{ $data->nik }}"
                                     required>
                             </div>
