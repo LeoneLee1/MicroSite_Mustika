@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CommentPoll extends Model
+class CommentLike extends Model
 {
     use HasFactory;
 
-    protected $table = 'comment_polls';
+    protected $table = 'comments_likes';
 
     protected $fillable = [
+        'id_comment',
         'nik',
-        'poll_id',
         'comment',
     ];
 }

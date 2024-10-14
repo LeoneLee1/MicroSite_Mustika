@@ -158,16 +158,16 @@ class UserController extends Controller
         $request->validate([
             'foto' => 'nullable|image|mimes:png,jpg|max:2048',
             'nama' => 'required|string|max:255',
-            'nik' => 'required|string|max:255',
             'unit' => 'nullable|string|max:255',
-            'gender' => 'nullable|string|max:10'
+            'gender' => 'nullable|string|max:10',
+            'password' => 'nullable',
         ]);
 
         $id = $request->id;
         $nama = $request->nama;
-        $nik = $request->nik;
         $unit = $request->unit;
         $gender = $request->gender;
+        $password = $request->password;
 
         $user = DB::table('users')->where('id', $id)->first();
 
@@ -188,11 +188,14 @@ class UserController extends Controller
 
         $dataToUpdate = [
             'nama' => $nama,
-            'nik' => $nik,
             'unit' => $unit,
             'gender' => $gender,
-            'foto' => $foto_name
+            'foto' => $foto_name,
         ];
+
+        if (!empty($password)) {
+            $dataToUpdate['password'] = Hash::make($password);
+        }
 
         DB::table('users')
             ->where('id', $id)
@@ -202,6 +205,7 @@ class UserController extends Controller
 
         return redirect()->route('profile');
     }
+
 
     public function dataRegisJson(){
         $data = AkunRegis::orderBy('id','DESC')->get();

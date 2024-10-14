@@ -25,7 +25,7 @@
                         <div class="mb-3">
                             <label class="form-label">Media</label>
                             <input type="text" name="media" placeholder="Link URL Youtube/Article/Image"
-                                class="form-control" required>
+                                class="form-control">
                             <a href="#" data-bs-toggle="modal" data-bs-target="#panduan" style="margin-left: 2px;">
                                 <small>Panduan Media Link (Click Here!)</small>
                                 @include('modal.panduan')

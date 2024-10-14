@@ -86,30 +86,30 @@ class PollingController extends Controller
 
         if ($existingVote) {
             if ($existingVote->id_jawaban == $answerId) {
-                $existingVote->delete();
+                // $existingVote->delete();
 
-                $pollAnswer->value -= 1;
-                $pollAnswer->save();
+                // $pollAnswer->value -= 1;
+                // $pollAnswer->save();
 
-                $poll->voting -= 1;
-                $poll->save();
+                // $poll->voting -= 1;
+                // $poll->save();
 
-                return response()->json(['success' => true, 'message' => 'Vote removed']);
+                return response()->json(['success' => true, 'message' => 'Sudah Vote']);
             } else {
                 $oldAnswer = PollAnswer::find($existingVote->id_jawaban);
                 if ($oldAnswer) {
-                    $oldAnswer->value -= 1;
-                    $oldAnswer->save();
+                    // $oldAnswer->value -= 1;
+                    // $oldAnswer->save();
                 }
                 
-                $existingVote->id_jawaban = $answerId;
-                $existingVote->jawaban = $pollAnswer->jawaban;
-                $existingVote->save();
+                // $existingVote->id_jawaban = $answerId;
+                // $existingVote->jawaban = $pollAnswer->jawaban;
+                // $existingVote->save();
 
-                $pollAnswer->value += 1;
-                $pollAnswer->save();
+                // $pollAnswer->value += 1;
+                // $pollAnswer->save();
 
-                return response()->json(['success' => true, 'message' => 'Vote updated']);
+                return response()->json(['success' => true, 'message' => 'Sudah Vote']);
 
                 // return response()->json(['success' => false, 'message' => 'You have already voted in this poll'], 403);
             }

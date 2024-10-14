@@ -70,8 +70,9 @@
 @endsection
 
 @section('content')
-    @include('modal.cariPost')
     @foreach ($post as $item)
+        @include('modal.cariPost')
+        @include('modal.menyukai')
         <div class="infinite-scroll" id="infinite-scroll">
             <div class="card mb-3">
                 <div class="card-body">
@@ -84,7 +85,7 @@
                                             alt
                                             class="w-px-40 h-auto rounded-circle lazyload" />&nbsp;&nbsp;{{ $item->nama }}
                                     </strong>&nbsp;&nbsp;•
-                                    {{ \Carbon\Carbon::parse($item->time_post)->format('d M Y') }}
+                                    {{ \Carbon\Carbon::parse($item->time_post)->diffForHumans() }}
                                 </div>
                                 <div class="text-left d-block d-sm-none">
                                     <strong style="color: black;">
@@ -99,7 +100,7 @@
                                         <img src="{{ asset('img/foto/' . $item->foto) }}" alt
                                             class="w-px-40 h-auto rounded-circle lazyload" />&nbsp;{{ $item->nama }}
                                     </strong>&nbsp;&nbsp;•
-                                    {{ \Carbon\Carbon::parse($item->time_post)->format('d M Y') }}
+                                    {{ \Carbon\Carbon::parse($item->time_post)->diffForHumans() }}
                                 </div>
                                 <div class="text-left d-block d-sm-none">
                                     <strong style="color: black;">
@@ -167,14 +168,14 @@
                                             Material</a>
                                     </div>
                                 @else
-                                    <p>Unsupported media type or URL.</p>
+                                    {{-- <p>Unsupported media type or URL.</p> --}}
                                 @endif
                             @endif
                         </div>
-                        <div class="text-left mt-4 mb-2">
+                        <div class="text-left mt-4">
                             <h5 style="color: black; font-weight: bold;">{{ $item->judul }}</h5>
                         </div>
-                        <div class="d-flex justify-content-start mt-2">
+                        {{-- <div class="d-flex justify-content-start mt-2">
                             @if (Auth::user()->role == 'Pengamat')
                                 @if ($item->liked)
                                     <div class="btn btn-outline-danger me-3 d-flex align-items-center"
@@ -221,8 +222,43 @@
                                     <span class="badge bg-primary ms-2">{{ $item->komen }}</span>
                                 </a>
                             @endif
+                        </div> --}}
+                        <div class="d-flex justify-content-start">
+                            @if (Auth::user()->role == 'Pengamat')
+                                <div class="d-flex align-items-center me-3">
+                                    <i class="fa fa-heart" style="font-size: 1.70em; color: red;"></i>
+                                </div>
+                                <div class="d-flex align-items-center me-3">
+                                    <a href="{{ route('comment', $item->id) }}">
+                                        <i class="fa fa-comment" style="font-size: 1.70em; color: #696cff;"></i>
+                                    </a>
+                                </div>
+                            @else
+                                @if ($item->liked)
+                                    <div class="d-flex align-items-center me-3">
+                                        <i class="fa fa-heart" style="font-size: 1.70em; cursor: pointer; color: red;"
+                                            onclick="return like({{ $item->id }})"></i>
+                                    </div>
+                                @else
+                                    <div class="d-flex align-items-center me-3">
+                                        <i class="fa fa-heart" style="font-size: 1.70em; cursor: pointer;"
+                                            onclick="return like({{ $item->id }})"></i>
+                                    </div>
+                                @endif
+                                <div class="d-flex align-items-center me-3">
+                                    <a href="{{ route('comment', $item->id) }}">
+                                        <i class="fa fa-comment" style="font-size: 1.70em; color: #696cff;"></i>
+                                    </a>
+                                </div>
+                            @endif
                         </div>
-                        <div class="text-left mt-4">
+                        <div class="text-left mt-2">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#menyukai{{ $item->id }}">
+                                <span style="color: black; font-weight: bold;">{{ $item->like }} suka</span>
+                            </a>
+
+                        </div>
+                        <div class="text-left mt-2">
                             <span style="color: black;">
                                 <span class="short-text">
                                     {!! nl2br(e(Str::limit($item->deskripsi, 500))) !!}
@@ -230,13 +266,13 @@
                                 <span class="full-text" style="display: none;">
                                     {!! nl2br(e($item->deskripsi)) !!}
                                 </span>
-                                <a href="javascript:void(0);" class="view-more" style="display: none; color: red;">View
-                                    More</a>
+                                <a href="javascript:void(0);" class="view-more"
+                                    style="display: none; color: red;">Selengkapnya</a>
                             </span>
                         </div>
                         <div class="mt-1">
                             <div class="text-left">
-                                <a href="{{ route('comment', $item->id) }}">View All Comments</a>
+                                <a href="{{ route('comment', $item->id) }}">Lihat semua {{ $item->komen }} komentar</a>
                             </div>
                         </div>
                         <div class="d-flex row justify-content-start align-items-center mt-2">
@@ -301,25 +337,44 @@
                                     <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
                                         <div class="row">
                                             <div class="col-md-8">
+                                                @php
+                                                    $userVotedOption = null;
+                                                    foreach ($jawaban as $a) {
+                                                        if (
+                                                            $a->id_post == $item->id &&
+                                                            $a->poll_id == $p->id &&
+                                                            $a->voted
+                                                        ) {
+                                                            $userVotedOption = $a->id;
+                                                            break;
+                                                        }
+                                                    }
+                                                @endphp
                                                 @foreach ($jawaban as $a)
                                                     @if ($a->id_post == $item->id && $a->poll_id == $p->id)
                                                         <div
                                                             class="mb-2 d-flex justify-content-between align-items-center">
                                                             <div class="form-check">
-                                                                @if (Auth::user()->role === 'Pengamat')
-                                                                    <input type="radio"
-                                                                        id="option{{ $a->id }}"
-                                                                        name="poll{{ $p->id }}"
-                                                                        class="form-check-input" disabled
-                                                                        @if ($a->voted) checked @endif
-                                                                        onclick="return vote({{ $a->id }})">
-                                                                @else
+                                                                @if ($userVotedOption !== null)
                                                                     <input type="radio"
                                                                         id="option{{ $a->id }}"
                                                                         name="poll{{ $p->id }}"
                                                                         class="form-check-input"
-                                                                        @if ($a->voted) checked @endif
-                                                                        onclick="return vote({{ $a->id }})">
+                                                                        {{ $userVotedOption == $a->id ? 'checked' : '' }}
+                                                                        disabled>
+                                                                @else
+                                                                    @if (Auth::user()->role === 'Pengamat')
+                                                                        <input type="radio"
+                                                                            id="option{{ $a->id }}"
+                                                                            name="poll{{ $p->id }}"
+                                                                            class="form-check-input" disabled>
+                                                                    @else
+                                                                        <input type="radio"
+                                                                            id="option{{ $a->id }}"
+                                                                            name="poll{{ $p->id }}"
+                                                                            class="form-check-input"
+                                                                            onclick="return vote({{ $a->id }})">
+                                                                    @endif
                                                                 @endif
                                                                 <label class="form-check-label"
                                                                     for="option{{ $a->id }}">{{ $a->jawaban }}</label>
@@ -587,11 +642,11 @@
             if (shortText.is(':visible')) {
                 shortText.hide();
                 fullText.show();
-                $(this).text('View Less');
+                $(this).text('Lebih Sedikit');
             } else {
                 shortText.show();
                 fullText.hide();
-                $(this).text('View More');
+                $(this).text('Selengkapnya');
             }
         });
     });

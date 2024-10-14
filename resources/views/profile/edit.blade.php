@@ -42,7 +42,7 @@
                                             <div class="form-group" style="color: black; font-weight:bold;">
                                                 <label>Nama Lengkap</label>
                                                 <input type="text" class="form-control" value="{{ $item->nama }}"
-                                                    name="nama">
+                                                    name="nama" oninput="this.value = this.value.toUpperCase()">
                                             </div>
                                             <div class="form-group" style="color: black; font-weight:bold;">
                                                 <label>Gender</label>
@@ -65,14 +65,16 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <Button type="submit" class="btn btn-primary">Simpan Perubahan Tanpa
-                                                Foto</Button>
                                     </div>
                                     <div class="col-md-6">
+                                        <div class="form-group" style="color: black; font-weight:bold;">
+                                            <label>Password</label>
+                                            <input type="text" class="form-control" name="password"
+                                                placeholder="***********">
+                                        </div>
+                                        <Button type="submit" class="btn btn-primary">Simpan Perubahan Tanpa
+                                            Foto</Button>
                                         <h6 class="mt-2" style="color: black; font-weight: bold;">Foto Profil</h6>
-                                        {{-- <div class="form-group mt-3">
-                                            <input type="file" name="foto" class="form-control">
-                                        </div> --}}
                                         <div class="form-group mt-3">
                                             <input type="file" id="fotoInput" name="foto" class="form-control"
                                                 accept="image/*">

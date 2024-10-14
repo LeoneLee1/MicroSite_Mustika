@@ -6,7 +6,9 @@ use App\Models\Poll;
 use App\Models\Post;
 use App\Models\Comment;
 use App\Models\PollAnswer;
+use App\Models\CommentLike;
 use Illuminate\Http\Request;
+use App\Models\CommentReplies;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -22,7 +24,7 @@ class PostController extends Controller
         $request->validate([
             'nik' => 'required',
             'judul' => 'required',
-            'media' => 'required',
+            // 'media' => 'required',
             'deskripsi' => 'required|max:1000',
         ]);
 
@@ -47,16 +49,33 @@ class PostController extends Controller
     }
 
     public function viewComment($id){
+
+        $userNik = Auth::user()->nik;
         
         $post = Post::findOrFail($id);
 
-        $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' ELSE u.nama END AS nama, u.foto, c.id AS id_comment,p.id FROM comments c
+        $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.foto,c.id, p.id AS post_id, cl.nik AS liked FROM comments c
                         LEFT JOIN users u ON u.nik = c.nik
-                        LEFT JOIN posts p ON p.id = c.id_post 
+                        LEFT JOIN posts p ON p.id = c.id_post
+                        LEFT JOIN comments_likes cl ON cl.id_comment = c.id
+                        AND cl.nik = '$userNik'
                         WHERE p.id = '$id'
-                        ORDER BY c.id DESC;");
+                        ORDER BY c.created_at DESC;");
 
-        return view('post.komentar',compact('post','komen'));
+        $replies = DB::select("SELECT cr.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama,u.foto, c.id AS comment_id, cl.nik AS liked FROM comments_replies cr
+                                LEFT JOIN users u ON u.nik = cr.nik
+                                LEFT JOIN comments c ON c.id = cr.id_comment
+                                LEFT JOIN comments_likes cl ON c.`comment` = cr.`comment`
+                                AND cl.nik = '$userNik'
+                                ORDER BY cr.id DESC;");
+
+        $countReplies = DB::select("SELECT COUNT(id_comment) AS total, id_comment FROM comments_replies
+                                    GROUP BY id_comment;");
+
+        $commentLike = DB::select("SELECT cl.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.foto FROM comments_likes cl
+                                LEFT JOIN users u ON u.nik = cl.nik;");
+
+        return view('post.komentar',compact('post','komen','replies','countReplies','commentLike'));
     }
 
     public function komen(Request $request){
@@ -107,7 +126,7 @@ class PostController extends Controller
         $user = Auth::user()->nik;
         $userRole = Auth::user()->role;
 
-        $postQuery = "SELECT p.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' ELSE u.nama END AS nama, u.unit, u.gender,u.foto, p.created_at AS time_post, l.nik AS liked 
+        $postQuery = "SELECT p.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.unit, u.gender,u.foto, p.created_at AS time_post, l.nik AS liked 
                 FROM posts p
                 LEFT JOIN users u ON u.nik = p.nik
                 LEFT JOIN post_like l ON l.id_post = p.id AND l.nik = ?
@@ -116,7 +135,7 @@ class PostController extends Controller
         $queryParams = [$user, $id];
 
         if ($userRole === "Pengamat") {
-            $postQuery = "SELECT p.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' ELSE u.nama END AS nama, u.unit, u.gender,u.foto, p.created_at AS time_post, l.nik AS liked 
+            $postQuery = "SELECT p.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.unit, u.gender,u.foto, p.created_at AS time_post, l.nik AS liked 
                     FROM posts p
                     LEFT JOIN users u ON u.nik = p.nik
                     LEFT JOIN post_like l ON l.id_post = p.id AND l.nik = ?
@@ -126,7 +145,7 @@ class PostController extends Controller
         $data = DB::select($postQuery, $queryParams);
 
         // Sisa kode tetap sama
-        $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' ELSE u.nama END AS nama FROM comments c
+        $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama FROM comments c
                             LEFT JOIN users u ON u.nik = c.nik
                             ORDER BY c.id DESC");
 
@@ -190,6 +209,81 @@ class PostController extends Controller
             Alert::error('Gagal!','Mengubah Post.');
             return back();
         }
+    }
+
+    public function repliesComment(Request $request){
+        $request->validate([
+            'id_post' => 'required',
+            'id_comment' => 'required',
+            'nik' => 'required',
+            'comment' => 'required',
+        ]);
+
+        $data = new CommentReplies();
+        $data->id_post = $request->id_post;
+        $data->id_comment = $request->id_comment;
+        $data->nik = $request->nik;
+        $data->comment = $request->comment;
+        $data->save();
+
+        $value = Post::findOrFail($request->id_post);
+        $value->komen += 1;
+        $value->save();
+
+        return response()->json($data);
+
+    }
+
+    public function likeComments(Request $request, $id){
+        $userNik = Auth::user()->nik;
+
+        $comment = Comment::find($id);
+
+        if (!$comment) {
+            return response()->json(['success' => false, 'message' => 'Post not found'], 404);
+        }
+
+        $existingLike = CommentLike::where('nik',$userNik)
+                                    ->where('id_comment',$comment->id)
+                                    ->first();
+
+        if ($existingLike) {
+            if ($existingLike->id_comment == $id) {
+                $existingLike->delete();
+
+                $comment->likes -= 1;
+                $comment->save();
+
+                return response()->json(['success' => true, 'message' => 'Like removed']);
+            } else {
+                $oldLike = Comment::find($existingLike->id_comment);
+                if ($oldLike) {
+                    $oldLike->likes -= 1;
+                    $oldLike->save();
+                }
+
+                $existingLike->id_comment = $id;
+                $existingLike->comment = $comment->comment;
+                $existingLike->save();
+
+                $comment->likes += 1;
+                $comment->save();
+
+                return response()->json(['success' => true, 'message' => 'Like updated']);
+            }
+        } else {
+            CommentLike::create([
+                'nik' => $userNik,
+                'id_comment' => $id,
+                'comment' => $comment->comment,
+            ]);
+
+            $comment->likes += 1;
+            $comment->save();
+
+            return response()->json(['success' => true, 'message' => 'Like added']);
+        }
+
     }
 
     // public function updateSoal(Request $request, $id_post){

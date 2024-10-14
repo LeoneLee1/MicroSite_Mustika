@@ -32,7 +32,7 @@
                                     <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
                                         alt class="w-px-40 h-auto rounded-circle lazyload" />&nbsp;&nbsp;{{ $item->nama }}
                                 </strong>&nbsp;&nbsp;•
-                                {{ \Carbon\Carbon::parse($item->time_post)->format('d M Y') }}
+                                {{ \Carbon\Carbon::parse($item->time_post)->diffForHumans() }}
                             </div>
                             <div class="text-left d-block d-sm-none">
                                 <strong style="color: black;">
@@ -46,7 +46,7 @@
                                     <img src="{{ asset('img/foto/' . $item->foto) }}" alt
                                         class="w-px-40 h-auto rounded-circle lazyload" />&nbsp;{{ $item->nama }}
                                 </strong>&nbsp;&nbsp;•
-                                {{ \Carbon\Carbon::parse($item->time_post)->format('d M Y') }}
+                                {{ \Carbon\Carbon::parse($item->time_post)->diffForHumans() }}
                             </div>
                             <div class="text-left d-block d-sm-none">
                                 <strong style="color: black;">

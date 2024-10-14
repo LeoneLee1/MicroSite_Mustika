@@ -34,7 +34,7 @@ class DashboardController extends Controller
         $postQuery = DB::table('posts as p')
         ->select(
             'p.*', 
-            DB::raw("CASE WHEN u.role = 'Anonymous' THEN 'NoName' ELSE u.nama END AS nama"),
+            DB::raw("CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama"),
             'u.unit', 
             'u.gender', 
             'u.foto', 
@@ -56,7 +56,7 @@ class DashboardController extends Controller
 
         $post = $postQuery->paginate(5);
         
-        $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' ELSE u.nama END AS nama FROM comments c
+        $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama FROM comments c
                         LEFT JOIN users u ON u.nik = c.nik
                         ORDER BY c.id DESC;");
 
@@ -72,18 +72,21 @@ class DashboardController extends Controller
                                 LEFT JOIN posts p ON p.id = pa.id_post
                                 LEFT JOIN polls pl ON pl.id = pa.poll_id;");
 
-        $jawabanModal = DB::select("SELECT 
-                                    pl.jawaban,
-                                    pl.value, 
-                                    pl.id_post,
-                                    pl.poll_id,
-                                    GROUP_CONCAT(a.nik SEPARATOR ', ') AS nik_list,
-                                    GROUP_CONCAT(DATE_FORMAT(a.created_at, '%e/%c/%y %H:%i') ORDER BY a.created_at SEPARATOR ', ') AS time_vote
-                                FROM poll_answers pl
-                                LEFT JOIN answer_vote a 
-                                    ON a.id_jawaban = pl.id
-                                GROUP BY pl.jawaban, pl.value, pl.id_post, pl.poll_id, pl.id
-										  ORDER BY pl.id ASC;");
+        $postLike = DB::select("SELECT pl.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.foto FROM post_like pl
+                                LEFT JOIN users u ON u.nik = pl.nik;");
+
+        // $jawabanModal = DB::select("SELECT 
+        //                             pl.jawaban,
+        //                             pl.value, 
+        //                             pl.id_post,
+        //                             pl.poll_id,
+        //                             GROUP_CONCAT(a.nik SEPARATOR ', ') AS nik_list,
+        //                             GROUP_CONCAT(DATE_FORMAT(a.created_at, '%e/%c/%y %H:%i') ORDER BY a.created_at SEPARATOR ', ') AS time_vote
+        //                         FROM poll_answers pl
+        //                         LEFT JOIN answer_vote a 
+        //                             ON a.id_jawaban = pl.id
+        //                         GROUP BY pl.jawaban, pl.value, pl.id_post, pl.poll_id, pl.id
+		// 								  ORDER BY pl.id ASC;");
 
         $total_user = DB::select("SELECT COUNT(*) AS total_users FROM users;");
         // QUERY MYSQL
@@ -127,7 +130,7 @@ class DashboardController extends Controller
 
         // $post = $postQuery->paginate(5);
 
-        return view('welcome',compact('post','komen','poll','jawaban','jawabanModal','total_user','polling'));
+        return view('welcome',compact('post','komen','poll','jawaban','total_user','polling','postLike'));
 
     }
 
@@ -234,7 +237,7 @@ class DashboardController extends Controller
 
         $jawabanModal = DB::select("SELECT 
                                     pl.jawaban, pl.value, pl.id_post, pl.poll_id,
-                                    GROUP_CONCAT(CASE WHEN u.role = 'Anonymous' THEN 'NoName' ELSE u.nama END SEPARATOR ', ') AS nik_list,
+                                    GROUP_CONCAT(CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END SEPARATOR ', ') AS nik_list,
                                     GROUP_CONCAT(DATE_FORMAT(a.created_at, '%e/%c/%y %H:%i') ORDER BY a.created_at SEPARATOR ', ') AS time_vote
                                     FROM poll_answers pl
                                     LEFT JOIN answer_vote a ON a.id_jawaban = pl.id

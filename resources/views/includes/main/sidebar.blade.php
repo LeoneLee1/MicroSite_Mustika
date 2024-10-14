@@ -15,10 +15,10 @@
             class="menu-item {{ request()->is('/*') ? 'active' : '' }} {{ request()->is('comment*') ? 'active' : '' }} {{ request()->is('vote/view*') ? 'active' : '' }}">
             <a href="/" class="menu-link">
                 <i class="menu-icon fa fa-home"></i>
-                <div data-i18n="Analytics">Dashboard</div>
+                <div data-i18n="Analytics">Beranda</div>
             </a>
         </li>
-        @if (Auth::user()->role === 'User' || Auth::user()->role === 'Admin')
+        @if (Auth::user()->role === 'User' || Auth::user()->role === 'Admin' || Auth::user()->role === 'Anonymous')
             <li class="menu-header small text-uppercase">
                 <span class="menu-header-text">Data Master</span>
             </li>
