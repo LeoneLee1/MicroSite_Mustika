@@ -137,8 +137,12 @@ class UserController extends Controller
         $post = DB::select("SELECT * FROM posts
                             WHERE nik = '$user'
                             ORDER BY id DESC;");
+                            
+        $save = DB::select("SELECT s.*, p.judul, p.media, p.deskripsi FROM saves s
+                            LEFT JOIN posts p ON p.id = s.id_post
+                            WHERE s.nik = '$user'");
 
-        return view('profile.index',compact('data','post'));
+        return view('profile.index',compact('data','post','save'));
     }
 
     public function profileEdit(){
@@ -304,19 +308,6 @@ class UserController extends Controller
         $result = curl_exec($ch);
     
         curl_close($ch);
-    }
-
-    public function tersimpan(){
-        $user = Auth::user()->nik;
-
-        $data = DB::select("SELECT * FROM users
-                            WHERE nik = '$user'");
-        
-        $save = DB::select("SELECT s.*, p.judul, p.media, p.deskripsi FROM saves s
-                            LEFT JOIN posts p ON p.id = s.id_post
-                            WHERE s.nik = '$user'");
-
-        return view('profile.tersimpan',compact('data','save'));
     }
 
     public function tesimpanDelete($id){

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
@@ -67,7 +68,6 @@ Route::get('/register/data/see/{id}',[UserController::class,'dataRegisSee'])->na
 Route::post('/register/data/approve/{id}',[UserController::class,'dataRegisApprove'])->name('user.approve');
 Route::get('/register/data/reject/{id}',[UserController::class,'dataRegisReject'])->name('user.reject');
 Route::get('/profile',[UserController::class,'profile'])->name('profile');
-Route::get('/profile/tersimpan',[UserController::class,'tersimpan'])->name('profile.tersimpan');
 Route::get('/profile/tersimpan/delete/{id}',[UserController::class,'tesimpanDelete'])->name('profile.tersimpanDelete');
 Route::get('/profile/edit',[UserController::class,'profileEdit'])->name('profile.edit');
 Route::post('/profile/edit/insert',[UserController::class,'profileInsert'])->name('profile.insert');
@@ -89,4 +89,8 @@ Route::get('/activity/likes',[ActivityController::class,'likes'])->name('activit
 Route::get('/activity/comments',[ActivityController::class,'comments'])->name('activity.comments');
 Route::get('/activity/posts',[ActivityController::class,'posts'])->name('activity.posts');
 Route::get('/activity/voting',[ActivityController::class,'voting'])->name('activity.voting');
+
+
+// CHAT CONTROLLER
+Route::get('/chat',[ChatController::class,'index'])->name('chat');
 

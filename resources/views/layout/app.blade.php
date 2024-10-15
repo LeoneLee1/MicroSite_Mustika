@@ -45,7 +45,7 @@
     {{-- <div class="preload" id="loadingScreen">
         <video autoplay muted loop src="{{ asset('video/loading.mp4') }}"></video>
     </div> --}}
-    <div class="layout-wrapper layout-content-navbar">
+    <div class="layout-wrapper layout-content-navbar page">
         <div class="layout-container">
             @include('includes.main.sidebar')
             <div class="layout-page">

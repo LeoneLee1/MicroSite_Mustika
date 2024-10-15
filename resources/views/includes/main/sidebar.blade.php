@@ -2,7 +2,7 @@
     <div class="app-brand">
         <a href="/" class="app-brand-link mt-2">
             <img src="{{ asset('img/logo pendarasa.jpg') }}" alt="logo"
-                style="max-width: 100px; height: auto; margin-left: 45px;">
+                style="max-width: 85px; height: auto; margin-left: 45px;">
         </a>
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
             <i class="bx bx-chevron-left bx-sm align-middle"></i>
@@ -27,6 +27,13 @@
                 <a href="{{ route('post') }}" class="menu-link">
                     <i class="menu-icon fa fa-square-plus"></i>
                     <div data-i18n="Analytics">Post</div>
+                </a>
+            </li>
+            <li
+                class="menu-item {{ request()->is('chat*') ? 'active' : '' }} {{ request()->is('polling/create*') ? 'active' : '' }} mb-3">
+                <a href="{{ route('chat') }}" class="menu-link">
+                    <i class="menu-icon fa fa-comments"></i>
+                    <div data-i18n="Analytics">Chat</div>
                 </a>
             </li>
         @endif

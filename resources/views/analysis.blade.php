@@ -184,5 +184,3 @@
         </div>
     </div>
 @endsection
-@push('after-script')
-@endpush

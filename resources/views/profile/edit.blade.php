@@ -8,89 +8,98 @@
 @endpush
 
 @section('content')
-    <div class="card">
-        <div class="card-body">
-            <div class="page__center container" style="width: 100%;">
-                @foreach ($data as $item)
-                    <div class="profile_header">
-                        <div class="pic_wrapper">
-                            @if ($item->foto == '' || null)
-                                <img src="https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg"
-                                    alt="Avatar">
-                            @else
-                                <img src="{{ asset('img/foto/' . $item->foto) }}" alt="Avatar">
-                            @endif
+    <div class="text-center" id="loading" style="margin-top: 240px;">
+        <div class="spinner-border spinner-border-lg text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <div class="page">
+        <div class="card">
+            <div class="card-body">
+                <div class="page__center container" style="width: 100%;">
+                    @foreach ($data as $item)
+                        <div class="profile_header">
+                            <div class="pic_wrapper">
+                                @if ($item->foto == '' || null)
+                                    <img src="https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg"
+                                        alt="Avatar">
+                                @else
+                                    <img src="{{ asset('img/foto/' . $item->foto) }}" alt="Avatar">
+                                @endif
+                            </div>
+                            <div class="name_wrapper">
+                                <h2 style="color: #003366; font-weight: bold;">{{ $item->nama }}</h2>
+                                <h5 style="color: black;">{{ $item->nik }}</h5>
+                            </div>
+                            <div class="pull_right">
+                                <a href="{{ route('profile') }}" class="btn btn-primary mt-4">Back</a>
+                            </div>
                         </div>
-                        <div class="name_wrapper">
-                            <h2 style="color: #003366; font-weight: bold;">{{ $item->nama }}</h2>
-                            <h5 style="color: black;">{{ $item->nik }}</h5>
-                        </div>
-                        <div class="pull_right">
-                            <a href="{{ route('profile') }}" class="btn btn-primary mt-4">Back</a>
-                        </div>
-                    </div>
-                    <div class="profile-info edit_profile">
-                        <div class="tab-content">
-                            <div class="personal-info" class="tab-pane fade in active">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <form action="{{ route('profile.insert') }}" method="POST"
-                                            enctype="multipart/form-data">
-                                            @csrf
-                                            <input type="hidden" name="id" class="form-control"
-                                                value="{{ Auth::user()->id }}">
-                                            <div class="form-group" style="color: black; font-weight:bold;">
-                                                <label>Nama Lengkap</label>
-                                                <input type="text" class="form-control" value="{{ $item->nama }}"
-                                                    name="nama" oninput="this.value = this.value.toUpperCase()">
-                                            </div>
-                                            <div class="form-group" style="color: black; font-weight:bold;">
-                                                <label>Gender</label>
-                                                <select class="form-control" name="gender">
-                                                    <option value="{{ $item->gender }}">
-                                                        {{ $item->gender ?? '-' }}
-                                                    </option>
-                                                    <option value="Pria">Pria</option>
-                                                    <option value="Wanita">Wanita</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group" style="color: black; font-weight:bold;">
-                                                <label>Unit</label>
-                                                <select class="form-control" name="unit">
-                                                    <option value="{{ $item->unit }}">
-                                                        {{ $item->unit }}
-                                                    </option>
-                                                    @foreach ($unit as $u)
-                                                        <option value="{{ $u->kodeunit }}">{{ $u->kodeunit }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group" style="color: black; font-weight:bold;">
-                                            <label>Password</label>
-                                            <input type="text" class="form-control" name="password"
-                                                placeholder="***********">
+                        <div class="profile-info edit_profile">
+                            <div class="tab-content">
+                                <div class="personal-info" class="tab-pane fade in active">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <form action="{{ route('profile.insert') }}" method="POST"
+                                                enctype="multipart/form-data">
+                                                @csrf
+                                                <input type="hidden" name="id" class="form-control"
+                                                    value="{{ Auth::user()->id }}">
+                                                <div class="form-group" style="color: black; font-weight:bold;">
+                                                    <label>Nama Lengkap</label>
+                                                    <input type="text" class="form-control" value="{{ $item->nama }}"
+                                                        name="nama" oninput="this.value = this.value.toUpperCase()">
+                                                </div>
+                                                <div class="form-group" style="color: black; font-weight:bold;">
+                                                    <label>Gender</label>
+                                                    <select class="form-control" name="gender">
+                                                        <option value="{{ $item->gender }}">
+                                                            {{ $item->gender ?? '-' }}
+                                                        </option>
+                                                        <option value="Pria">Pria</option>
+                                                        <option value="Wanita">Wanita</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group" style="color: black; font-weight:bold;">
+                                                    <label>Unit</label>
+                                                    <select class="form-control" name="unit">
+                                                        <option value="{{ $item->unit }}">
+                                                            {{ $item->unit }}
+                                                        </option>
+                                                        @foreach ($unit as $u)
+                                                            <option value="{{ $u->kodeunit }}">{{ $u->kodeunit }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
                                         </div>
-                                        <Button type="submit" class="btn btn-primary">Simpan Perubahan Tanpa
-                                            Foto</Button>
-                                        <h6 class="mt-2" style="color: black; font-weight: bold;">Foto Profil</h6>
-                                        <div class="form-group mt-3">
-                                            <input type="file" id="fotoInput" name="foto" class="form-control"
-                                                accept="image/*">
-                                            <img id="imagePreview" style="display: none; width: 100%; margin-top: 10px;">
+                                        <div class="col-md-6">
+                                            <div class="form-group" style="color: black; font-weight:bold;">
+                                                <label>Password</label>
+                                                <input type="text" class="form-control" name="password"
+                                                    placeholder="***********">
+                                            </div>
+                                            <Button type="submit" class="btn btn-primary">Simpan Perubahan Tanpa
+                                                Foto</Button>
+                                            <h6 class="mt-2" style="color: black; font-weight: bold;">Foto Profil</h6>
+                                            <div class="form-group mt-3">
+                                                <input type="file" id="fotoInput" name="foto" class="form-control"
+                                                    accept="image/*">
+                                                <img id="imagePreview"
+                                                    style="display: none; width: 100%; margin-top: 10px;">
+                                            </div>
+                                            <button type="button" id="cropButton" class="btn btn    -secondary"
+                                                style="display: none;">Crop Image</button>
+                                            <button type="submit" id="submitButton" class="btn btn-primary"
+                                                style="display: none;">Simpan Perubahan</button>
                                         </div>
-                                        <button type="button" id="cropButton" class="btn btn    -secondary"
-                                            style="display: none;">Crop Image</button>
-                                        <button type="submit" id="submitButton" class="btn btn-primary"
-                                            style="display: none;">Simpan Perubahan</button>
+                                        </form>
                                     </div>
-                                    </form>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
             </div>
         </div>
     </div>
@@ -98,6 +107,25 @@
 
 @push('after-script')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script>
+        const wait = (delay = 0) =>
+            new Promise(resolve => setTimeout(resolve, delay));
+
+        const setVisible = (elementOrSelector, visible) =>
+            (typeof elementOrSelector === 'string' ?
+                document.querySelector(elementOrSelector) :
+                elementOrSelector
+            ).style.display = visible ? 'block' : 'none';
+
+        setVisible('.page', false);
+        setVisible('#loading', true);
+
+        document.addEventListener('DOMContentLoaded', () =>
+            wait(1000).then(() => {
+                setVisible('.page', true);
+                setVisible('#loading', false);
+            }));
+    </script>
     <script>
         let cropper;
         const imagePreview = document.getElementById('imagePreview');

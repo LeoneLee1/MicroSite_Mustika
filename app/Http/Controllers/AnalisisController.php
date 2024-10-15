@@ -44,7 +44,7 @@ class AnalisisController extends Controller
         $total_like = DB::select("SELECT COUNT(*) AS total_like FROM post_like");
         $total_comment = DB::select("SELECT COUNT(*) AS total_komen FROM comments");
 
-        return view('information',compact('total_post','total_postingan','total_voting','lastest_post_like','comment','total_like','total_comment','lastest_post_comment','lastest_post_voting'));
+        return view('analysis',compact('total_post','total_postingan','total_voting','lastest_post_like','comment','total_like','total_comment','lastest_post_comment','lastest_post_voting'));
     }
     
 }

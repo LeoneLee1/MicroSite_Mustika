@@ -11,11 +11,16 @@
 @endpush
 
 @section('content')
+    <div class="text-center" id="loading" style="margin-top: 240px;">
+        <div class="spinner-border spinner-border-lg text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
     <div class="row justify-content-center">
         <div class="col col-12 col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('post.insert') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('post.insert') }}" method="POST" enctype="multipart/form-data" id="myForm">
                         @csrf
                         <input type="hidden" name="nik" value="{{ Auth::user()->nik }}">
                         <div class="mb-3">
@@ -42,7 +47,7 @@
                                 Polling?
                             </label>
                         </div>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <button type="submit" class="btn btn-primary" id="simpan">Simpan</button>
                     </form>
                 </div>
             </div>
@@ -52,6 +57,25 @@
 @endsection
 
 @push('after-script')
+    <script>
+        const wait = (delay = 0) =>
+            new Promise(resolve => setTimeout(resolve, delay));
+
+        const setVisible = (elementOrSelector, visible) =>
+            (typeof elementOrSelector === 'string' ?
+                document.querySelector(elementOrSelector) :
+                elementOrSelector
+            ).style.display = visible ? 'block' : 'none';
+
+        setVisible('.card', false);
+        setVisible('#loading', true);
+
+        document.addEventListener('DOMContentLoaded', () =>
+            wait(1000).then(() => {
+                setVisible('.card', true);
+                setVisible('#loading', false);
+            }));
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const textarea = document.getElementById('deskripsi');
