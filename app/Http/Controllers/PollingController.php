@@ -65,7 +65,7 @@ class PollingController extends Controller
         }
 
         Alert::success('Berhasil!', 'Membuat Polling.');
-        return redirect('/'); 
+        return redirect('/beranda'); 
     }
 
     public function vote($answerId, Request $request){

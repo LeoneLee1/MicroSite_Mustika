@@ -60,8 +60,8 @@
 
 @section('navbar-item')
     <div class="d-none d-sm-block">
-        <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchPost"><i
-                class="fa fa-search"></i>&nbsp;&nbsp;Search Post</a>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#searchPost" class="btn btn-primary btn-sm"><i
+                class="fa fa-search"></i>&nbsp;&nbsp;Search</a>
     </div>
     <div class="d-block d-sm-none">
         <a href="#" data-bs-toggle="modal" data-bs-target="#searchPost" class="btn btn-primary btn-sm"><i
@@ -70,12 +70,12 @@
 @endsection
 
 @section('content')
+    @include('modal.cariPost')
+    @include('modal.menyukai')
     @foreach ($post as $item)
-        @include('modal.cariPost')
-        @include('modal.menyukai')
-        <div class="page">
-            <div class="infinite-scroll" id="infinite-scroll">
-                <div class="card mb-3">
+        <div class="infinite-scroll" id="infinite-scroll">
+            <div class="row justify-content-center">
+                <div class="card mb-3" style="width: 55rem;">
                     <div class="card-body">
                         <div class="row">
                             <div class="d-flex justify-content-between align-items-center mt-4">
@@ -142,7 +142,7 @@
                                         $youtubeId = $matches[2];
                                     @endphp
                                     <div class="d-none d-sm-block">
-                                        <iframe style="max-width: 1000px; min-width: 1000px; height: 350px;"
+                                        <iframe style="max-width: 750px; min-width: 750px; height: 350px;"
                                             src="https://www.youtube.com/embed/{{ $youtubeId }}" frameborder="0"
                                             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                                             allowfullscreen class="img-fluid lazyload"></iframe>
@@ -178,54 +178,6 @@
                             <div class="text-left mt-4">
                                 <h5 style="color: black; font-weight: bold;">{{ $item->judul }}</h5>
                             </div>
-                            {{-- <div class="d-flex justify-content-start mt-2">
-                            @if (Auth::user()->role == 'Pengamat')
-                                @if ($item->liked)
-                                    <div class="btn btn-outline-danger me-3 d-flex align-items-center"
-                                        style="border-radius: 50px;">
-                                        <i class="fas fa-heart me-2"></i>
-                                        <span>Like</span>
-                                        <span class="badge bg-danger ms-2">{{ $item->like }}</span>
-                                    </div>
-                                @else
-                                    <div class="btn btn-outline-secondary me-3 d-flex align-items-center"
-                                        style="border-radius: 50px;">
-                                        <i class="fas fa-heart me-2"></i>
-                                        <span>Like</span>
-                                        <span class="badge bg-secondary ms-2">{{ $item->like }}</span>
-                                    </div>
-                                @endif
-                                <a href="{{ route('comment', $item->id) }}"
-                                    class="btn btn-outline-primary d-flex align-items-center" style="border-radius: 50px;">
-                                    <i class="fas fa-comment me-2"></i>
-                                    <span>Comment</span>
-                                    <span class="badge bg-primary ms-2">{{ $item->komen }}</span>
-                                </a>
-                            @else
-                                @if ($item->liked)
-                                    <button class="btn btn-outline-danger me-3 d-flex align-items-center"
-                                        style="border-radius: 50px;" onclick="return like({{ $item->id }})">
-                                        <i class="fas fa-heart me-2"></i>
-                                        <span>Like</span>
-                                        <span class="badge bg-danger ms-2">{{ $item->like }}</span>
-                                    </button>
-                                @else
-                                    <button class="btn btn-outline-secondary me-3 d-flex align-items-center"
-                                        style="border-radius: 50px;" onclick="return like({{ $item->id }})">
-                                        <i class="fas fa-heart me-2"></i>
-                                        <span>Like</span>
-                                        <span class="badge bg-secondary ms-2">{{ $item->like }}</span>
-                                    </button>
-                                @endif
-                                <a href="{{ route('comment', $item->id) }}"
-                                    class="btn btn-outline-primary d-flex align-items-center"
-                                    style="border-radius: 50px;">
-                                    <i class="fas fa-comment me-2"></i>
-                                    <span>Comment</span>
-                                    <span class="badge bg-primary ms-2">{{ $item->komen }}</span>
-                                </a>
-                            @endif
-                        </div> --}}
                             <div class="d-flex justify-content-start">
                                 @if (Auth::user()->role == 'Pengamat')
                                     <div class="d-flex align-items-center me-3">
@@ -252,12 +204,17 @@
                                         <a href="{{ route('comment', $item->id) }}">
                                             <i class="fa fa-comment" style="font-size: 1.70em; color: #696cff;"></i>
                                         </a>
+                                        {{-- <a href="#" data-bs-toggle="modal"
+                                            data-bs-target="#komentar{{ $item->id }}">
+                                            <i class="fa fa-comment" style="font-size: 1.70em; color: #696cff;"></i>
+                                        </a> --}}
                                     </div>
                                 @endif
                             </div>
                             <div class="text-left mt-2">
                                 <a href="#" data-bs-toggle="modal" data-bs-target="#menyukai{{ $item->id }}">
-                                    <span style="color: black; font-weight: bold;">{{ $item->like }} suka</span>
+                                    <span style="color: black; font-weight: bold;">{{ $item->like }}
+                                        suka</span>
                                 </a>
 
                             </div>
@@ -275,7 +232,8 @@
                             </div>
                             <div class="mt-1">
                                 <div class="text-left">
-                                    <a href="{{ route('comment', $item->id) }}">Lihat semua {{ $item->komen }}
+                                    <a href="{{ route('comment', $item->id) }}">Lihat semua
+                                        {{ $item->komen }}
                                         komentar</a>
                                 </div>
                             </div>
@@ -338,7 +296,9 @@
                                 @foreach ($poll as $p)
                                     @if ($p->id_post == $item->id)
                                         <div class="text-center mb-4">
-                                            <h4 style="font-weight: bold; color: black;">{{ $p->soal }}</h4>
+                                            <h4 style="font-weight: bold; color: black;">
+                                                {{ $p->soal }}
+                                            </h4>
                                         </div>
                                         <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
                                             <div class="row">
@@ -425,11 +385,13 @@
                 </div>
             </div>
         </div>
+    </div>
 @endforeach
 @endsection
 
 @push('after-script')
 <script src="{{ asset('js/jquery.jscroll.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script type="text/javascript">
     $('ul.pagination').hide();
     $(function() {
@@ -573,9 +535,8 @@
 </script>
 <script>
     function like(postId) {
-        event.preventDefault();
         console.log("Id Post:", postId);
-        var scrollPosition = $(window).scrollTop();
+        // var scrollPosition = $(window).scrollTop();
         $.ajax({
             url: '/like/' + postId,
             type: 'POST',
@@ -594,15 +555,14 @@
                 console.error("Terjadi Kesalahan:", xhr.responseText);
             }
         });
-        $(window).on('load', function() {
-            $(window).scrollTop(scrollPosition);
-        });
-        return false;
+        // $(window).on('load', function() {
+        //     $(window).scrollTop(scrollPosition);
+        // });
+        // return false;
     }
 </script>
 <script>
     function vote(answerId) {
-        event.preventDefault();
         console.log("Id Answer:", answerId);
         var scrollPosition = $(window).scrollTop();
         $.ajax({

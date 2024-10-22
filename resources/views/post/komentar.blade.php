@@ -161,23 +161,24 @@
                                                                             style="color: black;">{!! nl2br(e($item->comment)) !!}</span>
                                                                     </div>
                                                                 </div>
-                                                                <div>
+                                                                {{-- <div>
                                                                     @if ($item->liked)
                                                                         <i class="fa fa-heart"
-                                                                            style="color: red; cursor: pointer;"></i>
+                                                                            style="color: red; cursor: pointer;"
+                                                                            onclick="return likeReplies({{ $item->id }})"></i>
                                                                     @else
-                                                                        <i class="fa fa-heart"
-                                                                            style="cursor: pointer;"></i>
+                                                                        <i class="fa fa-heart" style="cursor: pointer;"
+                                                                            onclick="return likeReplies({{ $item->id }})"></i>
                                                                     @endif
-                                                                </div>
+                                                                </div> --}}
                                                             </div>
                                                         </div>
                                                         <div class="d-inline-flex" style="margin-left: 78px;">
                                                             <p style="margin-right: 10px;">
                                                                 {{ \Carbon\Carbon::parse($item->created_at)->diffForHumans() }}
                                                             </p>
-                                                            <p style="margin-right: 10px;">
-                                                                {{ $item->likes }} suka</p>
+                                                            {{-- <p style="margin-right: 10px;">
+                                                                {{ $item->likes }} suka</p> --}}
                                                             {{-- <a href="javascript:void(0);" class="reply-button2"
                                                                 data-comment-id="{{ $item->comment_id }}"
                                                                 data-reply-form-id="reply-form-{{ $item->comment_id }}"
@@ -231,6 +232,35 @@
 @endsection
 
 @push('after-script')
+    <script>
+        function likeReplies(commentId) {
+            event.preventDefault();
+            console.log("Id Comment:", commentId);
+            var scrollPosition = $(window).scrollTop();
+            $.ajax({
+                url: '/comment/likeReplies/' + commentId,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        console.log("Liked");
+                        window.location.reload();
+                    } else {
+                        console.error("Failed Like");
+                    }
+                },
+                error: function(xhr) {
+                    console.error("Terjadi Kesalahan:", xhr.responseText);
+                }
+            });
+            $(window).on('load', function() {
+                $(window).scrollTop(scrollPosition);
+            });
+            return false;
+        }
+    </script>
     <script>
         function like(commentId) {
             event.preventDefault();

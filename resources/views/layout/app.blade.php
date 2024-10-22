@@ -71,7 +71,7 @@
                                                 alt="avatar profile" class="w-px-40 h-auto rounded-circle lazyload" />
                                         @else
                                             <img src="{{ asset('img/foto/' . Auth::user()->foto) }}"
-                                                alt="avatar profile" class="w-px-40 h-auto rounded-circle lazyload" />
+                                                alt="avatar profile" class="w-px-40 h-20 rounded-circle lazyload" />
                                         @endif
                                     </div>
                                 </a>

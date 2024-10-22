@@ -65,7 +65,7 @@ class PostController extends Controller
         $replies = DB::select("SELECT cr.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama,u.foto, c.id AS comment_id, cl.nik AS liked FROM comments_replies cr
                                 LEFT JOIN users u ON u.nik = cr.nik
                                 LEFT JOIN comments c ON c.id = cr.id_comment
-                                LEFT JOIN comments_likes cl ON c.`comment` = cr.`comment`
+                                LEFT JOIN comments_likes cl ON cl.id_comment = cr.id
                                 AND cl.nik = '$userNik'
                                 ORDER BY cr.id DESC;");
 
@@ -283,7 +283,57 @@ class PostController extends Controller
 
             return response()->json(['success' => true, 'message' => 'Like added']);
         }
+    }
 
+    public function likeCommentsReplies(Request $request, $id){
+        $userNik = Auth::user()->nik;
+
+        $comment = CommentReplies::find($id);
+
+        if (!$comment) {
+            return response()->json(['success' => false, 'message' => 'Post not found'], 404);
+        }
+
+        $existingLike = CommentLike::where('nik',$userNik)
+                                    ->where('id_comment',$comment->id)
+                                    ->first();
+
+        if ($existingLike) {
+            if ($existingLike->id_comment == $id) {
+                $existingLike->delete();
+
+                $comment->likes -= 1;
+                $comment->save();
+
+                return response()->json(['success' => true, 'message' => 'Like removed']);
+            } else {
+                $oldLike = CommentReplies::find($existingLike->id_comment);
+                if ($oldLike) {
+                    $oldLike->likes -= 1;
+                    $oldLike->save();
+                }
+
+                $existingLike->id_comment = $id;
+                $existingLike->comment = $comment->comment;
+                $existingLike->save();
+
+                $comment->likes += 1;
+                $comment->save();
+
+                return response()->json(['success' => true, 'message' => 'Like updated']);
+            }
+        } else {
+            CommentLike::create([
+                'nik' => $userNik,
+                'id_comment' => $id,
+                'comment' => $comment->comment,
+            ]);
+
+            $comment->likes += 1;
+            $comment->save();
+
+            return response()->json(['success' => true, 'message' => 'Like added']);
+        }
     }
 
     // public function updateSoal(Request $request, $id_post){

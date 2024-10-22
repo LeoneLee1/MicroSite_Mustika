@@ -20,9 +20,12 @@ use App\Http\Controllers\DashboardController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/',function(){
+    return view('landingPage');
+});
 
 // DASHBOARD CONTROLLER
-Route::get('/',[DashboardController::class,'index'])->name('/')->middleware('auth');
+Route::get('/beranda',[DashboardController::class,'index'])->name('beranda')->middleware('auth');
 Route::get('/chart/json/{id}',[DashboardController::class,'chart'])->name('chart.json');
 Route::post('/like/{postId}',[DashboardController::class,'like'])->name('like.post');
 Route::post('/save/{id}',[DashboardController::class,'save'])->name('save');
@@ -37,12 +40,12 @@ Route::post('/login/register/insert',[LoginController::class,'insert'])->name('r
 
 
 // POST CONTROLLER
-Route::get('/comment/{id}',[PostController::class,'viewComment'])->name('comment');
+Route::get('/comment/{id}',[PostController::class,'viewComment'])->name('comment')->middleware('auth');
 Route::post('/comment/insert',[PostController::class,'komen'])->name('comment.insert');
 Route::get('/comment/delete/{id_comment}',[PostController::class,'deleteComment'])->name('comment.delete');
-Route::get('/post',[PostController::class,'index'])->name('post');
+Route::get('/post',[PostController::class,'index'])->name('post')->middleware('auth');
 Route::post('/post/insert',[PostController::class,'insert'])->name('post.insert');
-Route::get('/post/lihat/{id}',[PostController::class,'lihat'])->name('post.lihat');
+Route::get('/post/lihat/{id}',[PostController::class,'lihat'])->name('post.lihat')->middleware('auth');
 Route::get('/search', [PostController::class, 'search'])->name('post.search');
 Route::get('/post/edit/{id}', [PostController::class, 'edit'])->name('post.edit');
 Route::post('/post/edit/update/{id}', [PostController::class, 'update'])->name('post.update');
@@ -55,19 +58,19 @@ Route::post('/comment/likeReplies/{id_comment}',[PostController::class,'likeComm
 
 
 // USER CONTROLLER
-Route::get('/user',[UserController::class,'index'])->name('user');
+Route::get('/user',[UserController::class,'index'])->name('user')->middleware('auth');
 Route::get('/user/json',[UserController::class,'json'])->name('user.json');
 Route::get('/user/create',[UserController::class,'create'])->name('user.create');
 Route::post('/user/create/insert',[UserController::class,'insert'])->name('user.insert');
 Route::get('/user/edit/{id}',[UserController::class,'edit'])->name('user.edit');
 Route::post('/user/edit/update/{id}',[UserController::class,'update'])->name('user.update');
 Route::get('/user/delete/{id}',[UserController::class,'delete'])->name('user.delete');
-Route::get('/register/data',[UserController::class,'dataRegis'])->name('user.regis');
+Route::get('/register/data',[UserController::class,'dataRegis'])->name('user.regis')->middleware('auth');
 Route::get('/register/data/json',[UserController::class,'dataRegisJson'])->name('user.regis.json');
 Route::get('/register/data/see/{id}',[UserController::class,'dataRegisSee'])->name('user.regis.see');
 Route::post('/register/data/approve/{id}',[UserController::class,'dataRegisApprove'])->name('user.approve');
 Route::get('/register/data/reject/{id}',[UserController::class,'dataRegisReject'])->name('user.reject');
-Route::get('/profile',[UserController::class,'profile'])->name('profile');
+Route::get('/profile',[UserController::class,'profile'])->name('profile')->middleware('auth');
 Route::get('/profile/tersimpan/delete/{id}',[UserController::class,'tesimpanDelete'])->name('profile.tersimpanDelete');
 Route::get('/profile/edit',[UserController::class,'profileEdit'])->name('profile.edit');
 Route::post('/profile/edit/insert',[UserController::class,'profileInsert'])->name('profile.insert');
@@ -81,10 +84,10 @@ Route::get('/vote/view/{poll_id}',[PollingController::class,'viewVotes'])->name(
 
 
 // ANALISIS CONTROLLER
-Route::get('/analysis',[AnalisisController::class,'chart'])->name('analysis');
+Route::get('/analysis',[AnalisisController::class,'chart'])->name('analysis')->middleware('auth');
 
 // ACTIVITY CONTROLLER
-Route::get('/activity',[ActivityController::class,'index'])->name('activity');
+Route::get('/activity',[ActivityController::class,'index'])->name('activity')->middleware('auth');
 Route::get('/activity/likes',[ActivityController::class,'likes'])->name('activity.likes');
 Route::get('/activity/comments',[ActivityController::class,'comments'])->name('activity.comments');
 Route::get('/activity/posts',[ActivityController::class,'posts'])->name('activity.posts');
@@ -92,5 +95,8 @@ Route::get('/activity/voting',[ActivityController::class,'voting'])->name('activ
 
 
 // CHAT CONTROLLER
-Route::get('/chat',[ChatController::class,'index'])->name('chat');
+Route::get('/chat',[ChatController::class,'index'])->name('chat')->middleware('auth');
+Route::get('/messages', [ChatController::class, 'fetchMessages']);
+Route::post('/send-message', [ChatController::class, 'sendMessage']);
+Route::get('/chat/json',[ChatController::class,'chat'])->name('chat.json');
 

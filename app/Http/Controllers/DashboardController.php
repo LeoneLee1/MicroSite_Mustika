@@ -56,7 +56,7 @@ class DashboardController extends Controller
 
         $post = $postQuery->paginate(5);
         
-        $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama FROM comments c
+        $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.foto FROM comments c
                         LEFT JOIN users u ON u.nik = c.nik
                         ORDER BY c.id DESC;");
 
@@ -72,65 +72,11 @@ class DashboardController extends Controller
                                 LEFT JOIN posts p ON p.id = pa.id_post
                                 LEFT JOIN polls pl ON pl.id = pa.poll_id;");
 
-        $postLike = DB::select("SELECT pl.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.foto FROM post_like pl
-                                LEFT JOIN users u ON u.nik = pl.nik;");
+        $postLike = DB::select("SELECT pl.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.foto, p.judul FROM post_like pl
+                                LEFT JOIN users u ON u.nik = pl.nik
+                                LEFT JOIN posts p ON p.id = pl.id_post;");
 
-        // $jawabanModal = DB::select("SELECT 
-        //                             pl.jawaban,
-        //                             pl.value, 
-        //                             pl.id_post,
-        //                             pl.poll_id,
-        //                             GROUP_CONCAT(a.nik SEPARATOR ', ') AS nik_list,
-        //                             GROUP_CONCAT(DATE_FORMAT(a.created_at, '%e/%c/%y %H:%i') ORDER BY a.created_at SEPARATOR ', ') AS time_vote
-        //                         FROM poll_answers pl
-        //                         LEFT JOIN answer_vote a 
-        //                             ON a.id_jawaban = pl.id
-        //                         GROUP BY pl.jawaban, pl.value, pl.id_post, pl.poll_id, pl.id
-		// 								  ORDER BY pl.id ASC;");
-
-        $total_user = DB::select("SELECT COUNT(*) AS total_users FROM users;");
-        // QUERY MYSQL
-        // $postQuery = "SELECT p.*, u.nama, u.unit, u.gender, p.created_at AS time_post, l.nik AS liked 
-        //           FROM posts p
-        //           LEFT JOIN users u ON u.nik = p.nik
-        //           LEFT JOIN post_like l ON l.id_post = p.id AND l.nik = ?
-        //           WHERE 1=1";
-
-        // $queryParams = [$user];
-
-        // if ($userRole === "Pengamat") {
-        //     $postQuery .= " AND p.created_at <= DATE_SUB(?, INTERVAL 24 HOUR)";
-        //     $queryParams[] = $currentTime;
-        // }
-
-        // $postQuery .= " ORDER BY p.id DESC";
-
-        // $post = DB::select($postQuery, $queryParams);
-
-        // $post = DB::select("SELECT p.*, u.nama, u.unit,u.gender , p.created_at AS time_post, l.nik AS liked FROM posts p
-        //                 LEFT JOIN users u ON u.nik = p.nik
-        //                 LEFT JOIN post_like l ON l.id_post = p.id
-        //                 AND l.nik = '$user'
-        //                 ORDER BY p.id DESC;");
-
-
-        // $postQuery = DB::table('posts as p')
-        // ->select('p.*', 'u.nama', 'u.unit', 'u.gender','u.foto', 'p.created_at as time_post', 'l.nik as liked')
-        // ->leftJoin('users as u', 'u.nik', '=', 'p.nik')
-        // ->leftJoin('post_like as l', function($join) use ($user) {
-        //     $join->on('l.id_post', '=', 'p.id')
-        //         ->where('l.nik', '=', $user);
-        // });
-
-        // if ($userRole === "Pengamat") {
-        //     $postQuery->where('p.created_at', '<=', DB::raw("DATE_SUB('" . $currentTime . "', INTERVAL 24 HOUR)"));
-        // }
-
-        // $postQuery->orderBy('p.id', 'desc');
-
-        // $post = $postQuery->paginate(5);
-
-        return view('welcome',compact('post','komen','poll','jawaban','total_user','polling','postLike'));
+        return view('welcome',compact('post','komen','poll','jawaban','polling','postLike'));
 
     }
 

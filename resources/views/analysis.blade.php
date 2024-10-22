@@ -15,7 +15,7 @@
                                     You have post <span class="fw-bold">{{ $item->total }}</span>&nbsp;media.
                                 </p>
                             @endforeach
-                            <a href="{{ route('/') }}" class="btn btn-sm btn-outline-primary">View Post Media</a>
+                            <a href="{{ route('beranda') }}" class="btn btn-sm btn-outline-primary">View Post Media</a>
                         </div>
                     </div>
                     <div class="col-lg-5 col-md-6 col-12 text-center">
@@ -58,7 +58,7 @@
                                             alt="Avatar" class="w-px-40 h-auto rounded-circle lazyload"></span>
                                     @else
                                         <img src="{{ asset('img/foto/' . $last->foto) }}" alt="Avatar"
-                                            class="w-px-40 h-auto rounded-circle lazyload">
+                                            class="w-px-40 h-40 rounded-circle lazyload">
                                     @endif
                                 </div>
                                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
@@ -109,7 +109,7 @@
                                             alt="Avatar" class="w-px-40 h-auto rounded-circle lazyload"></span>
                                     @else
                                         <img src="{{ asset('img/foto/' . $last->foto) }}" alt="Avatar"
-                                            class="w-px-40 h-auto rounded-circle lazyload">
+                                            class="w-px-40 h-40 rounded-circle lazyload">
                                     @endif
                                 </div>
                                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
@@ -160,7 +160,7 @@
                                             alt="Avatar" class="w-px-40 h-auto rounded-circle lazyload"></span>
                                     @else
                                         <img src="{{ asset('img/foto/' . $last->foto) }}" alt="Avatar"
-                                            class="w-px-40 h-auto rounded-circle lazyload">
+                                            class="w-px-40 h-40 rounded-circle lazyload">
                                     @endif
                                 </div>
                                 <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">

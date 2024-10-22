@@ -19,7 +19,7 @@ class LoginController extends Controller
 
     public function proses(Request $request){
         if (Auth::attempt($request->only('nik','password'))) {
-            return redirect('/');
+            return redirect('/beranda');
         } else {
             Alert::error('Gagal!','Nik atau Password anda salah!');
             return redirect('/login');
@@ -79,6 +79,6 @@ class LoginController extends Controller
 
     public function logout(){
         Auth::logout();
-        return redirect('/login');
+        return redirect('/');
     }
 }
