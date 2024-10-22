@@ -64,12 +64,16 @@
                 class="fa fa-search"></i>&nbsp;&nbsp;Search</a>
     </div>
     <div class="d-block d-sm-none">
-        <a href="#" data-bs-toggle="modal" data-bs-target="#searchPost" class="btn btn-primary btn-sm"><i
-                class="fa fa-search"></i>&nbsp;&nbsp;Search</a>
+        <div class="d-flex align-items-center">
+            <i class="fa fa-search"></i>
+            <input type="text" id="searchInput" class="form-control border-0 shadow-none" placeholder="Search..."
+                aria-label="Search...">
+        </div>
     </div>
 @endsection
 
 @section('content')
+    <div id="searchResults" class="container"></div>
     @include('modal.cariPost')
     @include('modal.menyukai')
     @foreach ($post as $item)
@@ -392,6 +396,71 @@
 @push('after-script')
 <script src="{{ asset('js/jquery.jscroll.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+
+    searchInput.addEventListener('input', debounce(function() {
+        const searchTerm = this.value.trim();
+
+        if (searchTerm === '') {
+            searchResults.innerHTML = '';
+            return;
+        }
+
+        axios.get('/search', {
+                params: {
+                    query: searchTerm
+                }
+            })
+            .then(response => {
+                displayResults(response.data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }, 300));
+
+    function displayResults(results) {
+        searchResults.innerHTML = '';
+        if (results.length === 0) {
+            searchResults.innerHTML = '<p>No results found.</p>';
+        } else {
+            const ul = document.createElement('ul');
+            ul.className = 'list-unstyled';
+            results.forEach(post => {
+                const li = document.createElement('li');
+                li.className = 'mb-2';
+                li.innerHTML = `
+                <a href="/post/lihat/${post.id}" class="text-decoration-none">
+                    <strong>${post.judul}</strong>
+                    <br>
+                    <small>${post.deskripsi.substring(0, 100)}...</small>
+                </a>
+            `;
+                ul.appendChild(li);
+            });
+            searchResults.appendChild(ul);
+        }
+    }
+
+    function debounce(func, delay) {
+        let debounceTimer;
+        return function() {
+            const context = this;
+            const args = arguments;
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => func.apply(context, args), delay);
+        }
+    }
+
+    // Tambahkan event listener untuk menutup modal saat link diklik
+    document.addEventListener('click', function(event) {
+        if (event.target.closest('#searchResults a')) {
+            $('#searchPost').modal('hide');
+        }
+    });
+</script>
 <script type="text/javascript">
     $('ul.pagination').hide();
     $(function() {
