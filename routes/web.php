@@ -99,4 +99,3 @@ Route::get('/chat',[ChatController::class,'index'])->name('chat')->middleware('a
 Route::get('/messages', [ChatController::class, 'fetchMessages']);
 Route::post('/send-message', [ChatController::class, 'sendMessage']);
 Route::get('/chat/json',[ChatController::class,'chat'])->name('chat.json');
-

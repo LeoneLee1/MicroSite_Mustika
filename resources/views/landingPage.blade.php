@@ -29,7 +29,7 @@
             top: 0;
             height: 100%;
             width: 100%;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://t3.ftcdn.net/jpg/07/83/62/04/360_F_783620476_haep6efhqJ0dkYUFG4oH0x3sdcwXsvMR.jpg');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://i.ibb.co.com/Kbp75Xh/photo-6163651440313222115-y.jpg');
             background-size: cover;
             opacity: 0.8;
             pointer-events: none;
@@ -49,8 +49,18 @@
             margin-bottom: 1rem;
         }
 
+        #waktu {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgb(205, 205, 205);
+            text-align: center;
+            text-transform: uppercase;
+        }
+
         .main-text {
-            font-size: 3.5rem;
+            font-size: 2.5rem;
             font-weight: 600;
             line-height: 1.2;
             margin-bottom: 3rem;
@@ -83,14 +93,43 @@
 <body>
     <div class="leaves"></div>
     <div class="content">
-        <div class="welcome">Welcome to Pendar rasa</div>
+        <div class="clock" id="waktu">
+            <p id="date"></p>
+            <p id="time"></p>
+        </div>
+        <div class="welcome">Selamat datang di pendarrasa</div>
         <div class="main-text">
-            Memintal kebersamaan, merajut sukses keberlanjutan
+            Pendaran rasa yang tak tampak mata, yang tak tersentuh tangan dan yang terabaikan oleh kepentingan
         </div>
         <div class="buttons">
             <a href="{{ route('beranda') }}" class="btn">Get Started</a>
         </div>
     </div>
+    <script>
+        const WEEK = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
+
+        function updateTime() {
+            var now = new Date();
+
+            document.getElementById("time").innerText =
+                zeroPadding(now.getHours(), 2) + ":" +
+                zeroPadding(now.getMinutes(), 2) + ":" +
+                zeroPadding(now.getSeconds(), 2);
+
+            document.getElementById("date").innerText =
+                now.getFullYear() + "/" +
+                zeroPadding(now.getMonth() + 1, 2) + "/" +
+                zeroPadding(now.getDate(), 2) + " " +
+                WEEK[now.getDay()];
+        }
+
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        function zeroPadding(num, digit) {
+            return String(num).padStart(digit, '0');
+        }
+    </script>
 </body>
 
 </html>

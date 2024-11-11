@@ -59,23 +59,13 @@
 @endpush
 
 @section('navbar-item')
-    <div class="d-none d-sm-block">
-        <a href="#" data-bs-toggle="modal" data-bs-target="#searchPost" class="btn btn-primary btn-sm"><i
-                class="fa fa-search"></i>&nbsp;&nbsp;Search</a>
-    </div>
-    <div class="d-block d-sm-none">
-        <div class="d-flex align-items-center">
-            <i class="fa fa-search"></i>
-            <input type="text" id="searchInput" class="form-control border-0 shadow-none" placeholder="Search..."
-                aria-label="Search...">
-        </div>
-    </div>
+    <a href="#" data-bs-toggle="modal" data-bs-target="#searchPost" class="btn btn-primary btn-sm d-block d-sm-none"><i
+            class="fa fa-search"></i>&nbsp;&nbsp;Search</a>
 @endsection
 
+@include('modal.cariPost')
+@include('modal.menyukai')
 @section('content')
-    <div id="searchResults" class="container"></div>
-    @include('modal.cariPost')
-    @include('modal.menyukai')
     @foreach ($post as $item)
         <div class="infinite-scroll" id="infinite-scroll">
             <div class="row justify-content-center">
@@ -175,7 +165,6 @@
                                                 Material</a>
                                         </div>
                                     @else
-                                        {{-- <p>Unsupported media type or URL.</p> --}}
                                     @endif
                                 @endif
                             </div>
@@ -208,10 +197,6 @@
                                         <a href="{{ route('comment', $item->id) }}">
                                             <i class="fa fa-comment" style="font-size: 1.70em; color: #696cff;"></i>
                                         </a>
-                                        {{-- <a href="#" data-bs-toggle="modal"
-                                            data-bs-target="#komentar{{ $item->id }}">
-                                            <i class="fa fa-comment" style="font-size: 1.70em; color: #696cff;"></i>
-                                        </a> --}}
                                     </div>
                                 @endif
                             </div>
@@ -389,7 +374,6 @@
                 </div>
             </div>
         </div>
-    </div>
 @endforeach
 @endsection
 

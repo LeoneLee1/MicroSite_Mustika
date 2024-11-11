@@ -36,6 +36,18 @@
                                 @include('modal.panduan')
                             </a>
                         </div>
+                        {{-- <div class="mb-3">
+                            <label class="form-label">Media</label>
+                            <div class="mb-3">
+                                <button type="button" class="btn btn-sm btn-success" onclick="showInput('text')">Link URL
+                                    (Youtube/Article)</button>
+                                <button type="button" class="btn btn-sm btn-warning" onclick="showInput('file')">File
+                                    Upload</button>
+                            </div>
+                            <input type="text" name="media" class="form-control" placeholder="Link URL" id="textInput">
+                            <input type="file" name="media_file" class="form-control" style="display: none;"
+                                id="fileInput">
+                        </div> --}}
                         <div class="mb-3">
                             <label class="form-label">Deskripsi</label>
                             <textarea name="deskripsi" class="form-control" rows="8" maxlength="1000" required id="deskripsi"></textarea>
@@ -57,6 +69,17 @@
 @endsection
 
 @push('after-script')
+    <script>
+        function showInput(type) {
+            if (type === 'text') {
+                document.getElementById('textInput').style.display = 'block';
+                document.getElementById('fileInput').style.display = 'none';
+            } else if (type === 'file') {
+                document.getElementById('textInput').style.display = 'none';
+                document.getElementById('fileInput').style.display = 'block';
+            }
+        }
+    </script>
     <script>
         const wait = (delay = 0) =>
             new Promise(resolve => setTimeout(resolve, delay));

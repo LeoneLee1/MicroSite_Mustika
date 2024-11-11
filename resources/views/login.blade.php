@@ -25,63 +25,36 @@
         .swal2-container {
             z-index: 9999 !important;
         }
-
-        /* .preload {
-            position: fixed;
-            width: 100vw;
-            height: 100vh;
-            top: 0;
-            left: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #ffffff;
-            z-index: 10000;
-        }
-
-        .preload.loaded {
-            display: none;
-        }
-
-        .preload video {
-            max-width: 100%;
-            max-height: 100%;
-        } */
     </style>
 </head>
 
 <body>
-    {{-- <div class="preload" id="loadingScreen">
-        <video autoplay muted loop src="{{ asset('video/loading.mp4') }}"></video>
-    </div> --}}
-    <div class="container">
-        <div class="row justify-content-center" style="margin-top: 85px;">
-            <div class="col col-12 col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="text-center">
-                            <img src="{{ asset('img/logo pendarasa.jpg') }}" alt="logo"
-                                style="max-width: 150px; min-width: 150px;">
-                        </div>
-                        <form action="{{ route('login.proses') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="Nik" class="form-label">NIK</label>
-                                <input type="text" name="nik" id="Nik" class="form-control"
-                                    placeholder="NIK" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="Password" class="form-label">Password</label>
-                                <input type="password" name="password" id="Password" class="form-control"
-                                    placeholder="Password" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Login</button>
-                        </form>
-                        <p class="mt-4 text-center">
-                            <span>Belum Punya Akun?</span>
-                            <a href="{{ route('register') }}">Buat Akun!</a>
-                        </p>
+    <div class="row justify-content-center" style="margin-top: 85px;">
+        <div class="col col-12 col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center">
+                        <img src="{{ asset('img/logo pendarasa.jpg') }}" alt="logo"
+                            style="max-width: 150px; min-width: 150px;">
                     </div>
+                    <form action="{{ route('login.proses') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="Nik" class="form-label">NIK</label>
+                            <input type="text" name="nik" id="Nik" class="form-control" placeholder="NIK"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="Password" class="form-label">Password</label>
+                            <input type="password" name="password" id="Password" class="form-control"
+                                placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                    <p class="mt-4 text-center">
+                        <span>Belum Punya Akun?</span>
+                        <a href="{{ route('register') }}">Buat Akun!</a>
+                    </p>
                 </div>
             </div>
         </div>

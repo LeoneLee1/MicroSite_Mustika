@@ -24,8 +24,7 @@ class PostController extends Controller
         $request->validate([
             'nik' => 'required',
             'judul' => 'required',
-            // 'media' => 'required',
-            'deskripsi' => 'required|max:1000',
+            'deskripsi' => 'required|max:1001',
         ]);
 
         $post = new Post();
