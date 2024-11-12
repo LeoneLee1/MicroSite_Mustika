@@ -36,13 +36,13 @@
                     <div data-i18n="Analytics">buat</div>
                 </a>
             </li>
-            <li
+            {{-- <li
                 class="menu-item {{ request()->is('chat*') ? 'active' : '' }} {{ request()->is('polling/create*') ? 'active' : '' }} mb-2">
                 <a href="{{ route('chat') }}" class="menu-link">
                     <i class="menu-icon fa fa-comments"></i>
                     <div data-i18n="Analytics">Chat</div>
                 </a>
-            </li>
+            </li> --}}
         @endif
         {{-- <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Settings</span>
