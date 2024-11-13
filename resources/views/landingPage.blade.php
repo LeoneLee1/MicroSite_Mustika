@@ -120,15 +120,15 @@
         @media (max-width: 768px) {
             .content-wrapper {
                 flex-direction: column;
-                gap: 1.5rem;
+                gap: 1.2rem;
             }
 
             .main-text {
-                font-size: 2rem;
+                font-size: 0.9rem;
             }
 
             .sub-text {
-                display: none;
+                font-size: 0.5rem;
             }
         }
     </style>
