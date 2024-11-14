@@ -17,6 +17,7 @@ class DashboardController extends Controller
     public function index(Request $request){
 
         $user = Auth::user()->nik;
+        $userId = Auth::user()->id;
         $userRole = Auth::user()->role;
         $currentTime = Carbon::now();
 

@@ -55,12 +55,31 @@
                 opacity: 1;
             }
         }
+
+        .refresh-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            width: 40px;
+            height: 40px;
+            background-color: #6777ef;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 15px;
+        }
     </style>
 @endpush
 
 @section('navbar-item')
-    <a href="#" data-bs-toggle="modal" data-bs-target="#searchPost" class="btn btn-primary btn-sm d-block d-sm-none"><i
-            class="fa fa-search"></i>&nbsp;&nbsp;Search</a>
+    {{-- <a href="#" data-bs-toggle="modal" data-bs-target="#searchPost" class="btn btn-primary btn-sm d-block d-sm-none"><i
+            class="fa fa-search"></i>&nbsp;&nbsp;Search</a> --}}
 @endsection
 
 @include('modal.cariPost')
@@ -367,6 +386,10 @@
             </div>
         </div>
 @endforeach
+<div class="d-block d-sm-none">
+    <button id="refreshButton" class="refresh-button"data-bs-toggle="modal" data-bs-target="#searchPost"><i
+            class="fa fa-search"></i></button>
+</div>
 @endsection
 
 @push('after-script')

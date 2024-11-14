@@ -37,14 +37,25 @@
             max-width: 130%;
             max-height: 130%;
         } */
+        .nav-item .badge {
+            position: absolute;
+            top: 0;
+            /* Sesuaikan posisi */
+            right: 0;
+            /* Sesuaikan posisi */
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            font-size: 10px;
+            padding: 4px 6px;
+            line-height: 1;
+            transform: translate(50%, -50%);
+        }
     </style>
     @stack('after-style')
 </head>
 
 <body>
-    {{-- <div class="preload" id="loadingScreen">
-        <video autoplay muted loop src="{{ asset('video/loading.mp4') }}"></video>
-    </div> --}}
     <div class="layout-wrapper layout-content-navbar page">
         <div class="layout-container">
             @include('includes.main.sidebar')
@@ -113,14 +124,6 @@
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.2.6/js/dataTables.responsive.min.js"></script>
     @stack('after-script')
-    {{-- <script>
-        window.onload = function() {
-            const loadingScreen = document.getElementById('loadingScreen');
-            setTimeout(function() {
-                loadingScreen.classList.add('loaded');
-            }, 2000);
-        };
-    </script> --}}
 </body>
 
 </html>

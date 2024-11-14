@@ -42,9 +42,13 @@ class LoginController extends Controller
             'unit' => 'required',
         ]);
 
-        $cekNik = User::where('nik',$request->nik)->first();
+        $cekNikUsers = User::where('nik',$request->nik)->first();
+        $cekNikRegister = AkunRegis::where('nik',$request->nik)->first();
 
-        if ($cekNik) {
+        if ($cekNikUsers) {
+            Alert::error('Gagal!','Mohon Maaf NIK yang anda masukkan sudah terdaftar.');
+            return redirect()->back();
+        } elseif($cekNikRegister){
             Alert::error('Gagal!','Mohon Maaf NIK yang anda masukkan sudah terdaftar.');
             return redirect()->back();
         } else {

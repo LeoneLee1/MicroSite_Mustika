@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Poll;
 use App\Models\Post;
+use App\Models\Notif;
 use App\Models\Comment;
 use App\Models\PollAnswer;
 use App\Models\CommentLike;
@@ -40,6 +41,11 @@ class PostController extends Controller
             return redirect()->route('polling.create');
         } elseif($post->save()) {
             Alert::success('Berhasil!','Membuat Post.');
+            $data = new Notif();
+            $data->id_user = Auth::user()->id;
+            $data->id_post = $post->id;
+            $data->deskripsi = 'Membagikan Postingan';
+            $data->save();
             return back();
         } else {
             Alert::error('Gagal!','Membuat Post, Mohon Coba Lagi.');
