@@ -77,16 +77,11 @@
     </style>
 @endpush
 
-@section('navbar-item')
-    {{-- <a href="#" data-bs-toggle="modal" data-bs-target="#searchPost" class="btn btn-primary btn-sm d-block d-sm-none"><i
-            class="fa fa-search"></i>&nbsp;&nbsp;Search</a> --}}
-@endsection
-
 @include('modal.cariPost')
 @include('modal.menyukai')
 @section('content')
-    @foreach ($post as $item)
-        <div class="row justify-content-center">
+    <div class="row justify-content-center">
+        @foreach ($post as $item)
             <div class="card mb-3" style="width: 55rem;">
                 <div class="card-body">
                     <div class="row">
@@ -224,16 +219,25 @@
 
                         </div>
                         <div class="text-left mt-2">
-                            <span style="color: black;">
-                                <span class="short-text">
-                                    {!! nl2br(e(Str::limit($item->deskripsi, 500))) !!}
-                                </span>
-                                <span class="full-text" style="display: none;">
-                                    {!! nl2br(e($item->deskripsi)) !!}
-                                </span>
-                                <a href="javascript:void(0);" class="view-more"
-                                    style="display: none; color: red;">Selengkapnya</a>
-                            </span>
+                            {{-- <span id="deskripsi" style="color: black;">{!! $item->deskripsi !!}</span> --}}
+                            @php
+                                $fullText = $item->deskripsi;
+                                $truncated = Str::limit(strip_tags($fullText), 500, '...');
+                                $isLong = strlen(strip_tags($fullText)) > 500;
+                                $uniqueId = 'description-' . $item->id;
+                            @endphp
+                            <div id="shortText-{{ $uniqueId }}" style="color: black;">
+                                {!! $truncated !!}
+                            </div>
+                            <div id="fullText-{{ $uniqueId }}" style="color: black; display: none;">
+                                {!! $fullText !!}
+                            </div>
+                            @if ($isLong)
+                                <a onclick="toggleText('{{ $uniqueId }}')" id="readMoreBtn-{{ $uniqueId }}"
+                                    style="color: red;">
+                                    Baca Selengkapnya
+                                </a>
+                            @endif
                         </div>
                         <div class="mt-1">
                             <div class="text-left">
@@ -385,7 +389,8 @@
                 </div>
             </div>
         </div>
-@endforeach
+    @endforeach
+</div>
 <div class="d-block d-sm-none">
     <button id="refreshButton" class="refresh-button"data-bs-toggle="modal" data-bs-target="#searchPost"><i
             class="fa fa-search"></i></button>
@@ -395,7 +400,23 @@
 @push('after-script')
 <script src="{{ asset('js/jquery.jscroll.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    function toggleText(uniqueId) {
+        const shortText = document.getElementById('shortText-' + uniqueId);
+        const fullText = document.getElementById('fullText-' + uniqueId);
+        const readMoreBtn = document.getElementById('readMoreBtn-' + uniqueId);
 
+        if (shortText.style.display === 'none') {
+            shortText.style.display = 'block';
+            fullText.style.display = 'none';
+            readMoreBtn.textContent = 'Baca Selengkapnya';
+        } else {
+            shortText.style.display = 'none';
+            fullText.style.display = 'block';
+            readMoreBtn.textContent = 'Lebih Sedikit';
+        }
+    }
+</script>
 <script>
     const searchInput = document.getElementById('searchInput');
     const searchResults = document.getElementById('searchResults');
@@ -638,36 +659,6 @@
         return false;
     }
 </script>
-<script>
-    $(document).ready(function() {
-        $('.text-left').each(function() {
-            var fullText = $(this).find('.full-text');
-            var shortText = $(this).find('.short-text');
-            var viewMoreLink = $(this).find('.view-more');
-
-            if (fullText.text().length > 500) {
-                viewMoreLink.show();
-            } else {
-                shortText.text(fullText.text());
-            }
-        });
-
-        $('.view-more').click(function() {
-            var shortText = $(this).siblings('.short-text');
-            var fullText = $(this).siblings('.full-text');
-
-            if (shortText.is(':visible')) {
-                shortText.hide();
-                fullText.show();
-                $(this).text('Lebih Sedikit');
-            } else {
-                shortText.show();
-                fullText.hide();
-                $(this).text('Selengkapnya');
-            }
-        });
-    });
-</script>
 <script type="text/javascript">
     $(document).ready(function() {
         $('.comment-form').each(function() {
@@ -696,8 +687,38 @@
                 });
             });
         });
-    });
+    })
 </script>
+{{-- <script>
+    $(document).ready(function() {
+        $('.text-left').each(function() {
+            var fullText = $(this).find('.full-text');
+            var shortText = $(this).find('.short-text');
+            var viewMoreLink = $(this).find('.view-more');
+
+            if (fullText.text().length > 500) {
+                viewMoreLink.show();
+            } else {
+                shortText.text(fullText.text());
+            }
+        });
+
+        $('.view-more').click(function() {
+            var shortText = $(this).siblings('.short-text');
+            var fullText = $(this).siblings('.full-text');
+
+            if (shortText.is(':visible')) {
+                shortText.hide();
+                fullText.show();
+                $(this).text('Lebih Sedikit');
+            } else {
+                shortText.show();
+                fullText.hide();
+                $(this).text('Selengkapnya');
+            }
+        });
+    });
+</script> --}}
 {{-- <script type="text/javascript">
     $('ul.pagination').hide();
     $(function() {
