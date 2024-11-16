@@ -110,8 +110,10 @@
                                         <input type="hidden" name="id_post" value="{{ $row->post_id }}">
                                         <input type="hidden" name="id_comment" value="{{ $row->id }}">
                                         <div class="input-group me-2" style="flex: 1;">
-                                            <input type="text" name="comment" class="form-control"
-                                                style="border-radius: 50px;" placeholder="Add Reply...." id="reply-input">
+                                            {{-- <input type="text" name="comment" class="form-control"
+                                                style="border-radius: 50px;" placeholder="Add Reply...." id="reply-input"> --}}
+                                            <textarea name="comment" id="reply-input" class="form-control" style="border-radius: 50px;" rows="1"
+                                                placeholder="Add Reply...." required></textarea>
                                         </div>
                                         <button type="submit" class="btn btn-primary btn-sm me-2"
                                             style="border-radius: 50px;">Send</button>
@@ -217,8 +219,10 @@
                                                 style="object-fit: cover;" />
                                         @endif
                                     </span>
-                                    <input type="text" name="comment" class="form-control"
-                                        style="border-radius: 50px;" placeholder="Add Comments...." id="komentar">
+                                    {{-- <input type="text" name="comment" class="form-control"
+                                        style="border-radius: 50px;" placeholder="Add Comments...." id="komentar"> --}}
+                                    <textarea name="comment" class="form-control" style="border-radius: 50px;" id="komentar" rows="1"
+                                        placeholder="Add Comments...." required></textarea>
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-sm me-2" id="sendForm"
                                     style="border-radius: 50px;">Send</button>

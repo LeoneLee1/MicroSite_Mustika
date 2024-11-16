@@ -233,8 +233,8 @@
                                 {!! $fullText !!}
                             </div>
                             @if ($isLong)
-                                <a onclick="toggleText('{{ $uniqueId }}')" id="readMoreBtn-{{ $uniqueId }}"
-                                    style="color: red;">
+                                <a href="javascript:void(0);" onclick="toggleText('{{ $uniqueId }}')"
+                                    id="readMoreBtn-{{ $uniqueId }}" style="color: red;">
                                     Baca Selengkapnya
                                 </a>
                             @endif
@@ -286,9 +286,11 @@
                                                         style="object-fit: cover;" />
                                                 @endif
                                             </span>
-                                            <input type="text" name="comment" id="komentar" class="form-control"
+                                            {{-- <input type="text" name="comment" id="komentar" class="form-control"
                                                 style="border-radius: 50px; margin-left: 10px;"
-                                                placeholder="Add Comments...." required>
+                                                placeholder="Add Comments...." required> --}}
+                                            <textarea name="comment" class="form-control" style="border-radius: 50px; margin-left: 10px;" id="komentar"
+                                                rows="1" placeholder="Add Comments...." required></textarea>
                                         </div>
                                         <button type="submit" class="btn btn-primary btn-sm me-2"
                                             style="border-radius: 50px;">Send</button>
