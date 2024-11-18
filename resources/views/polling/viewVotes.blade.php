@@ -22,6 +22,9 @@
                                         <th scope="col">Votes</th>
                                         <th scope="col">Total Votes</th>
                                         <th scope="col">Time Voting</th>
+                                        @if (Auth::user()->nik === 'daniel.it')
+                                            <th scope="col">Action</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 @foreach ($jawabanModal as $a)
@@ -34,6 +37,14 @@
                                                     <td style="color: black;">{{ $a->value }}&nbsp;votes&nbsp;<i
                                                             class="fa fa-star"></i></td>
                                                     <td style="color: black;">{!! nl2br(e(str_replace(',', "\n\n", $a->time_vote ?? ''))) !!}</td>
+                                                    @if (Auth::user()->nik === 'daniel.it')
+                                                        <td style="color: black;">
+                                                            <a href="javascript:void(0);" data-bs-toggle="modal"
+                                                                data-bs-target="#handleVote{{ $a->id }}"
+                                                                class="btn btn-sm btn-primary"><i class="fa fa-eye"></i></a>
+                                                            @include('modal.handleVote')
+                                                        </td>
+                                                    @endif
                                                 </tr>
                                         @endif
                                     @endif
@@ -47,3 +58,17 @@
         @endforeach
     @endforeach
 @endsection
+
+@push('after-script')
+    <script>
+        function konfirmasi() {
+            if (confirm('Sing gena kon mau hapus iki ta?')) {
+                console.log('berhasil');
+                return true;
+            } else {
+                console.log('gagal');
+                return false;
+            }
+        }
+    </script>
+@endpush

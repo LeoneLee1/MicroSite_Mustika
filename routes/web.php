@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PollingController;
 use App\Http\Controllers\ActivityController;
@@ -81,6 +82,7 @@ Route::get('/polling/create',[PollingController::class,'create'])->name('polling
 Route::post('/polling/create/insert',[PollingController::class,'insert'])->name('polling.insert');
 Route::post('/vote/{answerId}',[PollingController::class,'vote'])->name('vote');
 Route::get('/vote/view/{poll_id}',[PollingController::class,'viewVotes'])->name('vote.view');
+Route::get('/vote/view/delete/{id}',[PollingController::class,'deleteVote'])->name('vote.delete');
 
 
 // ANALISIS CONTROLLER
@@ -99,3 +101,7 @@ Route::get('/chat',[ChatController::class,'index'])->name('chat')->middleware('a
 Route::get('/messages', [ChatController::class, 'fetchMessages']);
 Route::post('/send-message', [ChatController::class, 'sendMessage']);
 Route::get('/chat/json',[ChatController::class,'chat'])->name('chat.json');
+
+// ADMIN CONTROLLER
+Route::get('/admin/postingan',[AdminController::class,'postingan'])->name('admin.postingan');
+Route::get('/admin/postingan/edit/{id}',[AdminController::class,'edit'])->name('admin.postEdit');

@@ -184,7 +184,7 @@ class DashboardController extends Controller
                             WHERE id = '$id';");
 
         $jawabanModal = DB::select("SELECT 
-                                    pl.jawaban, pl.value, pl.id_post, pl.poll_id,
+                                    pl.id,pl.jawaban, pl.value, pl.id_post, pl.poll_id,
                                     GROUP_CONCAT(CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END SEPARATOR ', ') AS nik_list,
                                     GROUP_CONCAT(DATE_FORMAT(a.created_at, '%e/%c/%y %H:%i') ORDER BY a.created_at SEPARATOR ', ') AS time_vote
                                     FROM poll_answers pl
@@ -192,8 +192,10 @@ class DashboardController extends Controller
                                     LEFT JOIN users u ON u.nik = a.nik
                                     GROUP BY pl.jawaban, pl.value, pl.id_post, pl.poll_id, pl.id
                                     ORDER BY pl.id ASC;");
+        
+        $answer_vote = DB::select("SELECT * FROM answer_vote;");
 
-        return view('polling.viewVotes',compact('poll','jawabanModal','post'));
+        return view('polling.viewVotes',compact('poll','jawabanModal','post','answer_vote'));
     }
 
 }

@@ -167,7 +167,7 @@ class PollingController extends Controller
 
     public function viewVotes($poll_id){
 
-        $votes = DB::select("SELECT p.soal, pa.jawaban, GROUP_CONCAT(a.nik ORDER BY a.created_at ASC SEPARATOR ', ') AS votes, COUNT(a.nik) AS total_votes, 
+        $votes = DB::select("SELECT a.id AS id_answer, p.soal, pa.jawaban, GROUP_CONCAT(a.nik ORDER BY a.created_at ASC SEPARATOR ', ') AS votes, COUNT(a.nik) AS total_votes, 
                                 GROUP_CONCAT(DATE_FORMAT(a.created_at, '%d/%m/%Y %H:%i') ORDER BY a.created_at ASC SEPARATOR ', ') AS time_votes
                                 FROM poll_answers pa
                                 LEFT JOIN answer_vote a ON a.jawaban = pa.jawaban
@@ -180,6 +180,31 @@ class PollingController extends Controller
         $votesCollection = collect($votes);
 
         return view('polling.votes',compact('votesCollection'));
+    }
+
+    public function deleteVote($id){
+        $answer_vote = AnswerVote::findOrFail($id);
+
+        $id_poll = $answer_vote->poll_id;
+        $id_jawaban = $answer_vote->id_jawaban;
+
+        $poll = Poll::where('id',$id_poll)->first();
+        $poll_answer = PollAnswer::where('id',$id_jawaban)->first();
+
+        if ($answer_vote->delete()) {
+            $poll->voting -= 1;
+            $poll->save();
+
+            $poll_answer->value -= 1;
+            $poll_answer->save();
+
+            Alert::success('berhasil bro hehehehe');
+            return back();
+        } else {
+            Alert::error('gagal bro hehehehe');
+            return back();
+        }
+        
     }
 
 }
