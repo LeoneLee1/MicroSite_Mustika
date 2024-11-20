@@ -35,6 +35,7 @@
                             </div>
                         @endif
                         @foreach ($komen as $row)
+                            @include('modal.akunKomen')
                             <div class="comment mb-4">
                                 @if ($row->foto == '' || is_null($row->foto))
                                     <div class="d-flex align-items-center justify-content-between"
@@ -45,9 +46,11 @@
                                                     alt class="w-px-30 h-auto rounded-circle lazyload" />
                                             </div>
                                             <div class="ms-2">
-                                                <p style="color: black; font-weight: bold; display: inline;">
+                                                <a href="javascript:void(0)"
+                                                    style="color: black; font-weight: bold; display: inline;"
+                                                    data-bs-toggle="modal" data-bs-target="#akunKomen{{ $row->id }}">
                                                     {{ $row->nama }}
-                                                </p>
+                                                </a>
                                                 <span style="color: black;">{!! nl2br(e($row->comment)) !!}</span>
                                             </div>
                                         </div>
@@ -75,9 +78,11 @@
                                                 @endif
                                             </div>
                                             <div class="ms-2">
-                                                <p style="color: black; font-weight: bold; display: inline;">
+                                                <a href="javascript:void(0)"
+                                                    style="color: black; font-weight: bold; display: inline;"
+                                                    data-bs-toggle="modal" data-bs-target="#akunKomen{{ $row->id }}">
                                                     {{ $row->nama }}
-                                                </p>
+                                                </a>
                                                 <span style="color: black;">{!! nl2br(e($row->comment)) !!}</span>
                                             </div>
                                         </div>
@@ -138,6 +143,7 @@
                                             style="display: none;">
                                             @foreach ($replies as $item)
                                                 @if ($item->id_comment == $row->id)
+                                                    @include('modal.akunBalasKomen')
                                                     <div class="mb-2">
                                                         <div style="margin-left: 39px;">
                                                             <div class="d-flex align-items-center justify-content-between"
@@ -155,10 +161,12 @@
                                                                         @endif
                                                                     </div>
                                                                     <div class="ms-2">
-                                                                        <p
-                                                                            style="color: black; font-weight: bold; display: inline;">
+                                                                        <a href="javascript:void(0)"
+                                                                            style="color: black; font-weight: bold; display: inline;"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#akunKomenBalas{{ $item->id }}">
                                                                             {{ $item->nama }}
-                                                                        </p>
+                                                                        </a>
                                                                         <span
                                                                             style="color: black;">{!! nl2br(e($item->comment)) !!}</span>
                                                                     </div>

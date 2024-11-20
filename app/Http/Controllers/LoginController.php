@@ -29,9 +29,11 @@ class LoginController extends Controller
     public function register(){
 
         $unit = DB::select('SELECT * FROM units
-                            ORDER BY kodeunit ASC');
+                            ORDER BY kodeunit ASC;');
 
-        return view('register',compact('unit'));
+        $ap = DB::select("SELECT * FROM tbl_pt ORDER BY koderegion ASC;");
+
+        return view('register',compact('unit','ap'));
     }
 
     public function insert(Request $request){
@@ -40,6 +42,7 @@ class LoginController extends Controller
             'nik' => 'required',
             'no_hp' => 'required',
             'unit' => 'required',
+            'ap' => 'required',
         ]);
 
         $cekNikUsers = User::where('nik',$request->nik)->first();
@@ -57,6 +60,7 @@ class LoginController extends Controller
             $register->nik = $request->nik;
             $register->no_hp = $this->no_wa($request->no_hp);
             $register->unit = $request->unit;
+            $register->ap = $request->ap;
     
             if ($register->save()) {
                 return view('informasi-sukses');

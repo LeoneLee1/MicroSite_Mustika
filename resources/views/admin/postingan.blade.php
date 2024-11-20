@@ -21,7 +21,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- @foreach ($post as $item)
+                        @foreach ($post as $item)
                             <tr>
                                 <td>{{ $no++ }}</td>
                                 <td>{{ $item->nik }}</td>
@@ -33,7 +33,7 @@
                                     <a href="#" onclick="return delete()" class="btn btn-sm btn-danger">Hapus</a>
                                 </td>
                             </tr>
-                        @endforeach --}}
+                        @endforeach
                     </tbody>
                 </table>
             </div>

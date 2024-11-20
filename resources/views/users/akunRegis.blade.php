@@ -9,12 +9,13 @@
                 <table class="table table-bordered table-striped table-sm" id="regis-table">
                     <thead>
                         <tr>
-                            <th scope="col" style="color: black; font-weight: bold;">No</th>
-                            <th scope="col" style="color: black; font-weight: bold;">Nama</th>
-                            <th scope="col" style="color: black; font-weight: bold;">Nik</th>
-                            <th scope="col" style="color: black; font-weight: bold;">Nomor Hp</th>
-                            <th scope="col" style="color: black; font-weight: bold;">Unit</th>
-                            <th scope="col" style="color: black; font-weight: bold;">Aksi</th>
+                            <th scope="col" style="color: black; font-weight: bold;">NO</th>
+                            <th scope="col" style="color: black; font-weight: bold;">NAMA</th>
+                            <th scope="col" style="color: black; font-weight: bold;">NIK</th>
+                            <th scope="col" style="color: black; font-weight: bold;">NOMOR HP</th>
+                            <th scope="col" style="color: black; font-weight: bold;">UNIT</th>
+                            <th scope="col" style="color: black; font-weight: bold;">AP</th>
+                            <th scope="col" style="color: black; font-weight: bold;">AKSI</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -61,6 +62,11 @@
                     {
                         data: 'unit',
                         name: 'unit',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'ap',
+                        name: 'ap',
                         className: 'text-center'
                     },
                     {

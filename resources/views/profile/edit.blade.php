@@ -66,6 +66,18 @@
                                                     @endforeach
                                                 </select>
                                             </div>
+                                            <div class="form-group" style="color: black; font-weight:bold;">
+                                                <label>Unit</label>
+                                                <select class="form-control" name="ap">
+                                                    <option value="{{ $item->ap }}">
+                                                        {{ $item->ap }}
+                                                    </option>
+                                                    @foreach ($ap as $item)
+                                                        <option value="{{ $item->koderegion }}">{{ $item->koderegion }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group" style="color: black; font-weight:bold;">

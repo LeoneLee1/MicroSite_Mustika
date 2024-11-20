@@ -82,6 +82,15 @@
                                 </select>
                             </div>
                             <div class="mb-3">
+                                <label for="Ap" class="form-label">Ap</label>
+                                <select name="ap" class="form-control" id="Ap">
+                                    <option value="" selected disabled>Pilih Ap</option>
+                                    @foreach ($ap as $item)
+                                        <option value="{{ $item->koderegion }}">{{ $item->koderegion }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3">
                                 <label for="No_Hp" class="form-label">Nomor HP</label>
                                 <input type="text" name="no_hp" id="No_Hp" maxlength="15" class="form-control"
                                     placeholder="Nomor WhatsApp 085312341234" required oninput="validatePhoneNumber()">

@@ -23,10 +23,12 @@
 @section('content')
     <div class="row justify-content-center">
         @foreach ($data as $item)
+            @include('modal.akunLihat')
             <div class="card mb-3" style="width: 55rem;">
                 <div class="card-body">
                     <div class="row">
-                        <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div class="d-flex justify-content-between align-items-center mt-4" data-bs-toggle="modal"
+                            data-bs-target="#akunLihat{{ $item->id }}" style="cursor: pointer;">
                             @if ($item->foto == '' || null)
                                 <div class="text-left d-none d-sm-block">
                                     <strong style="color: black;">
@@ -36,7 +38,8 @@
                                     </strong>&nbsp;&nbsp;•
                                     {{ \Carbon\Carbon::parse($item->time_post)->diffForHumans() }}
                                 </div>
-                                <div class="text-left d-block d-sm-none">
+                                <div class="text-left d-block d-sm-none" data-bs-toggle="modal"
+                                    data-bs-target="#akunLihat{{ $item->id }}" style="cursor: pointer;">
                                     <strong style="color: black;">
                                         <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
                                             alt
@@ -44,14 +47,16 @@
                                     </strong>
                                 </div>
                             @else
-                                <div class="text-left d-none d-sm-block">
+                                <div class="text-left d-none d-sm-block" data-bs-toggle="modal"
+                                    data-bs-target="#akunLihat{{ $item->id }}" style="cursor: pointer;">
                                     <strong style="color: black;">
                                         <img src="{{ asset('img/foto/' . $item->foto) }}" alt
                                             class="w-px-40 h-auto rounded-circle lazyload" />&nbsp;{{ $item->nama }}
                                     </strong>&nbsp;&nbsp;•
                                     {{ \Carbon\Carbon::parse($item->time_post)->diffForHumans() }}
                                 </div>
-                                <div class="text-left d-block d-sm-none">
+                                <div class="text-left d-block d-sm-none" data-bs-toggle="modal"
+                                    data-bs-target="#akunLihat{{ $item->id }}" style="cursor: pointer;">
                                     <strong style="color: black;">
                                         <img src="{{ asset('img/foto/' . $item->foto) }}" alt
                                             class="w-px-40 h-auto rounded-circle lazyload" />&nbsp;{{ $item->nama }}

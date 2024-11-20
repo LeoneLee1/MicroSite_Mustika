@@ -33,7 +33,7 @@
                 class="menu-item {{ request()->is('post*') ? 'active' : '' }} {{ request()->is('polling/create*') ? 'active' : '' }} mb-2">
                 <a href="{{ route('post') }}" class="menu-link">
                     <i class="menu-icon fa fa-square-plus"></i>
-                    <div data-i18n="Analytics">buat</div>
+                    <div data-i18n="Analytics">Buat</div>
                 </a>
             </li>
             {{-- <li

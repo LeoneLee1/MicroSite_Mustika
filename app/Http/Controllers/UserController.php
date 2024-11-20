@@ -40,7 +40,9 @@ class UserController extends Controller
 
         $data = Unit::all();
 
-        return view('users.create',compact('data'));
+        $ap = DB::select("SELECT * FROM tbl_pt ORDER BY koderegion ASC;");
+
+        return view('users.create',compact('data','ap'));
     }
 
     public function insert(Request $request){
@@ -48,6 +50,7 @@ class UserController extends Controller
             'nama' => 'required',
             'nik' => 'required',
             'unit' => 'required',
+            'ap' => 'required',
             'password' => 'required',
             'role' => 'required',
         ]);
@@ -58,6 +61,7 @@ class UserController extends Controller
         $data->nama = $request->nama;
         $data->nik = $request->nik;
         $data->unit = $request->unit;
+        $data->ap = $request->ap;
         $data->password = $password;
         $data->gender = $request->gender;
         $data->role = $request->role;
@@ -76,7 +80,9 @@ class UserController extends Controller
 
         $unit = Unit::all();
 
-        return view('users.edit',compact('data','unit'));
+        $ap = DB::select("SELECT * FROM tbl_pt ORDER BY koderegion ASC;");
+
+        return view('users.edit',compact('data','unit','ap'));
     }
 
     public function update(Request $request, $id)
@@ -85,6 +91,7 @@ class UserController extends Controller
             'nama' => 'required',
             'nik' => 'required',
             'unit' => 'required',
+            'ap' => 'required',
             'gender' => 'nullable',
             'role' => 'required',
             'password' => 'nullable',
@@ -96,6 +103,7 @@ class UserController extends Controller
             $data->nama = $request->nama;
             $data->nik = $request->nik;
             $data->unit = $request->unit;
+            $data->ap = $request->ap;
             $data->gender = $request->gender;
             $data->role = $request->role;
             $data->save();
@@ -104,6 +112,7 @@ class UserController extends Controller
             $data->nama = $request->nama;
             $data->nik = $request->nik;
             $data->unit = $request->unit;
+            $data->ap = $request->ap;
             $data->gender = $request->gender;
             $data->role = $request->role;
             $data->password = $newPassword;
@@ -151,18 +160,21 @@ class UserController extends Controller
         $unit = DB::select('SELECT * FROM units
                             ORDER BY kodeunit ASC');
 
+        $ap = DB::select("SELECT * FROM tbl_pt ORDER BY koderegion ASC;");
+
         $data = DB::select("SELECT * FROM users
                             WHERE nik = '$user'");
 
-        return view('profile.edit',compact('data','unit'));
+        return view('profile.edit',compact('data','unit','ap'));
     }
 
     public function profileInsert(Request $request)
     {   
         $request->validate([
             'foto' => 'nullable|image|mimes:png,jpg|max:2048',
-            'nama' => 'required|string|max:255',
-            'unit' => 'nullable|string|max:255',
+            'nama' => 'required',
+            'unit' => 'nullable',
+            'ap' => 'nullable',
             'gender' => 'nullable|string|max:10',
             'password' => 'nullable',
         ]);
@@ -170,6 +182,7 @@ class UserController extends Controller
         $id = $request->id;
         $nama = $request->nama;
         $unit = $request->unit;
+        $ap = $request->ap;
         $gender = $request->gender;
         $password = $request->password;
 
@@ -193,6 +206,7 @@ class UserController extends Controller
         $dataToUpdate = [
             'nama' => $nama,
             'unit' => $unit,
+            'ap' => $ap,
             'gender' => $gender,
             'foto' => $foto_name,
         ];
@@ -235,6 +249,7 @@ class UserController extends Controller
             'nik' => 'required',
             'password' => 'required',
             'unit' => 'required',
+            'ap' => 'required',
             'role' => 'required',
         ]); 
 
@@ -244,6 +259,7 @@ class UserController extends Controller
         $data->nama = $request->nama;
         $data->nik = $request->nik;
         $data->unit = $request->unit;
+        $data->ap = $request->ap;
         $data->role = $request->role;
         $data->password = $password;
         $data->save();

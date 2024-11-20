@@ -53,7 +53,7 @@ class PostController extends Controller
         
         $post = Post::findOrFail($id);
 
-        $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.foto,c.id, p.id AS post_id, cl.nik AS liked FROM comments c
+        $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.foto,c.id, p.id AS post_id, cl.nik AS liked, u.unit, u.gender, u.ap FROM comments c
                         LEFT JOIN users u ON u.nik = c.nik
                         LEFT JOIN posts p ON p.id = c.id_post
                         LEFT JOIN comments_likes cl ON cl.id_comment = c.id
@@ -61,7 +61,7 @@ class PostController extends Controller
                         WHERE p.id = '$id'
                         ORDER BY c.created_at DESC;");
 
-        $replies = DB::select("SELECT cr.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama,u.foto, c.id AS comment_id, cl.nik AS liked FROM comments_replies cr
+        $replies = DB::select("SELECT cr.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama,u.foto, c.id AS comment_id, cl.nik AS liked, u.unit, u.gender, u.ap FROM comments_replies cr
                                 LEFT JOIN users u ON u.nik = cr.nik
                                 LEFT JOIN comments c ON c.id = cr.id_comment
                                 LEFT JOIN comments_likes cl ON cl.id_comment = cr.id
@@ -125,7 +125,7 @@ class PostController extends Controller
         $user = Auth::user()->nik;
         $userRole = Auth::user()->role;
 
-        $postQuery = "SELECT p.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.unit, u.gender,u.foto, p.created_at AS time_post, l.nik AS liked 
+        $postQuery = "SELECT p.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.unit, u.ap, u.gender,u.foto, p.created_at AS time_post, l.nik AS liked 
                 FROM posts p
                 LEFT JOIN users u ON u.nik = p.nik
                 LEFT JOIN post_like l ON l.id_post = p.id AND l.nik = ?
@@ -134,7 +134,7 @@ class PostController extends Controller
         $queryParams = [$user, $id];
 
         if ($userRole === "Pengamat") {
-            $postQuery = "SELECT p.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.unit, u.gender,u.foto, p.created_at AS time_post, l.nik AS liked 
+            $postQuery = "SELECT p.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.unit, u.ap, u.gender,u.foto, p.created_at AS time_post, l.nik AS liked 
                     FROM posts p
                     LEFT JOIN users u ON u.nik = p.nik
                     LEFT JOIN post_like l ON l.id_post = p.id AND l.nik = ?
@@ -334,41 +334,6 @@ class PostController extends Controller
             return response()->json(['success' => true, 'message' => 'Like added']);
         }
     }
-
-    // public function updateSoal(Request $request, $id_post){
-    //     $request->validate([
-    //         'soal' => 'required',
-    //     ]);
-
-    //     $data = Poll::findOrFail($id_post);
-    //     $data->soal = $request->soal;
-
-    //     if ($data->save()) {
-    //         Alert::success('Berhasil!', 'Soal polling telah diperbarui.');
-    //         return back();
-    //     } else {
-    //         Alert::error('Gagal!', 'Soal polling gagal diperbarui.');
-    //         return back();
-    //     }
-    // }
-
-    // public function updateJawaban(Request $request, $id_post){
-    //     $request->validate([
-    //         'jawaban' => 'required',
-    //     ]);
-
-    //     $data = DB::select("SELECT * FROM poll_answers
-    //                         WHERE id_post = '$id_post'");
-    //     $data->jawaban = $request->jawaban;
-
-    //     if ($data->save()) {
-    //         Alert::success('Berhasil!', 'Jawaban polling telah diperbarui.');
-    //         return back();
-    //     } else {
-    //         Alert::error('Gagal!', 'Jawaban polling gagal diperbarui.');
-    //         return back();
-    //     }
-    // }
 
     public function delete($id){
         //

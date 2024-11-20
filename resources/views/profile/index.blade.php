@@ -47,6 +47,10 @@
                                             <span class="profile_content">{{ $item->unit }}</span>
                                         </div>
                                         <div class="profile_column">
+                                            <span class="profile_title">Ap</span>
+                                            <span class="profile_content">{{ $item->ap }}</span>
+                                        </div>
+                                        <div class="profile_column">
                                             <span class="profile_title">Gender</span>
                                             @if ($item->gender == null || '')
                                                 <span class="profile_content">-</span>
@@ -118,28 +122,30 @@
                                                         @elseif (strpos($p->media, 'youtube.com') !== false || strpos($p->media, 'youtu.be') !== false)
                                                             @php
                                                                 preg_match(
-                                                                    '/(youtube\.com\/watch\?v=|youtu\.be\/)([^\&\?\/]+)/',
+                                                                    '/(youtube\.com\/(watch\?v=|shorts\/)|youtu\.be\/)([^\&\?\/]+)/',
                                                                     $p->media,
                                                                     $matches,
                                                                 );
-                                                                $youtubeId = $matches[2];
+                                                                $youtubeId = $matches[3] ?? null;
                                                             @endphp
-                                                            <div class="d-none d-sm-block">
-                                                                <iframe
-                                                                    style="max-width: 300px; min-width: 300px; height: auto;"
-                                                                    src="https://www.youtube.com/embed/{{ $youtubeId }}"
-                                                                    frameborder="0"
-                                                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                                                    allowfullscreen class="img-fluid lazyload"></iframe>
-                                                            </div>
-                                                            <div class="d-block d-sm-none">
-                                                                <iframe
-                                                                    style="max-width: 300px; min-width: 300px; height: auto;"
-                                                                    src="https://www.youtube.com/embed/{{ $youtubeId }}"
-                                                                    frameborder="0"
-                                                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                                                    allowfullscreen class="img-fluid lazyload"></iframe>
-                                                            </div>
+                                                            @if ($youtubeId)
+                                                                <div class="d-none d-sm-block">
+                                                                    <iframe
+                                                                        style="max-width: 300px; min-width: 300px; height: auto;"
+                                                                        src="https://www.youtube.com/embed/{{ $youtubeId }}"
+                                                                        frameborder="0"
+                                                                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                                                        allowfullscreen class="img-fluid lazyload"></iframe>
+                                                                </div>
+                                                                <div class="d-block d-sm-none">
+                                                                    <iframe
+                                                                        style="max-width: 300px; min-width: 300px; height: auto;"
+                                                                        src="https://www.youtube.com/embed/{{ $youtubeId }}"
+                                                                        frameborder="0"
+                                                                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                                                        allowfullscreen class="img-fluid lazyload"></iframe>
+                                                                </div>
+                                                            @endif
                                                         @elseif (strpos($p->media, '.jpg') !== false ||
                                                                 strpos($p->media, '.jpeg') !== false ||
                                                                 strpos($p->media, '.png') !== false ||
@@ -214,28 +220,32 @@
                                                         @elseif (strpos($p->media, 'youtube.com') !== false || strpos($p->media, 'youtu.be') !== false)
                                                             @php
                                                                 preg_match(
-                                                                    '/(youtube\.com\/watch\?v=|youtu\.be\/)([^\&\?\/]+)/',
+                                                                    '/(youtube\.com\/(watch\?v=|shorts\/)|youtu\.be\/)([^\&\?\/]+)/',
                                                                     $p->media,
                                                                     $matches,
                                                                 );
-                                                                $youtubeId = $matches[2];
+                                                                $youtubeId = $matches[3] ?? null;
                                                             @endphp
-                                                            <div class="d-none d-sm-block">
-                                                                <iframe
-                                                                    style="max-width: 300px; min-width: 300px; height: auto;"
-                                                                    src="https://www.youtube.com/embed/{{ $youtubeId }}"
-                                                                    frameborder="0"
-                                                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                                                    allowfullscreen class="img-fluid lazyload"></iframe>
-                                                            </div>
-                                                            <div class="d-block d-sm-none">
-                                                                <iframe
-                                                                    style="max-width: 300px; min-width: 300px; height: auto;"
-                                                                    src="https://www.youtube.com/embed/{{ $youtubeId }}"
-                                                                    frameborder="0"
-                                                                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                                                    allowfullscreen class="img-fluid lazyload"></iframe>
-                                                            </div>
+                                                            @if ($youtubeId)
+                                                                <div class="d-none d-sm-block">
+                                                                    <iframe
+                                                                        style="max-width: 300px; min-width: 300px; height: auto;"
+                                                                        src="https://www.youtube.com/embed/{{ $youtubeId }}"
+                                                                        frameborder="0"
+                                                                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                                                        allowfullscreen
+                                                                        class="img-fluid lazyload"></iframe>
+                                                                </div>
+                                                                <div class="d-block d-sm-none">
+                                                                    <iframe
+                                                                        style="max-width: 300px; min-width: 300px; height: auto;"
+                                                                        src="https://www.youtube.com/embed/{{ $youtubeId }}"
+                                                                        frameborder="0"
+                                                                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                                                        allowfullscreen
+                                                                        class="img-fluid lazyload"></iframe>
+                                                                </div>
+                                                            @endif
                                                         @elseif (strpos($p->media, '.jpg') !== false ||
                                                                 strpos($p->media, '.jpeg') !== false ||
                                                                 strpos($p->media, '.png') !== false ||

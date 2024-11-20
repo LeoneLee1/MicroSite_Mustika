@@ -17,29 +17,36 @@
                         <input type="hidden" name="no_hp" value="{{ $data->no_hp }}">
                         <div class="mb-3">
                             <div class="form-group">
-                                <label style="color: black;">Nama</label>
+                                <label style="color: black;">NAMA</label>
                                 <input type="text" name="nama" class="form-control" value="{{ $data->nama }}"
                                     required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="form-group">
-                                <label style="color: black;">Nik</label>
+                                <label style="color: black;">NIK</label>
                                 <input type="text" name="nik" class="form-control" value="{{ $data->nik }}"
                                     required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="form-group">
-                                <label style="color: black;">Unit</label>
+                                <label style="color: black;">UNIT</label>
                                 <input type="text" name="unit" class="form-control" value="{{ $data->unit }}"
                                     required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="Role" class="form-label">Role</label>
+                            <div class="form-group">
+                                <label style="color: black;">AP</label>
+                                <input type="text" name="ap" class="form-control" value="{{ $data->ap }}"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="Role" class="form-label">ROLE</label>
                             <select name="role" class="form-control" required>
-                                <option value="" disabled selected>Pilih Role</option>
+                                <option value="" disabled selected>PILIH ROLE</option>
                                 <option value="Admin">Admin</option>
                                 <option value="User">User</option>
                                 <option value="Pengamat">Pengamat</option>
@@ -48,13 +55,13 @@
                         </div>
                         <div class="mb-3">
                             <div class="form-group">
-                                <label style="color: black;">Password</label>
+                                <label style="color: black;">PASSWORD</label>
                                 <input type="text" name="password" class="form-control" placeholder="Password" required>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-sm btn-primary" onclick="return Approve()">Approve</button>
+                        <button type="submit" class="btn btn-sm btn-primary" onclick="return Approve()">APPROVE</button>
                         <a href="javascript:void(0)" onclick="window.history.go(-1); return false;"
-                            class="btn btn-warning btn-sm">Batal</a>
+                            class="btn btn-warning btn-sm">BATAL</a>
                     </form>
                 </div>
             </div>

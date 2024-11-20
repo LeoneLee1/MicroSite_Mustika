@@ -37,6 +37,7 @@ class DashboardController extends Controller
             'p.*', 
             DB::raw("CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama"),
             'u.unit', 
+            'u.ap', 
             'u.gender', 
             'u.foto', 
             'p.created_at as time_post',

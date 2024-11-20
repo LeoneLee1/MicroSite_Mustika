@@ -12,17 +12,17 @@
                     <form action="{{ route('user.update', $data->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
-                            <label for="Nama" class="form-label">Nama</label>
+                            <label for="Nama" class="form-label">NAMA</label>
                             <input type="text" name="nama" value="{{ $data->nama }}" id="Nama"
                                 class="form-control" placeholder="Nama Lengkap">
                         </div>
                         <div class="mb-3">
-                            <label for="Nik" class="form-label">Username / Nik</label>
+                            <label for="Nik" class="form-label">NIK</label>
                             <input type="text" name="nik" value="{{ $data->nik }}" id="Nik"
                                 class="form-control" placeholder="NIK">
                         </div>
                         <div class="mb-3">
-                            <label for="Gender" class="form-label">Gender</label>
+                            <label for="Gender" class="form-label">GENDER</label>
                             <select name="gender" class="form-control">
                                 <option value="{{ $data->gender }}" selected>{{ $data->gender ?? '-' }}</option>
                                 <option value="Pria">Pria</option>
@@ -30,7 +30,7 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="Unit" class="form-label">Unit</label>
+                            <label for="Unit" class="form-label">UNIT</label>
                             <select name="unit" class="form-control" required>
                                 <option value="{{ $data->unit }}" selected>{{ $data->unit }}</option>
                                 @foreach ($unit as $row)
@@ -39,7 +39,16 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="Role" class="form-label">Role</label>
+                            <label for="AP" class="form-label">AP</label>
+                            <select name="ap" class="form-control" required>
+                                <option value="{{ $data->ap }}" selected>{{ $data->ap }}</option>
+                                @foreach ($ap as $row)
+                                    <option value="{{ $row->koderegion }}">{{ $row->koderegion }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="Role" class="form-label">ROLE</label>
                             <select name="role" class="form-control">
                                 <option value="{{ $data->role }}" selected>{{ $data->role ?? '-' }}</option>
                                 <option value="Admin">Admin</option>
@@ -49,12 +58,12 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="Password" class="form-label">Password</label>
+                            <label for="Password" class="form-label">PASSWORD</label>
                             <input type="text" name="password" id="Password" class="form-control"
                                 placeholder="Password Anda">
                         </div>
-                        <button class="btn btn-sm btn-primary" type="submit">Simpan</button>
-                        <a href="{{ route('user') }}" class="btn btn-sm btn-warning">Batal</a>
+                        <button class="btn btn-sm btn-primary" type="submit">SIMPAN</button>
+                        <a href="{{ route('user') }}" class="btn btn-sm btn-warning">BATAL</a>
                     </form>
                 </div>
             </div>
