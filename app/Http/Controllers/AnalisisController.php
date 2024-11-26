@@ -44,7 +44,19 @@ class AnalisisController extends Controller
         $total_like = DB::select("SELECT COUNT(*) AS total_like FROM post_like");
         $total_comment = DB::select("SELECT COUNT(*) AS total_komen FROM comments");
 
-        return view('analysis',compact('total_post','total_postingan','total_voting','lastest_post_like','comment','total_like','total_comment','lastest_post_comment','lastest_post_voting'));
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 2;");
+
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_like a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('analysis',compact('total_post','total_postingan','total_voting','lastest_post_like','comment','total_like','total_comment','lastest_post_comment','lastest_post_voting','notifPost','notifPostLike'));
     }
     
 }

@@ -20,6 +20,18 @@ class PollingController extends Controller
         //                         ORDER BY id DESC
         //                         LIMIT 1");
 
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 2;");
+        
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_like a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
         $post = DB::table('posts')
                     ->where('nik', $user)
                     ->orderBy('id','desc')
@@ -31,7 +43,7 @@ class PollingController extends Controller
             $post_id = null;
         }
         
-        return view('polling.create',compact('post_id'));
+        return view('polling.create',compact('post_id','notifPost','notifPostLike'));
     }
 
     public function insert(Request $request){
@@ -119,6 +131,7 @@ class PollingController extends Controller
                 'id_jawaban' => $answerId,
                 'jawaban' => $pollAnswer->jawaban,
                 'poll_id' => $pollAnswer->poll_id,
+                'id_post' => $pollAnswer->id_post,
             ]);
 
             $pollAnswer->value += 1;
@@ -129,57 +142,6 @@ class PollingController extends Controller
 
             return response()->json(['success' => true, 'message' => 'Vote added']);
         }
-
-
-        // $existingVote = AnswerVote::where('nik',$userNik)
-        //                             ->where('id_jawaban',$answerId)
-        //                             ->first();
-
-        // if ($existingVote) {
-        //     $existingVote->delete();
-
-        //     $jawabanValue = PollAnswer::find($answerId);
-        //     if ($jawabanValue) {
-        //         $jawabanValue->value -= 1;
-        //         $jawabanValue->save();
-        //     }
-        // } else {
-        //     $pollAnswer = PollAnswer::find($answerId);
-
-        //     if ($pollAnswer) {
-        //         AnswerVote::create([
-        //             'nik' => $userNik,
-        //             'id_jawaban' => $answerId,
-        //             'jawaban' => $pollAnswer->jawaban,
-        //             'poll_id' => $pollAnswer->poll_id,
-        //         ]);
-        //     }
-
-        //     $jawabanValue = PollAnswer::find($answerId);
-        //     if ($jawabanValue) {
-        //         $jawabanValue->value += 1;
-        //         $jawabanValue->save();
-        //     }
-        // }
-
-        // return response()->json(['success' => true]);
-    }
-
-    public function viewVotes($poll_id){
-
-        $votes = DB::select("SELECT a.id AS id_answer, p.soal, pa.jawaban, GROUP_CONCAT(a.nik ORDER BY a.created_at ASC SEPARATOR ', ') AS votes, COUNT(a.nik) AS total_votes, 
-                                GROUP_CONCAT(DATE_FORMAT(a.created_at, '%d/%m/%Y %H:%i') ORDER BY a.created_at ASC SEPARATOR ', ') AS time_votes
-                                FROM poll_answers pa
-                                LEFT JOIN answer_vote a ON a.jawaban = pa.jawaban
-                                AND a.poll_id = pa.poll_id
-                                LEFT JOIN polls p ON p.id = pa.poll_id
-                                WHERE pa.poll_id = ?
-                                GROUP BY pa.jawaban, p.soal
-                                ORDER BY pa.jawaban;", [$poll_id]);
-
-        $votesCollection = collect($votes);
-
-        return view('polling.votes',compact('votesCollection'));
     }
 
     public function deleteVote($id){

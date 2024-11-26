@@ -39,15 +39,6 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="AP" class="form-label">AP</label>
-                            <select name="ap" class="form-control" required>
-                                <option value="{{ $data->ap }}" selected>{{ $data->ap }}</option>
-                                @foreach ($ap as $row)
-                                    <option value="{{ $row->koderegion }}">{{ $row->koderegion }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
                             <label for="Role" class="form-label">ROLE</label>
                             <select name="role" class="form-control">
                                 <option value="{{ $data->role }}" selected>{{ $data->role ?? '-' }}</option>

@@ -14,7 +14,6 @@
                             <th scope="col" style="color: black; font-weight: bold;">NIK</th>
                             <th scope="col" style="color: black; font-weight: bold;">NOMOR HP</th>
                             <th scope="col" style="color: black; font-weight: bold;">UNIT</th>
-                            <th scope="col" style="color: black; font-weight: bold;">AP</th>
                             <th scope="col" style="color: black; font-weight: bold;">AKSI</th>
                         </tr>
                     </thead>
@@ -62,11 +61,6 @@
                     {
                         data: 'unit',
                         name: 'unit',
-                        className: 'text-center'
-                    },
-                    {
-                        data: 'ap',
-                        name: 'ap',
                         className: 'text-center'
                     },
                     {

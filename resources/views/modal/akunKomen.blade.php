@@ -11,8 +11,6 @@
                 <p style="color: #003366;">{{ $row->nama }}</p>
                 <p style="color: black; font-weight: bold;">Unit:</p>
                 <p style="color: #003366;">{{ $row->unit }}</p>
-                <p style="color: black; font-weight: bold;">Ap:</p>
-                <p style="color: #003366;">{{ $row->ap }}</p>
                 <p style="color: black; font-weight: bold;">Gender:</p>
                 @if ($row->gender == true)
                     <p style="color: #003366;">{{ $row->gender }}</p>

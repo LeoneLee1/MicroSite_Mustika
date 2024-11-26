@@ -15,28 +15,6 @@
             z-index: 9999 !important;
         }
 
-
-        /* .preload {
-            position: fixed;
-            width: 100vw;
-            height: 100vh;
-            top: 0;
-            left: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #0d3d6e;
-            z-index: 10000;
-        }
-
-        .preload.loaded {
-            display: none;
-        }
-
-        .preload video {
-            max-width: 130%;
-            max-height: 130%;
-        } */
         .nav-item .badge {
             position: absolute;
             top: 0;
@@ -50,6 +28,18 @@
             padding: 4px 6px;
             line-height: 1;
             transform: translate(50%, -50%);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 5px;
+            font-size: 6px;
+            line-height: 1;
         }
     </style>
     @stack('after-style')
@@ -70,8 +60,86 @@
                     <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
                         @yield('navbar-item')
                         <ul class="navbar-nav flex-row align-items-center ms-auto">
+                            {{-- <li class="nav-item lh-1 me-3 dropdown">
+                                <a href="#" role="button" class="dropdown-toggle hide-arrow position-relative"
+                                    id="notification-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-bell position-relative">
+                                        @if (empty($notifPost))
+                                        @else
+                                            <span class="notification-badge"></span>
+                                        @endif
+                                    </i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-3"
+                                    aria-labelledby="notification-dropdown">
+                                    <li class="dropdown-header text-primary fw-bold">Notifications</li>
+                                    @foreach ($notifPost as $row)
+                                        <li class="dropdown-item">
+                                            <a href="{{ route('post.lihat', $row->id_post) }}">
+                                                <div class="d-flex align-items-center">
+                                                    @if (empty($row->foto))
+                                                        <img src="https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg"
+                                                            alt="Default Image"
+                                                            class="w-px-30 me-2 h-auto rounded-circle lazyload" />
+                                                    @else
+                                                        <img src="{{ asset('img/foto/' . $row->foto) }}"
+                                                            alt="User Image"
+                                                            class="w-px-30 h-auto me-2 rounded-circle lazyload" />
+                                                    @endif
+                                                    <div class="text-truncate w-100">
+                                                        <span class="d-block text-truncate"
+                                                            style="font-weight: bold; color:black;">{{ $row->nama }}</span>
+                                                        <small class="d-block text-truncate">Membagikan
+                                                            Postingan</small>
+                                                        <div class="d-flex align-items-center text-muted small">
+                                                            {{ \Carbon\Carbon::parse($row->created_at)->diffForHumans() }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                    @foreach ($notifPostLike as $row)
+                                        @if (Auth::user()->nik == $row->nik_post)
+                                            <li class="dropdown-item">
+                                                <a href="{{ route('post.lihat', $row->id_post) }}">
+                                                    <div class="d-flex align-items-center">
+                                                        @if (empty($row->foto))
+                                                            <img src="https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg"
+                                                                alt="Default Image"
+                                                                class="w-px-30 me-2 h-auto rounded-circle lazyload" />
+                                                        @else
+                                                            <img src="{{ asset('img/foto/' . $row->foto) }}"
+                                                                alt="User Image"
+                                                                class="w-px-30 h-auto me-2 rounded-circle lazyload" />
+                                                        @endif
+                                                        <div class="text-truncate w-100">
+                                                            <span class="d-block text-truncate"
+                                                                style="font-weight: bold; color:black;">{{ $row->nama }}</span>
+
+                                                            <small class="d-block text-truncate"><i class="fa fa-heart"
+                                                                    style="color: red;"></i>&nbsp;Menyukai
+                                                                Postingan Anda</small>
+                                                            <div class="d-flex align-items-center text-muted small">
+                                                                {{ \Carbon\Carbon::parse($row->created_at)->diffForHumans() }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        @endif
+                                    @endforeach
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li class="text-center">
+                                        <a href="#" class="text-primary fw-bold">View All Notifications</a>
+                                    </li>
+                                </ul>
+                            </li> --}}
                             <li class="nav-item lh-1 me-3">
-                                <p class="mt-3">Hi, {{ Auth::user()->nama }}</p>
+                                <p class="mt-3" style="font-size: 13px;" class="d-block">{{ Auth::user()->nama }}
+                                </p>
                             </li>
                             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
@@ -124,6 +192,15 @@
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.2.6/js/dataTables.responsive.min.js"></script>
     @stack('after-script')
+    <script>
+        function Logout() {
+            if (confirm('Logout?')) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
 </body>
 
 </html>

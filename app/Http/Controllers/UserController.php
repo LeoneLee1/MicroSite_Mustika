@@ -33,7 +33,20 @@ class UserController extends Controller
     }
 
     public function index(){
-        return view('users.index');
+
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 2;");
+        
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_like a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('users.index',compact('notifPost','notifPostLike'));
     }
 
     public function create(){
@@ -42,7 +55,19 @@ class UserController extends Controller
 
         $ap = DB::select("SELECT * FROM tbl_pt ORDER BY koderegion ASC;");
 
-        return view('users.create',compact('data','ap'));
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 2;");
+
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_like a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('users.create',compact('data','ap','notifPost','notifPostLike'));
     }
 
     public function insert(Request $request){
@@ -61,7 +86,6 @@ class UserController extends Controller
         $data->nama = $request->nama;
         $data->nik = $request->nik;
         $data->unit = $request->unit;
-        $data->ap = $request->ap;
         $data->password = $password;
         $data->gender = $request->gender;
         $data->role = $request->role;
@@ -82,7 +106,19 @@ class UserController extends Controller
 
         $ap = DB::select("SELECT * FROM tbl_pt ORDER BY koderegion ASC;");
 
-        return view('users.edit',compact('data','unit','ap'));
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 2;");
+
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_like a
+                                LEFT JOIN users b ON b.nik = a.nik
+                                LEFT JOIN posts c ON c.id = a.id_post
+                                ORDER BY a.id DESC
+                                LIMIT 1;");
+
+        return view('users.edit',compact('data','unit','ap','notifPost','notifPostLike'));
     }
 
     public function update(Request $request, $id)
@@ -91,7 +127,6 @@ class UserController extends Controller
             'nama' => 'required',
             'nik' => 'required',
             'unit' => 'required',
-            'ap' => 'required',
             'gender' => 'nullable',
             'role' => 'required',
             'password' => 'nullable',
@@ -103,7 +138,6 @@ class UserController extends Controller
             $data->nama = $request->nama;
             $data->nik = $request->nik;
             $data->unit = $request->unit;
-            $data->ap = $request->ap;
             $data->gender = $request->gender;
             $data->role = $request->role;
             $data->save();
@@ -112,7 +146,6 @@ class UserController extends Controller
             $data->nama = $request->nama;
             $data->nik = $request->nik;
             $data->unit = $request->unit;
-            $data->ap = $request->ap;
             $data->gender = $request->gender;
             $data->role = $request->role;
             $data->password = $newPassword;
@@ -147,11 +180,23 @@ class UserController extends Controller
                             WHERE nik = '$user'
                             ORDER BY id DESC;");
                             
-        $save = DB::select("SELECT s.*, p.judul, p.media, p.deskripsi FROM saves s
+        $save = DB::select("SELECT s.*, p.judul, p.media, p.media_file, p.deskripsi FROM saves s
                             LEFT JOIN posts p ON p.id = s.id_post
                             WHERE s.nik = '$user'");
 
-        return view('profile.index',compact('data','post','save'));
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
+                                LEFT JOIN users b ON b.nik = a.nik
+                                LEFT JOIN posts c ON c.id = a.id_post
+                                ORDER BY a.id DESC
+                                LIMIT 2;");
+
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_like a
+                            LEFT JOIN users b ON b.nik = a.nik
+                            LEFT JOIN posts c ON c.id = a.id_post
+                            ORDER BY a.id DESC
+                            LIMIT 1;");
+
+        return view('profile.index',compact('data','post','save','notifPost','notifPostLike'));
     }
 
     public function profileEdit(){
@@ -165,7 +210,18 @@ class UserController extends Controller
         $data = DB::select("SELECT * FROM users
                             WHERE nik = '$user'");
 
-        return view('profile.edit',compact('data','unit','ap'));
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
+                                LEFT JOIN users b ON b.nik = a.nik
+                                LEFT JOIN posts c ON c.id = a.id_post
+                                ORDER BY a.id DESC
+                                LIMIT 2;");
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_like a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('profile.edit',compact('data','unit','ap','notifPost','notifPostLike'));
     }
 
     public function profileInsert(Request $request)
@@ -174,7 +230,6 @@ class UserController extends Controller
             'foto' => 'nullable|image|mimes:png,jpg|max:2048',
             'nama' => 'required',
             'unit' => 'nullable',
-            'ap' => 'nullable',
             'gender' => 'nullable|string|max:10',
             'password' => 'nullable',
         ]);
@@ -182,7 +237,6 @@ class UserController extends Controller
         $id = $request->id;
         $nama = $request->nama;
         $unit = $request->unit;
-        $ap = $request->ap;
         $gender = $request->gender;
         $password = $request->password;
 
@@ -206,7 +260,6 @@ class UserController extends Controller
         $dataToUpdate = [
             'nama' => $nama,
             'unit' => $unit,
-            'ap' => $ap,
             'gender' => $gender,
             'foto' => $foto_name,
         ];
@@ -234,13 +287,38 @@ class UserController extends Controller
     }
 
     public function dataRegis(){
-        return view('users.akunRegis');
+
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 2;");
+
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_like a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('users.akunRegis',compact('notifPost','notifPostLike'));
     }
     public function dataRegisSee($id){
 
         $data = AkunRegis::findOrFail($id);
 
-        return view('users.approve',compact('data'));
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 2;");
+
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_like a
+                                LEFT JOIN users b ON b.nik = a.nik
+                                LEFT JOIN posts c ON c.id = a.id_post
+                                ORDER BY a.id DESC
+                                LIMIT 1;");
+
+        return view('users.approve',compact('data','notifPost','notifPostLike'));
     }
 
     public function dataRegisApprove(Request $request, $id){
@@ -249,7 +327,6 @@ class UserController extends Controller
             'nik' => 'required',
             'password' => 'required',
             'unit' => 'required',
-            'ap' => 'required',
             'role' => 'required',
         ]); 
 
@@ -259,7 +336,6 @@ class UserController extends Controller
         $data->nama = $request->nama;
         $data->nik = $request->nik;
         $data->unit = $request->unit;
-        $data->ap = $request->ap;
         $data->role = $request->role;
         $data->password = $password;
         $data->save();

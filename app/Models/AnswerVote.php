@@ -16,5 +16,6 @@ class AnswerVote extends Model
         'id_jawaban', 
         'jawaban',
         'poll_id',
+        'id_post',
     ];
 }

@@ -16,7 +16,7 @@
 @endpush
 
 @section('navbar-item')
-    <a href="javascript:void(0)" onclick="window.history.go(-1); return false;" class="btn btn-info"><i
+    <a href="javascript:void(0)" onclick="window.history.go(-1); return false;" class="btn btn-sm btn-info"><i
             class="fa fa-arrow-left"></i>&nbsp;Back</a>
 @endsection
 
@@ -27,10 +27,10 @@
             <div class="card mb-3" style="width: 55rem;">
                 <div class="card-body">
                     <div class="row">
-                        <div class="d-flex justify-content-between align-items-center mt-4" data-bs-toggle="modal"
-                            data-bs-target="#akunLihat{{ $item->id }}" style="cursor: pointer;">
+                        <div class="d-flex justify-content-between align-items-center mt-4">
                             @if ($item->foto == '' || null)
-                                <div class="text-left d-none d-sm-block">
+                                <div class="text-left d-none d-sm-block" data-bs-toggle="modal"
+                                    data-bs-target="#akunLihat{{ $item->id }}" style="cursor: pointer;">
                                     <strong style="color: black;">
                                         <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
                                             alt
@@ -123,6 +123,9 @@
                                             View
                                             Material</a>
                                     </div>
+                                @elseif($item->media_file !== null)
+                                    <img src="{{ asset('media/' . $item->media_file) }}" alt="media gambar"
+                                        class="img-fluid lazyload" style="height: 300px;">
                                 @else
                                 @endif
                             @endif

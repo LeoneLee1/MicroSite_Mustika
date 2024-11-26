@@ -47,10 +47,6 @@
                                             <span class="profile_content">{{ $item->unit }}</span>
                                         </div>
                                         <div class="profile_column">
-                                            <span class="profile_title">Ap</span>
-                                            <span class="profile_content">{{ $item->ap }}</span>
-                                        </div>
-                                        <div class="profile_column">
                                             <span class="profile_title">Gender</span>
                                             @if ($item->gender == null || '')
                                                 <span class="profile_content">-</span>
@@ -164,8 +160,11 @@
                                                                         View
                                                                         Material</a>
                                                                 </div>
+                                                            @elseif($p->media_file !== null)
+                                                                <img src="{{ asset('media/' . $p->media_file) }}"
+                                                                    alt="media gambar" class="img-fluid lazyload"
+                                                                    style="min-width: 100px; height: 100px;">
                                                             @else
-                                                                <p>Unsupported media type or URL.</p>
                                                             @endif
                                                         @endif
                                                     </td>

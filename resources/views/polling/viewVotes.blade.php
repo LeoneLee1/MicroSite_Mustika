@@ -1,9 +1,9 @@
 @extends('layout.app')
 
-@section('title', 'Pendarasa')
+@section('title', 'View Vote - Pendarasa')
 
 @section('navbar-item')
-    <a href="javascript:void(0)" onclick="window.history.go(-1); return false;" class="btn btn-info"><i
+    <a href="javascript:void(0)" onclick="window.history.go(-1); return false;" class="btn btn-sm btn-info"><i
             class="fa fa-arrow-left"></i>&nbsp;Back</a>
 @endsection
 

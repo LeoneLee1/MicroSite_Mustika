@@ -1,6 +1,6 @@
 @extends('layout.app')
 
-@section('title', 'Polling Web - Pendarasa')
+@section('title', 'Komentar - Pendarasa')
 
 @push('after-style')
     <style>
@@ -14,7 +14,7 @@
 @endpush
 
 @section('navbar-item')
-    <a href="javascript:void(0)" onclick="window.history.go(-1); return false;" class="btn btn-info"><i
+    <a href="javascript:void(0)" onclick="window.history.go(-1); return false;" class="btn btn-sm btn-info"><i
             class="fa fa-arrow-left"></i>&nbsp;Back</a>
 @endsection
 
@@ -107,7 +107,7 @@
                                         data-comment-id="{{ $row->id }}"
                                         style="margin-right: 10px; color: #818f9f;">Balas</a>
                                 </div>
-                                <div class="reply-form-container d-none col-sm-5 mb-3" style="margin-left: 40px;">
+                                <div class="reply-form-container d-none mb-3" style="margin-left: 40px;">
                                     <form action="{{ route('comment.balas') }}" method="POST"
                                         class="d-flex align-items-center w-100 reply-form" enctype="multipart/form-data">
                                         @csrf
@@ -209,7 +209,7 @@
                     </div>
                     @if (Auth::user()->role == 'Pengamat')
                     @else
-                        <div class="d-flex justify-content-start col-sm-5">
+                        <div class="d-flex justify-content-start">
                             <form action="{{ route('comment.insert') }}" method="POST"
                                 class="d-flex align-items-center w-100 comment-form" enctype="multipart/form-data">
                                 @csrf

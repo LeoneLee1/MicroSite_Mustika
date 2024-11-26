@@ -27,28 +27,29 @@ class AdminController extends Controller
             return view('403');
         }
 
-        $post = DB::select("SELECT a.*, b.nama FROM posts a
+        // $post = DB::select("SELECT a.*, b.nama FROM posts a
+        //                     LEFT JOIN users b ON b.nik = a.nik
+        //                     ORDER BY a.id DESC;");
+        
+        $post = DB::table('posts as a')
+                    ->select('a.*','b.nama')
+                    ->leftJoin('users as b','b.nik','=','a.nik')
+                    ->orderBy('a.id','desc')
+                    ->paginate(3);
+
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
+                                LEFT JOIN users b ON b.nik = a.nik
+                                LEFT JOIN posts c ON c.id = a.id_post
+                                ORDER BY a.id DESC
+                                LIMIT 2;");
+
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_like a
                             LEFT JOIN users b ON b.nik = a.nik
-                            ORDER BY a.id DESC;");
+                            LEFT JOIN posts c ON c.id = a.id_post
+                            ORDER BY a.id DESC
+                            LIMIT 1;");            
 
-        return view('admin.postingan',compact('post'));
-    }
-
-    public function edit($id){
-
-        if (Auth::user()->nik !== 'daniel.it') {
-            return view('403');
-        }
-
-        $post = Post::findOrFail($id);
-
-        return view('admin.editPostingan',compact('post'));
-    }
-    
-    public function delete($id){
-        if (Auth::user()->nik !== 'daniel.it') {
-            return view('403');
-        }
+        return view('admin.postingan',compact('post','notifPost','notifPostLike'));
     }
 
 }

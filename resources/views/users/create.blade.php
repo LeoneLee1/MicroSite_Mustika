@@ -31,15 +31,6 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="Ap" class="form-label">AP</label>
-                            <select name="ap" class="form-control" required>
-                                <option value="" selected disabled>PILIH AP</option>
-                                @foreach ($ap as $row)
-                                    <option value="{{ $row->koderegion }}">{{ $row->koderegion }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-3">
                             <label for="Gender" class="form-label">GENDER</label>
                             <select name="gender" class="form-control" required>
                                 <option value="" disabled selected>PILIH GENDER</option>

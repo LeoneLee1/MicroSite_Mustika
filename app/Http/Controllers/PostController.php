@@ -5,26 +5,44 @@ namespace App\Http\Controllers;
 use App\Models\Poll;
 use App\Models\Post;
 use App\Models\Comment;
+use App\Models\PostLike;
+use App\Models\NotifPost;
+use App\Models\AnswerVote;
 use App\Models\PollAnswer;
 use App\Models\CommentLike;
 use Illuminate\Http\Request;
 use App\Models\CommentReplies;
+use App\Models\NotifPostComment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Intervention\Image\Facades\Image;
 use RealRashid\SweetAlert\Facades\Alert;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class PostController extends Controller
 {
     public function index(){
-        return view('post.index');
+
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 2;");
+        
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_like a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('post.index',compact('notifPost','notifPostLike'));
     }
 
     public function insert(Request $request){
         $request->validate([
             'nik' => 'required',
             'judul' => 'required',
-            'deskripsi' => 'required|max:3001',
+            'deskripsi' => 'required',
         ]);
 
         $post = new Post();
@@ -32,13 +50,38 @@ class PostController extends Controller
         $post->judul = $request->judul;
         $post->media = $request->media;
         $post->deskripsi = $request->deskripsi;
+
         
 
+        if ($request->hasFile('media_file')) {
+            $file = $request->file('media_file');
+            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $filePath = public_path('media/' . $fileName);
+
+            $img = Image::make($file);
+            $img->resize(700, 700,function ($constraint){
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })->save($filePath);
+
+            $post->media_file = $fileName;
+        } else {
+            //
+        }
+        
         if ($request->has('polling')) {
             $post->save();
+            // $notif = new NotifPost();
+            // $notif->nik = $post->nik;
+            // $notif->id_post = $post->id;
+            // $notif->save();
             Alert::success('Berhasil!','Membuat Post.');
             return redirect()->route('polling.create');
         } elseif($post->save()) {
+            // $notif = new NotifPost();
+            // $notif->nik = $post->nik;
+            // $notif->id_post = $post->id;
+            // $notif->save();
             Alert::success('Berhasil!','Membuat Post.');
             return back();
         } else {
@@ -74,7 +117,19 @@ class PostController extends Controller
         $commentLike = DB::select("SELECT cl.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.foto FROM comments_likes cl
                                 LEFT JOIN users u ON u.nik = cl.nik;");
 
-        return view('post.komentar',compact('post','komen','replies','countReplies','commentLike'));
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 2;");
+
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_like a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('post.komentar',compact('post','komen','replies','countReplies','commentLike','notifPost','notifPostLike'));
     }
 
     public function komen(Request $request){
@@ -93,6 +148,11 @@ class PostController extends Controller
         $value = Post::findOrFail($request->id_post);
         $value->komen += 1;
         $value->save();
+
+        // $notifKomen = new NotifPostComment();
+        // $notifKomen->id_post = $request->id_post;
+        // $notifKomen->nik = $request->nik;
+        // $notifKomen->save();
         
         return response()->json($k);
     }
@@ -173,7 +233,19 @@ class PostController extends Controller
                 GROUP BY pl.jawaban, pl.value, pl.id_post, pl.poll_id, pl.id
                 ORDER BY pl.id ASC");
 
-        return view('post.lihat', compact('data', 'komen', 'poll', 'jawaban', 'polling', 'jawabanModal'));
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 2;");
+
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_like a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('post.lihat', compact('data', 'komen', 'poll', 'jawaban', 'polling', 'jawabanModal','notifPost','notifPostLike'));
     }
 
     public function edit($id){
@@ -186,13 +258,18 @@ class PostController extends Controller
         $jawaban = DB::select("SELECT * FROM poll_answers
                                 WHERE id_post = '$id';");
 
-        return view('post.edit',compact('post','poll','jawaban'));
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
+                                LEFT JOIN users b ON b.nik = a.nik
+                                LEFT JOIN posts c ON c.id = a.id_post
+                                ORDER BY a.id DESC
+                                LIMIT 2;");
+
+        return view('post.edit',compact('post','poll','jawaban','notifPost'));
     }
 
     public function update(Request $request, $id){
         $request->validate([
             'judul' => 'required',
-            'media' => 'required',
             'deskripsi' => 'required',
         ]);
 
@@ -200,6 +277,36 @@ class PostController extends Controller
         $data->judul = $request->judul;
         $data->media = $request->media;
         $data->deskripsi = $request->deskripsi;
+
+        if ($request->hasFile('media_file')) {
+            if ($data->media_file) {
+                $oldFilePath = public_path('media/'. $data->media_file);
+                if (file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                }
+            } elseif($data->media_file === null) {
+                $file = $request->file('media_file');
+                $fileName = time() . '.' . $file->getClientOriginalExtension();
+                $filePath = public_path('media/' . $fileName);
+    
+                $img = Image::make($file);
+                $img->resize(700, 700,function ($constraint){
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })->save($filePath);
+    
+                $data->media_file = $fileName;
+                $data->media = null;
+            }
+        } else {
+            if ($data->media_file) {
+                $oldFilePath = public_path('media/'. $data->media_file);
+                if (file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                }
+                $data->media_file = null;
+            }
+        }
 
         if ($data->save()) {
             Alert::success('Berhasil!','Mengubah Post.');
@@ -336,7 +443,30 @@ class PostController extends Controller
     }
 
     public function delete($id){
-        //
+        $post = Post::findOrFail($id);
+
+        if ($post->media_file) {
+            $oldFilePath = public_path('media/'.$post->media_file);
+            if (file_exists($oldFilePath)) {
+                unlink($oldFilePath);
+            }
+        }
+        
+        if ($post->delete()) {
+            $comment = Comment::where('id_post',$id)->delete();
+            $commentReplies = CommentReplies::where('id_post',$id)->delete();
+            $commentLike = CommentLike::where('id_post',$id)->delete();
+            $like = PostLike::where('id_post',$id)->delete();
+            $poll = Poll::where('id_post',$id)->delete();
+            $pollAnswer = PollAnswer::where('id_post',$id)->delete();
+            $answerVote = AnswerVote::where('id_post',$id)->delete();
+            Alert::success('Berhasil menghapus');
+            return redirect()->back();
+        } else {
+            Alert::error('Gagal menghapus');
+            return redirect()->back();
+        }
+        
     }
 
 }

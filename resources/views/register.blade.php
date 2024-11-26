@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/logo pendarasa.jpg') }}">
-    <title>Login - Pendarasa</title>
+    <title>Register - Pendarasa</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -25,28 +25,6 @@
         .swal2-container {
             z-index: 9999 !important;
         }
-
-        /* .preload {
-            position: fixed;
-            width: 100vw;
-            height: 100vh;
-            top: 0;
-            left: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #003366;
-            z-index: 10000;
-        }
-
-        .preload.loaded {
-            display: none;
-        }
-
-        .preload video {
-            max-width: 100%;
-            max-height: 100%;
-        } */
     </style>
 </head>
 
@@ -78,15 +56,6 @@
                                     <option value="" selected disabled>Pilih Unit</option>
                                     @foreach ($unit as $item)
                                         <option value="{{ $item->kodeunit }}">{{ $item->kodeunit }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="Ap" class="form-label">Ap</label>
-                                <select name="ap" class="form-control" id="Ap">
-                                    <option value="" selected disabled>Pilih Ap</option>
-                                    @foreach ($ap as $item)
-                                        <option value="{{ $item->koderegion }}">{{ $item->koderegion }}</option>
                                     @endforeach
                                 </select>
                             </div>

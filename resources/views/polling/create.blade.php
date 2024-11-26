@@ -38,13 +38,11 @@
                                 </div>
                             </div>
                         </div>
-
                         <!-- Tombol untuk menambah dan menghapus soal -->
                         <div class="mb-3 text-end">
                             <button type="button" id="add-soal-button" class="btn btn-success btn-sm">Tambah Soal</button>
                             <button type="button" id="remove-soal-button" class="btn btn-danger btn-sm">Hapus Soal</button>
                         </div>
-
                         <!-- Tombol simpan -->
                         <button type="submit" class="btn btn-primary">Simpan</button>
                         <a href="/" class="btn btn-warning">Batal</a>

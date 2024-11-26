@@ -37,13 +37,6 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <div class="form-group">
-                                <label style="color: black;">AP</label>
-                                <input type="text" name="ap" class="form-control" value="{{ $data->ap }}"
-                                    required>
-                            </div>
-                        </div>
-                        <div class="mb-3">
                             <label for="Role" class="form-label">ROLE</label>
                             <select name="role" class="form-control" required>
                                 <option value="" disabled selected>PILIH ROLE</option>

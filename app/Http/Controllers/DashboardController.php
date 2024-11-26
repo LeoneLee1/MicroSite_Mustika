@@ -9,6 +9,7 @@ use App\Models\PostLike;
 use App\Models\AnswerVote;
 use App\Models\PollAnswer;
 use Illuminate\Http\Request;
+use App\Models\NotifPostLike;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,16 +21,6 @@ class DashboardController extends Controller
         $userId = Auth::user()->id;
         $userRole = Auth::user()->role;
         $currentTime = Carbon::now();
-
-        // ORM QUERY
-        // $postQuery = DB::table('posts as p')
-        // ->select('p.*', 'u.nama', 'u.unit', 'u.gender','u.foto', 'p.created_at as time_post', 'l.nik as liked')
-        // ->leftJoin('users as u', 'u.nik', '=', 'p.nik')
-        // ->leftJoin('post_like as l', function($join) use ($user) {
-        //     $join->on('l.id_post', '=', 'p.id')
-        //         ->where('l.nik', '=', $user);
-        // })
-        // ->whereRaw('1=1');
         
         // ORM QUERY
         $postQuery = DB::table('posts as p')
@@ -79,7 +70,19 @@ class DashboardController extends Controller
                                 LEFT JOIN users u ON u.nik = pl.nik
                                 LEFT JOIN posts p ON p.id = pl.id_post;");
 
-        return view('welcome',compact('post','komen','poll','jawaban','polling','postLike'));
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 2;");
+
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_like a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('welcome',compact('post','komen','poll','jawaban','polling','postLike','notifPost','notifPostLike'));
 
     }
 
@@ -114,6 +117,12 @@ class DashboardController extends Controller
                 $post->like -= 1;
                 $post->save();
 
+                // $notifLike1 = NotifPostLike::where('nik',$userNik)
+                //                             ->where('id_post',$postId)
+                //                             ->first();
+
+                // $notifLike1->delete();
+
                 return response()->json(['success' => true, 'message' => 'Like removed']);
             } else {
 
@@ -142,6 +151,11 @@ class DashboardController extends Controller
 
             $post->like += 1;
             $post->save();
+
+            // $notifLike2 = new NotifPostLike();
+            // $notifLike2->id_post = $postId;
+            // $notifLike2->nik = $userNik;
+            // $notifLike2->save();
 
             return response()->json(['success' => true, 'message' => 'Like added']);
         }
@@ -196,7 +210,19 @@ class DashboardController extends Controller
         
         $answer_vote = DB::select("SELECT * FROM answer_vote;");
 
-        return view('polling.viewVotes',compact('poll','jawabanModal','post','answer_vote'));
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 2;");
+
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_like a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('polling.viewVotes',compact('poll','jawabanModal','post','answer_vote','notifPost','notifPostLike'));
     }
 
 }
