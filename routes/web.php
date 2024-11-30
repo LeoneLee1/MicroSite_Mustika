@@ -31,6 +31,7 @@ Route::get('/chart/json/{id}',[DashboardController::class,'chart'])->name('chart
 Route::post('/like/{postId}',[DashboardController::class,'like'])->name('like.post');
 Route::post('/save/{id}',[DashboardController::class,'save'])->name('save');
 Route::get('/viewVote/{id}',[DashboardController::class,'viewVote'])->name('viewVote');
+Route::get('/viewNotification',[DashboardController::class,'viewNotification'])->name('viewNotification');
 
 // LOGIN CONTROLLER
 Route::get('/login',[LoginController::class,'login'])->name('login');
@@ -56,6 +57,7 @@ Route::get('/post/delete/{id}',[PostController::class,'delete'])->name('post.del
 Route::post('/comment/balas',[PostController::class,'repliesComment'])->name('comment.balas');
 Route::post('/comment/like/{id_comment}',[PostController::class,'likeComments'])->name('comment.like');
 Route::post('/comment/likeReplies/{id_comment}',[PostController::class,'likeCommentsReplies'])->name('comment.likeReplies');
+Route::get('/comment/delete/{id}',[PostController::class,'deleteKomen'])->name('comment.delete');
 
 
 // USER CONTROLLER

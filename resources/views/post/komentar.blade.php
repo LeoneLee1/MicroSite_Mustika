@@ -62,6 +62,11 @@
                                                 <i class="fa fa-heart" onclick="return like({{ $row->id }})"
                                                     style="cursor: pointer;"></i>
                                             @endif
+                                            @if (Auth::user()->nik == 'daniel.it')
+                                                <a href="{{ route('comment.delete', $row->id) }}"
+                                                    class="btn btn-sm btn-danger" onclick="return DeleteComment()"><i
+                                                        class="fa fa-trash"></i></a>
+                                            @endif
                                         </div>
                                     </div>
                                 @else
@@ -93,6 +98,11 @@
                                             @else
                                                 <i class="fa fa-heart" onclick="return like({{ $row->id }})"
                                                     style="cursor: pointer;"></i>
+                                            @endif
+                                            @if (Auth::user()->nik == 'daniel.it')
+                                                <a href="{{ route('comment.delete', $row->id) }}"
+                                                    class="btn btn-sm btn-danger" onclick="return DeleteComment()"><i
+                                                        class="fa fa-trash"></i></a>
                                             @endif
                                         </div>
                                     </div>
@@ -245,6 +255,15 @@
 
 @push('after-script')
     <script>
+        function DeleteComment() {
+            if (confirm('Hapus??')) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
+    <script>
         function likeReplies(commentId) {
             event.preventDefault();
             console.log("Id Comment:", commentId);
@@ -275,7 +294,7 @@
     </script>
     <script>
         function like(commentId) {
-            event.preventDefault();
+            // event.preventDefault();
             console.log("Id Comment:", commentId);
             var scrollPosition = $(window).scrollTop();
             $.ajax({

@@ -13,7 +13,7 @@
     <ul class="menu-inner py-1 mt-4">
         <!-- Dashboard -->
         <li
-            class="menu-item {{ request()->is('beranda*') ? 'active' : '' }} {{ request()->is('comment*') ? 'active' : '' }} {{ request()->is('vote/view*') ? 'active' : '' }} mb-2">
+            class="menu-item {{ request()->is('beranda*') ? 'active' : '' }} {{ request()->is('comment*') ? 'active' : '' }} {{ request()->is('vote/view*') ? 'active' : '' }} {{ request()->is('viewNotification*') ? 'active' : '' }} mb-2">
             <a href="{{ route('beranda') }}" class="menu-link">
                 <i class="menu-icon fa fa-home"></i>
                 <div data-i18n="Analytics">Beranda</div>

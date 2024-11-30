@@ -49,7 +49,10 @@
                             <input type="password" name="password" id="Password" class="form-control"
                                 placeholder="Password" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Login</button>
+                        <button type="submit" class="btn btn-primary me-1">Login</button>
+                        {{-- <button type="button" data-bs-toggle="modal" data-bs-target="#resetAkun"
+                            class="btn btn-warning">Reset Akun</button>
+                        @include('modal.resetAkun') --}}
                     </form>
                     <p class="mt-4 text-center">
                         <span>Belum Punya Akun?</span>

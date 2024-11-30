@@ -82,7 +82,13 @@ class DashboardController extends Controller
                                     ORDER BY a.id DESC
                                     LIMIT 1;");
 
-        return view('welcome',compact('post','komen','poll','jawaban','polling','postLike','notifPost','notifPostLike'));
+        $notifPostComment = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_comment a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('welcome',compact('post','komen','poll','jawaban','polling','postLike','notifPost','notifPostLike','notifPostComment'));
 
     }
 
@@ -117,11 +123,11 @@ class DashboardController extends Controller
                 $post->like -= 1;
                 $post->save();
 
-                // $notifLike1 = NotifPostLike::where('nik',$userNik)
-                //                             ->where('id_post',$postId)
-                //                             ->first();
+                $notifLike1 = NotifPostLike::where('nik',$userNik)
+                                            ->where('id_post',$postId)
+                                            ->first();
 
-                // $notifLike1->delete();
+                $notifLike1->delete();
 
                 return response()->json(['success' => true, 'message' => 'Like removed']);
             } else {
@@ -152,10 +158,10 @@ class DashboardController extends Controller
             $post->like += 1;
             $post->save();
 
-            // $notifLike2 = new NotifPostLike();
-            // $notifLike2->id_post = $postId;
-            // $notifLike2->nik = $userNik;
-            // $notifLike2->save();
+            $notifLike2 = new NotifPostLike();
+            $notifLike2->id_post = $postId;
+            $notifLike2->nik = $userNik;
+            $notifLike2->save();
 
             return response()->json(['success' => true, 'message' => 'Like added']);
         }
@@ -223,6 +229,72 @@ class DashboardController extends Controller
                                     LIMIT 1;");
 
         return view('polling.viewVotes',compact('poll','jawabanModal','post','answer_vote','notifPost','notifPostLike'));
+    }
+
+    public function viewNotification(){
+
+        $post = DB::select("SELECT * FROM notif_post ORDER BY id DESC;");
+        $postLike = DB::select("SELECT * FROM notif_post_like ORDER BY id DESC;");
+        $postComment = DB::select("SELECT * FROM notif_post_comment ORDER BY id DESC;");
+
+        $nik = Auth::user()->nik;
+
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul 
+                                    FROM notif_post a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 2;");
+
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post 
+                                    FROM notif_post_like a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifPostComment = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post 
+                                    FROM notif_post_comment a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notif_post_all = DB::select("SELECT a.id, a.id_post, a.created_at , a.updated_at, a.info, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, NULL AS comment, NULL AS commentReplies, NULL AS jawaban
+                                        FROM notif_post a
+                                        LEFT JOIN users b on b.nik = a.nik
+                                        LEFT JOIN posts c ON c.id = a.id_post
+                                        UNION ALL
+                                        SELECT a.id, a.id_post, a.created_at , a.updated_at, a.info, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, NULL AS comment, NULL AS commentReplies, NULL AS jawaban
+                                        FROM notif_post_like a
+                                        LEFT JOIN users b on b.nik = a.nik
+                                        LEFT JOIN posts c ON c.id = a.id_post
+                                        WHERE c.nik = '$nik'
+                                        UNION ALL
+                                        SELECT a.id, a.id_post, a.created_at , a.updated_at, a.info, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, NULL AS judul, d.comment, NULL AS commentReplies, NULL AS jawaban
+                                        FROM notif_post_comment a
+                                        LEFT JOIN users b on b.nik = a.nik
+                                        LEFT JOIN posts c ON c.id = a.id_post
+                                        LEFT JOIN comments d ON d.id = a.id_comment
+                                        WHERE c.nik = '$nik'
+                                        UNION ALL
+                                        SELECT a.id, a.id_post, a.created_at , a.updated_at, a.info, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, NULL AS judul, NULL AS comment, d.comment AS commentReplies, NULL AS jawaban
+                                        FROM notif_post_commentbalas a
+                                        LEFT JOIN users b on b.nik = a.nik
+                                        LEFT JOIN posts c ON c.id = a.id_post
+                                        LEFT JOIN comments_replies d ON d.id = a.id_commentReplies
+                                        LEFT JOIN comments e ON e.id = d.id_comment
+                                        WHERE e.nik = '$nik'
+                                        UNION ALL
+                                        SELECT a.id, a.id_post, a.created_at , a.updated_at, a.info, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, NULL AS judul, d.comment, NULL AS commentReplies, NULL AS jawaban
+                                        FROM notif_post_commentlike a
+                                        LEFT JOIN users b on b.nik = a.nik
+                                        LEFT JOIN posts c ON c.id = a.id_post
+                                        LEFT JOIN comments d ON d.id = a.id_comment
+                                        WHERE d.nik = '$nik'
+                                        ORDER BY created_at DESC");
+
+        return view('notifications',compact('post','postLike','postComment','notifPost','notifPostLike','notifPostComment','notif_post_all'));
     }
 
 }

@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\AnswerVote;
 use App\Models\PollAnswer;
 use Illuminate\Http\Request;
+use App\Models\NotifPostVote;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -32,6 +33,13 @@ class PollingController extends Controller
                                     ORDER BY a.id DESC
                                     LIMIT 1;");
 
+        $notifPostComment = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post 
+                                    FROM notif_post_comment a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
         $post = DB::table('posts')
                     ->where('nik', $user)
                     ->orderBy('id','desc')
@@ -43,7 +51,7 @@ class PollingController extends Controller
             $post_id = null;
         }
         
-        return view('polling.create',compact('post_id','notifPost','notifPostLike'));
+        return view('polling.create',compact('post_id','notifPost','notifPostLike','notifPostComment'));
     }
 
     public function insert(Request $request){
@@ -140,6 +148,12 @@ class PollingController extends Controller
             $poll->voting += 1;
             $poll->save();
 
+            // $notifVote = new NotifPostVote();
+            // $notifVote->id_post = $pollAnswer->id_post;
+            // $notifVote->id_vote = $answerId;
+            // $notifVote->nik = $userNik;
+            // $notifVote->save();
+
             return response()->json(['success' => true, 'message' => 'Vote added']);
         }
     }
@@ -159,6 +173,11 @@ class PollingController extends Controller
 
             $poll_answer->value -= 1;
             $poll_answer->save();
+
+            $notifVote = NotifPostVote::where('id_post',$answer_vote->id_post)
+                                    ->where('id_vote',$id_jawaban)
+                                    ->where('nik',$answer_vote->nik)
+                                    ->delete();
 
             Alert::success('berhasil bro hehehehe');
             return back();

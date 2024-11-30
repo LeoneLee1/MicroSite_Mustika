@@ -13,49 +13,6 @@
             color: #000000;
         }
 
-        /* Container for spinner */
-        .loading-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            margin-top: 20px;
-        }
-
-        /* Spinner styles */
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 5px solid rgba(0, 0, 0, 0.2);
-            border-top-color: #3498db;
-            /* Custom color */
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        /* Animation for spinner rotation */
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Smooth fade-in effect for new content */
-        .infinite-scroll>* {
-            opacity: 0;
-            animation: fadeIn 0.5s forwards;
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
-
         .refresh-button {
             position: fixed;
             bottom: 20px;

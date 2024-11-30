@@ -47,9 +47,16 @@ class AdminController extends Controller
                             LEFT JOIN users b ON b.nik = a.nik
                             LEFT JOIN posts c ON c.id = a.id_post
                             ORDER BY a.id DESC
-                            LIMIT 1;");            
+                            LIMIT 1;");       
+                            
+        $notifPostComment = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post 
+                            FROM notif_post_comment a
+                            LEFT JOIN users b ON b.nik = a.nik
+                            LEFT JOIN posts c ON c.id = a.id_post
+                            ORDER BY a.id DESC
+                            LIMIT 1;");
 
-        return view('admin.postingan',compact('post','notifPost','notifPostLike'));
+        return view('admin.postingan',compact('post','notifPost','notifPostLike','notifPostComment'));
     }
 
 }
