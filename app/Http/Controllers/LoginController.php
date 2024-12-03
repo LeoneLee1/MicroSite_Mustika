@@ -68,7 +68,43 @@ class LoginController extends Controller
     }
 
     public function resetAkun(){
-        //
+        return view('resetAkun');
+    }
+
+    public function resetAkunStore(Request $request){
+        $request->validate([
+            'nik' => 'required',
+            'no_hp' => 'required',
+        ]);
+
+        $cekNikUsers = User::where('nik',$request->nik)
+                            ->where('no_hp',$this->no_wa($request->no_hp))
+                            ->first();
+
+        if ($cekNikUsers) {
+            $cekNikUsers->password = Hash::make("123456");
+            $cekNikUsers->save();
+            $no_hp = $this->no_wa($request->no_hp);
+            $pesan = "*Halo {$cekNikUsers->nama},*
+*NIK : {$cekNikUsers->nik},*
+
+Kami ingin memberitahukan bahwa permintaan reset password Anda telah berhasil diproses. Berikut adalah password baru Anda:
+
+*Password:* 123456
+
+Demi keamanan, kami menyarankan Anda untuk segera mengganti password ini setelah login. Jika Anda tidak merasa melakukan permintaan ini, harap segera hubungi tim dukungan kami.
+
+Terima kasih,  
+*Pendarrasa MicroSite*";
+
+            $this->sendWa($no_hp, $pesan);
+
+            return redirect()->route('login');
+        } else {
+            Alert::error('NIK DAN NOMOR HP TIDAK SESUAI');
+            return redirect()->back();
+        }
+        
     }
     
     private function no_wa($nohp){
@@ -82,6 +118,35 @@ class LoginController extends Controller
             }
         }
         return $nohp; 
+    }
+
+    private function sendWa($nowa, $pesan){
+        $api_key = 'aDOYclFtJKAKPkRVRFWyAokb4LfyRM';
+        $sender = '62882007021086';
+        $url = 'https://wa.ptmustika.my.id/send-message';
+        $param = array(
+            "api_key" => $api_key,
+            "sender" => $sender,
+            "number" => $nowa, 
+            "message" => $pesan
+        );
+    
+        $json = json_encode($param);
+    
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Content-Length: '.strlen($json)
+        ));
+    
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+        $result = curl_exec($ch);
+    
+        curl_close($ch);
     }
 
     public function logout(){

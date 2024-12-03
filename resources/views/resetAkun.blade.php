@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/logo pendarasa.jpg') }}">
-    <title>Login - Pendarasa</title>
+    <title>Reset Password - Pendarasa</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -37,7 +37,7 @@
                         <img src="{{ asset('img/logo pendarasa.jpg') }}" alt="logo"
                             style="max-width: 150px; min-width: 150px;">
                     </div>
-                    <form action="{{ route('login.proses') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('resetAkun.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3">
                             <label for="Nik" class="form-label">NIK</label>
@@ -45,17 +45,13 @@
                                 required>
                         </div>
                         <div class="mb-3">
-                            <label for="Password" class="form-label">Password</label>
-                            <input type="password" name="password" id="Password" class="form-control mb-1"
-                                placeholder="Password" required>
-                            <small><a href="{{ route('resetAkun') }}">Forgot Your Password?</a></small>
+                            <label for="Password" class="form-label">NO HP</label>
+                            <input type="password" name="no_hp" id="Password" class="form-control mb-1"
+                                placeholder="08662123123" required>
                         </div>
-                        <button type="submit" class="btn btn-primary me-1">Login</button>
+                        <button type="submit" class="btn btn-primary me-1">Reset</button>
+                        <a href="{{ route('login') }}" class="btn btn-warning">Batal</a>
                     </form>
-                    <p class="mt-4 text-center">
-                        <span>Belum Punya Akun?</span>
-                        <a href="{{ route('register') }}">Buat Akun!</a>
-                    </p>
                 </div>
             </div>
         </div>

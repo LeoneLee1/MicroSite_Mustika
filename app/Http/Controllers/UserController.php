@@ -89,7 +89,6 @@ class UserController extends Controller
             'nama' => 'required',
             'nik' => 'required',
             'unit' => 'required',
-            'ap' => 'required',
             'password' => 'required',
             'role' => 'required',
         ]);
@@ -103,8 +102,13 @@ class UserController extends Controller
         $data->password = $password;
         $data->gender = $request->gender;
         $data->role = $request->role;
-        
-        if ($data->save()) {
+
+        $existingData = User::where('nik',$request->nik)->exists();
+
+        if ($existingData) {
+            Alert::error('Gagal!','Maaf NIK sudah terdaftar.');
+            return redirect()->back();
+        } elseif($data->save()) {
             Alert::success('Berhasil!','Membuat User baru.');
             return redirect('/user');
         } else {
@@ -391,7 +395,18 @@ class UserController extends Controller
 
         // kirim pesan
         $no_hp = $request->no_hp;
-        $pesan = "Terima kasih telah mendaftar, Website MicroSite Pendar rasa Username: {$request->nik}, Password: {$request->password}";
+        $pesan = "*Terima kasih telah mendaftar di Website MicroSite Pendarrasa!*
+
+Berikut informasi akun Anda:
+*Username:* {$request->nik}  
+*Password:* {$request->password}  
+
+Silakan gunakan informasi ini untuk login.
+Jika Anda membutuhkan bantuan, jangan ragu untuk menghubungi tim kami.
+
+Terima kasih,
+*Pendarrasa MicroSite*";
+
         $this->sendWa($no_hp, $pesan);
 
         Alert::success('Berhasil!','Menyimpan Akun.');

@@ -39,7 +39,8 @@ Route::post('/login/proses',[LoginController::class,'proses'])->name('login.pros
 Route::get('/logout',[LoginController::class,'logout'])->name('logout');
 Route::get('/login/register',[LoginController::class,'register'])->name('register');
 Route::post('/login/register/insert',[LoginController::class,'insert'])->name('register.insert');
-
+Route::get('/login/resetPass',[LoginController::class,'resetAkun'])->name('resetAkun');
+Route::post('/login/resetPass/store',[LoginController::class,'resetAkunStore'])->name('resetAkun.store');
 
 // POST CONTROLLER
 Route::get('/comment/{id}',[PostController::class,'viewComment'])->name('comment')->middleware('auth');

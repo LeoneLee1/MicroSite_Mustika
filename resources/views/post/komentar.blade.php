@@ -296,7 +296,7 @@
         function like(commentId) {
             // event.preventDefault();
             console.log("Id Comment:", commentId);
-            var scrollPosition = $(window).scrollTop();
+            // var scrollPosition = $(window).scrollTop();
             $.ajax({
                 url: '/comment/like/' + commentId,
                 type: 'POST',
@@ -315,9 +315,9 @@
                     console.error("Terjadi Kesalahan:", xhr.responseText);
                 }
             });
-            $(window).on('load', function() {
-                $(window).scrollTop(scrollPosition);
-            });
+            // $(window).on('load', function() {
+            //     $(window).scrollTop(scrollPosition);
+            // });
             return false;
         }
     </script>
