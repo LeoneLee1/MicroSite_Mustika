@@ -28,11 +28,11 @@
                                     <td>{{ $item->nik }}</td>
                                     <td>{{ $item->nama }}</td>
                                     <td>
-                                        @if (strpos($item->media, '.mp4') !== false ||
-                                                strpos($item->media, '.webm') !== false ||
-                                                strpos($item->media, '.ogg') !== false)
-                                            <video controls class="img-fluid">
-                                                <source src="{{ $item->media }}" type="video/mp4">
+                                        @if (strpos($item->media_file, '.mp4') !== false ||
+                                                strpos($item->media_file, '.webm') !== false ||
+                                                strpos($item->media_file, '.ogg') !== false)
+                                            <video controls class="img-fluid" style="max-width: 30%; height: auto;">
+                                                <source src="{{ asset('media/' . $item->media_file) }}" type="video/mp4">
                                                 Your browser does not support the video tag.
                                             </video>
                                         @elseif (strpos($item->media, 'youtube.com') !== false || strpos($item->media, 'youtu.be') !== false)

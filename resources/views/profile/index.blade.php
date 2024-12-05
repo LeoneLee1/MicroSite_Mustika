@@ -110,9 +110,13 @@
                                                     <th scope="col">{{ $loop->index + 1 }}</th>
                                                     <td title="{{ $p->judul }}">{!! Str::limit($p->judul, 15, '....') !!}</td>
                                                     <td>
-                                                        @if (strpos($p->media, '.mp4') !== false || strpos($p->media, '.webm') !== false || strpos($p->media, '.ogg') !== false)
-                                                            <video controls class="img-fluid">
-                                                                <source src="{{ $p->media }}" type="video/mp4">
+                                                        @if (strpos($p->media_file, '.mp4') !== false ||
+                                                                strpos($p->media_file, '.webm') !== false ||
+                                                                strpos($p->media_file, '.ogg') !== false)
+                                                            <video controls class="img-fluid"
+                                                                style="max-width: 30%; height: auto;">
+                                                                <source src="{{ asset('media/' . $p->media_file) }}"
+                                                                    type="video/mp4">
                                                                 Your browser does not support the video tag.
                                                             </video>
                                                         @elseif (strpos($p->media, 'youtube.com') !== false || strpos($p->media, 'youtu.be') !== false)
@@ -211,9 +215,13 @@
                                                     <th scope="col">{{ $loop->index + 1 }}</th>
                                                     <td title="{{ $p->judul }}">{!! Str::limit($p->judul, 15, '....') !!}</td>
                                                     <td>
-                                                        @if (strpos($p->media, '.mp4') !== false || strpos($p->media, '.webm') !== false || strpos($p->media, '.ogg') !== false)
-                                                            <video controls class="img-fluid">
-                                                                <source src="{{ $p->media }}" type="video/mp4">
+                                                        @if (strpos($p->media_file, '.mp4') !== false ||
+                                                                strpos($p->media_file, '.webm') !== false ||
+                                                                strpos($p->media_file, '.ogg') !== false)
+                                                            <video controls class="img-fluid"
+                                                                style="max-width: 30%; height: auto;">
+                                                                <source src="{{ asset('media/' . $p->media_file) }}"
+                                                                    type="video/mp4">
                                                                 Your browser does not support the video tag.
                                                             </video>
                                                         @elseif (strpos($p->media, 'youtube.com') !== false || strpos($p->media, 'youtu.be') !== false)

@@ -63,22 +63,26 @@ class PostController extends Controller
         $post->media = $request->media;
         $post->deskripsi = $request->deskripsi;
 
-        
-
         if ($request->hasFile('media_file')) {
             $file = $request->file('media_file');
-            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $fileExtension = $file->getClientOriginalExtension();
+            $fileName = time() . '.' . $fileExtension;
+
             $filePath = public_path('media/' . $fileName);
 
-            $img = Image::make($file);
-            $img->resize(700, 700,function ($constraint){
+            if (in_array($fileExtension, ['jpg','jpeg','png','gif'])) {
+                $img = Image::make($file);
+                $img->resize(700, 700,function ($constraint){
                 $constraint->aspectRatio();
                 $constraint->upsize();
-            })->save($filePath);
+                })->save($filePath);
 
-            $post->media_file = $fileName;
-        } else {
-            //
+                $post->media_file = $fileName;
+            } elseif(in_array($fileExtension,['mp4','webm','ogg'])){
+                $file->move(public_path('media/'),$fileName);
+                $post->media_file = $fileName;
+            }    
+            
         }
         
         if ($request->has('polling')) {
@@ -331,17 +335,26 @@ class PostController extends Controller
                 }
             } elseif($data->media_file === null) {
                 $file = $request->file('media_file');
-                $fileName = time() . '.' . $file->getClientOriginalExtension();
+                $fileExtension = $file->getClientOriginalextension();
+                $fileName = time() . '.' . $fileExtension;
+
                 $filePath = public_path('media/' . $fileName);
-    
-                $img = Image::make($file);
-                $img->resize(700, 700,function ($constraint){
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                })->save($filePath);
-    
-                $data->media_file = $fileName;
-                $data->media = null;
+                
+                if (in_array($fileExtension,['jpg','jpeg','png','gif'])) {
+                    $img = Image::make($file);
+                    $img->resize(700, 700,function ($constraint){
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    })->save($filePath);
+        
+                    $data->media_file = $fileName;
+                    $data->media = null;    
+                } elseif(in_array($fileExtension,['mp4','webm','ogg'])){
+                    $file->move(public_path('media/'),$fileName);
+                    $data->media_file = $fileName;
+                    $data->media = null;
+                }
+                
             }
         } else {
             if ($data->media_file) {
