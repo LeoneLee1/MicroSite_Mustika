@@ -57,6 +57,7 @@ class LoginController extends Controller
             $register->nik = $request->nik;
             $register->no_hp = $this->no_wa($request->no_hp);
             $register->unit = $request->unit;
+            $register->gender = $request->gender;
     
             if ($register->save()) {
                 return view('informasi-sukses');
@@ -98,7 +99,7 @@ Terima kasih,
 *Pendarrasa MicroSite*";
 
             $this->sendWa($no_hp, $pesan);
-
+            Alert::success('Berhasil mengubah password anda, silahkan cek Whatsapps pesan dari tim kami','Terima kasih');
             return redirect()->route('login');
         } else {
             Alert::error('NIK DAN NOMOR HP TIDAK SESUAI');

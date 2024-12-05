@@ -52,11 +52,19 @@
                             </div>
                             <div class="mb-3">
                                 <label for="Unit" class="form-label">Unit</label>
-                                <select name="unit" class="form-control" id="Unit">
+                                <select name="unit" class="form-control" id="Unit" required>
                                     <option value="" selected disabled>Pilih Unit</option>
                                     @foreach ($unit as $item)
                                         <option value="{{ $item->kodeunit }}">{{ $item->kodeunit }}</option>
                                     @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="Gender" class="form-label">Jenis Kelamin</label>
+                                <select name="gender" class="form-control" required>
+                                    <option value="" selected disabled>Pilih Jenis Kelamin</option>
+                                    <option value="Pria">Pria</option>
+                                    <option value="Wanita">Wanita</option>
                                 </select>
                             </div>
                             <div class="mb-3">

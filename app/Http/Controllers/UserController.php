@@ -101,6 +101,7 @@ class UserController extends Controller
         $data->unit = $request->unit;
         $data->password = $password;
         $data->gender = $request->gender;
+        $data->no_hp = $this->no_wa($request->no_hp);
         $data->role = $request->role;
 
         $existingData = User::where('nik',$request->nik)->exists();
@@ -163,6 +164,7 @@ class UserController extends Controller
             $data->nama = $request->nama;
             $data->nik = $request->nik;
             $data->unit = $request->unit;
+            $data->no_hp = $this->no_wa($request->no_hp);
             $data->gender = $request->gender;
             $data->role = $request->role;
             $data->save();
@@ -171,6 +173,7 @@ class UserController extends Controller
             $data->nama = $request->nama;
             $data->nik = $request->nik;
             $data->unit = $request->unit;
+            $data->no_hp = $this->no_wa($request->no_hp);
             $data->gender = $request->gender;
             $data->role = $request->role;
             $data->password = $newPassword;
@@ -276,6 +279,7 @@ class UserController extends Controller
         $id = $request->id;
         $nama = $request->nama;
         $unit = $request->unit;
+        $no_hp = $this->no_wa($request->no_hp);
         $gender = $request->gender;
         $password = $request->password;
 
@@ -299,6 +303,7 @@ class UserController extends Controller
         $dataToUpdate = [
             'nama' => $nama,
             'unit' => $unit,
+            'no_hp' => $no_hp,
             'gender' => $gender,
             'foto' => $foto_name,
         ];
@@ -390,6 +395,8 @@ class UserController extends Controller
         $data->nik = $request->nik;
         $data->unit = $request->unit;
         $data->role = $request->role;
+        $data->gender = $request->gender;
+        $data->no_hp = $request->no_hp;
         $data->password = $password;
         $data->save();
 
@@ -435,6 +442,19 @@ Terima kasih,
             //
         }
         
+    }
+
+    private function no_wa($nohp){
+        $nohp = trim($nohp); 
+        if(!preg_match("/[^+0-9]/", $nohp)){
+            if(substr($nohp, 0, 2) == "62"){
+                return $nohp; 
+            }
+            else if(substr($nohp, 0, 1) == "0"){
+                return "62" . substr($nohp, 1); 
+            }
+        }
+        return $nohp; 
     }
 
     private function sendWa($nowa, $pesan){

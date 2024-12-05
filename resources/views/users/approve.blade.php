@@ -31,6 +31,20 @@
                         </div>
                         <div class="mb-3">
                             <div class="form-group">
+                                <label style="color: black;">NOMOR HP</label>
+                                <input type="number" name="no_hp" class="form-control" value="{{ $data->no_hp }}"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label style="color: black;">JENIS KELAMIN</label>
+                                <input type="text" name="gender" class="form-control" value="{{ $data->gender }}"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-group">
                                 <label style="color: black;">UNIT</label>
                                 <input type="text" name="unit" class="form-control" value="{{ $data->unit }}"
                                     required>

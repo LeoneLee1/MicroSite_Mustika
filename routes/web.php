@@ -32,6 +32,7 @@ Route::post('/like/{postId}',[DashboardController::class,'like'])->name('like.po
 Route::post('/save/{id}',[DashboardController::class,'save'])->name('save');
 Route::get('/viewVote/{id}',[DashboardController::class,'viewVote'])->name('viewVote');
 Route::get('/viewNotification',[DashboardController::class,'viewNotification'])->name('viewNotification');
+Route::post('/beranda/insertNomorHp',[DashboardController::class,'insertNomorHp'])->name('beranda.insertNomorHp');
 
 // LOGIN CONTROLLER
 Route::get('/login',[LoginController::class,'login'])->name('login');

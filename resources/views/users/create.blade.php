@@ -22,6 +22,11 @@
                                 placeholder="Username / NIK" required>
                         </div>
                         <div class="mb-3">
+                            <label for="Nik" class="form-label">NOMOR HP</label>
+                            <input type="number" name="no_hp" id="Nik" class="form-control"
+                                placeholder="08523423423" required>
+                        </div>
+                        <div class="mb-3">
                             <label for="Unit" class="form-label">UNIT</label>
                             <select name="unit" class="form-control" required>
                                 <option value="" selected disabled>PILIH UNIT</option>

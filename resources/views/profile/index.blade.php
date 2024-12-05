@@ -47,6 +47,10 @@
                                             <span class="profile_content">{{ $item->unit }}</span>
                                         </div>
                                         <div class="profile_column">
+                                            <span class="profile_title">Nomor HP</span>
+                                            <span class="profile_content">{{ $item->no_hp }}</span>
+                                        </div>
+                                        <div class="profile_column">
                                             <span class="profile_title">Gender</span>
                                             @if ($item->gender == null || '')
                                                 <span class="profile_content">-</span>

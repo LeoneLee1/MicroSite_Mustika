@@ -73,6 +73,11 @@
                                             <input type="text" class="form-control" name="password"
                                                 placeholder="***********">
                                         </div>
+                                        <div class="form-group" style="color: black; font-weight:bold;">
+                                            <label>Nomor HP</label>
+                                            <input type="number" class="form-control" name="no_hp"
+                                                value="{{ $item->no_hp }}" placeholder="0822344412">
+                                        </div>
                                         <Button type="submit" class="btn btn-primary">Simpan Perubahan Tanpa
                                             Foto</Button>
                                         <h6 class="mt-2" style="color: black; font-weight: bold;">Foto Profil</h6>

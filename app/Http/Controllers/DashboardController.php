@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Models\NotifPostLike;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class DashboardController extends Controller
 {
@@ -301,6 +302,37 @@ class DashboardController extends Controller
                                         ORDER BY created_at DESC");
 
         return view('notifications',compact('post','postLike','postComment','notifPost','notifPostLike','notifPostComment','notif_post_all'));
+    }
+
+    public function insertNomorHp(Request $request){
+        $request->validate([
+            'no_hp' => 'required',
+        ]);
+
+        $auth = Auth::user();
+        $auth->no_hp = $this->no_wa($request->no_hp);
+
+        if ($auth->save()) {
+            Alert::success('Terima kasih atas kerja sama-nya.');
+            return redirect()->back();
+        } else {
+            Alert::error('Mohon dicoba lagi.');
+            return redirect()->back();
+        }
+        
+    }
+
+    private function no_wa($nohp){
+        $nohp = trim($nohp); 
+        if(!preg_match("/[^+0-9]/", $nohp)){
+            if(substr($nohp, 0, 2) == "62"){
+                return $nohp; 
+            }
+            else if(substr($nohp, 0, 1) == "0"){
+                return "62" . substr($nohp, 1); 
+            }
+        }
+        return $nohp; 
     }
 
 }

@@ -19,6 +19,7 @@
                             <th scope="col">Nama</th>
                             <th scope="col">Nik</th>
                             <th scope="col">Unit</th>
+                            <th scope="col">Nomor Hp</th>
                             <th scope="col">Gender</th>
                             <th scope="col">Role</th>
                             <th scope="col">Aksi</th>
@@ -64,6 +65,11 @@
                     {
                         data: 'unit',
                         name: 'unit',
+                        className: 'text-center'
+                    },
+                    {
+                        data: 'no_hp',
+                        name: 'no_hp',
                         className: 'text-center'
                     },
                     {

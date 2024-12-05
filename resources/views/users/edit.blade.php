@@ -22,6 +22,11 @@
                                 class="form-control" placeholder="NIK">
                         </div>
                         <div class="mb-3">
+                            <label for="Nik" class="form-label">NIK</label>
+                            <input type="number" name="no_hp" value="{{ $data->no_hp }}" id="Nik"
+                                class="form-control" placeholder="0822812381">
+                        </div>
+                        <div class="mb-3">
                             <label for="Gender" class="form-label">GENDER</label>
                             <select name="gender" class="form-control">
                                 <option value="{{ $data->gender }}" selected>{{ $data->gender ?? '-' }}</option>

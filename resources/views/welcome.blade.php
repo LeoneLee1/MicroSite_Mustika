@@ -37,6 +37,33 @@
 @include('modal.cariPost')
 @include('modal.menyukai')
 @section('content')
+    @if (Auth::user()->no_hp === null || Auth::user()->no_hp === '')
+        <!-- Modal -->
+        <div class="modal fade" id="autoShowModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="modalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h6 class="modal-title" id="modalLabel" style="color: #000000; font-weight: bold;">Mohon untuk
+                            memasukkan nomor HP yang
+                            aktif dan dapat
+                            dihubungi
+                            sebagai syarat untuk mengakses website Pendarrasa. Terima kasih atas pengertiannya.</h6>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('beranda.insertNomorHp') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="mb-3">
+                                <label>Nomor HP (Whatsapps / Telegram)</label>
+                                <input type="number" name="no_hp" class="form-control" placeholder="08123123222">
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
     <div class="container">
         <div class="row justify-content-center">
             @foreach ($post as $item)
@@ -371,6 +398,12 @@
 @push('after-script')
     <script src="{{ asset('js/jquery.jscroll.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var myModal = new bootstrap.Modal(document.getElementById('autoShowModal'));
+            myModal.show();
+        });
+    </script>
     <script>
         function toggleText(uniqueId) {
             const shortText = document.getElementById('shortText-' + uniqueId);
