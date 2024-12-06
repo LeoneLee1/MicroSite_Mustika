@@ -388,6 +388,13 @@
                 </div>
             </div>
         @endforeach
+        <div class="d-flex justify-content-center mt-3">
+            <div class="card" style="width: 55rem;">
+                <div class="card-body">
+                    {{ $post->links('pagination::bootstrap-4') }}
+                </div>
+            </div>
+        </div>
     </div>
     <div class="d-block d-sm-none">
         <button id="refreshButton" class="refresh-button"data-bs-toggle="modal" data-bs-target="#searchPost"><i

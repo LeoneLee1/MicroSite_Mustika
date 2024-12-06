@@ -60,12 +60,6 @@
                                 <option value="Anonymous">Anonymous</option>
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <div class="form-group">
-                                <label style="color: black;">PASSWORD</label>
-                                <input type="text" name="password" class="form-control" placeholder="Password" required>
-                            </div>
-                        </div>
                         <button type="submit" class="btn btn-sm btn-primary" onclick="return Approve()">APPROVE</button>
                         <a href="javascript:void(0)" onclick="window.history.go(-1); return false;"
                             class="btn btn-warning btn-sm">BATAL</a>

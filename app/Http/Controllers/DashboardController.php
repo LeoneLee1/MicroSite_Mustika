@@ -48,8 +48,8 @@ class DashboardController extends Controller
 
         $postQuery->orderBy('p.id', 'desc');
 
-        // $post = $postQuery->paginate(15);
-        $post = $postQuery->get();
+        $post = $postQuery->paginate(15);
+        // $post = $postQuery->get();
         
         $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.foto FROM comments c
                         LEFT JOIN users u ON u.nik = c.nik

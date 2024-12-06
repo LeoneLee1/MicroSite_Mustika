@@ -7,6 +7,7 @@ use App\Models\Save;
 use App\Models\Unit;
 use App\Models\User;
 use App\Models\AkunRegis;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -383,12 +384,13 @@ class UserController extends Controller
         $request->validate([
             'nama' => 'required',
             'nik' => 'required',
-            'password' => 'required',
             'unit' => 'required',
             'role' => 'required',
-        ]); 
+        ]);
 
-        $password = Hash::make($request->password);
+        $randomString = Str::random(8);
+
+        $password = Hash::make($randomString);
 
         $data = new User();
         $data->nama = $request->nama;
@@ -406,7 +408,7 @@ class UserController extends Controller
 
 Berikut informasi akun Anda:
 *Username:* {$request->nik}  
-*Password:* {$request->password}  
+*Password:* {$randomString}
 
 Silakan gunakan informasi ini untuk login.
 Jika Anda membutuhkan bantuan, jangan ragu untuk menghubungi tim kami.

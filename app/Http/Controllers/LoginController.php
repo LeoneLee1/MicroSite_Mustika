@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Unit;
 use App\Models\User;
 use App\Models\AkunRegis;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -82,8 +83,10 @@ class LoginController extends Controller
                             ->where('no_hp',$this->no_wa($request->no_hp))
                             ->first();
 
+        $random = Str::random(8);
+
         if ($cekNikUsers) {
-            $cekNikUsers->password = Hash::make("123456");
+            $cekNikUsers->password = Hash::make($random);
             $cekNikUsers->save();
             $no_hp = $this->no_wa($request->no_hp);
             $pesan = "*Halo {$cekNikUsers->nama},*
@@ -91,7 +94,7 @@ class LoginController extends Controller
 
 Kami ingin memberitahukan bahwa permintaan reset password Anda telah berhasil diproses. Berikut adalah password baru Anda:
 
-*Password:* 123456
+*Password:* {$random}
 
 Demi keamanan, kami menyarankan Anda untuk segera mengganti password ini setelah login. Jika Anda tidak merasa melakukan permintaan ini, harap segera hubungi tim dukungan kami.
 
