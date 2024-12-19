@@ -27,6 +27,8 @@ class AdminController extends Controller
             return view('403');
         }
 
+        $nik = Auth::user()->nik;
+
         // $post = DB::select("SELECT a.*, b.nama FROM posts a
         //                     LEFT JOIN users b ON b.nik = a.nik
         //                     ORDER BY a.id DESC;");
@@ -56,7 +58,26 @@ class AdminController extends Controller
                             ORDER BY a.id DESC
                             LIMIT 1;");
 
-        return view('admin.postingan',compact('post','notifPost','notifPostLike','notifPostComment'));
+        $notifBadge = DB::select("SELECT * FROM notif_badge WHERE nik = '$nik'");
+
+        $notifCommentLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, d.nik AS nik_comment
+                                    FROM notif_post_commentlike a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments d ON d.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifCommentBalas = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, e.nik AS nik_comment
+                                    FROM notif_post_commentbalas a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments_replies d ON d.id = a.id_commentReplies
+                                    LEFT JOIN comments e ON e.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('admin.postingan',compact('post','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas'));
     }
 
 }

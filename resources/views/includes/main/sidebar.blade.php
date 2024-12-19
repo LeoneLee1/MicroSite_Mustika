@@ -25,7 +25,7 @@
                 <div data-i18n="Analytics">Cari</div>
             </a>
         </li>
-        @if (Auth::user()->role === 'User' || Auth::user()->role === 'Admin' || Auth::user()->role === 'Anonymous')
+        @if (Auth::user()->role === 'Admin' || Auth::user()->role === 'Anonymous')
             <li
                 class="menu-item {{ request()->is('post*') ? 'active' : '' }} {{ request()->is('polling/create*') ? 'active' : '' }} mb-2">
                 <a href="{{ route('post') }}" class="menu-link">

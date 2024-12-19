@@ -580,7 +580,6 @@
             initializeCharts();
         });
     </script>
-
     <script>
         function save(Id) {
             event.preventDefault();

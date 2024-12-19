@@ -38,7 +38,7 @@
             color: white;
             border-radius: 50%;
             padding: 5px;
-            font-size: 6px;
+            font-size: 5px;
             line-height: 1;
         }
     </style>
@@ -124,6 +124,25 @@
                 return false;
             }
         }
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#notification-dropdown').on('click', function(e) {
+                e.preventDefault();
+                $('.notification-badge').remove();
+                // $.ajax({
+                //     url: "{{ route('delete.NotifBadge') }}",
+                //     type: "GET",
+                //     success: function(response) {
+                //         console.log(response.message);
+                //         $('.notification-badge').remove();
+                //     },
+                //     error: function(xhr) {
+                //         console.error(xhr.responseText);
+                //     }
+                // });
+            });
+        });
     </script>
 </body>
 

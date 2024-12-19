@@ -8,6 +8,7 @@ use App\Models\Comment;
 use App\Models\PostLike;
 use App\Models\NotifPost;
 use App\Models\AnswerVote;
+use App\Models\NotifBadge;
 use App\Models\PollAnswer;
 use App\Models\CommentLike;
 use Illuminate\Http\Request;
@@ -25,6 +26,8 @@ use Stichoza\GoogleTranslate\GoogleTranslate;
 class PostController extends Controller
 {
     public function index(){
+
+        $nik = Auth::user()->nik;
 
         $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul 
                                     FROM notif_post a
@@ -47,7 +50,26 @@ class PostController extends Controller
                                     ORDER BY a.id DESC
                                     LIMIT 1;");
 
-        return view('post.index',compact('notifPost','notifPostLike','notifPostComment'));
+        $notifBadge = DB::select("SELECT * FROM notif_badge WHERE nik = '$nik'");
+
+        $notifCommentLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, d.nik AS nik_comment
+                                    FROM notif_post_commentlike a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments d ON d.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifCommentBalas = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, e.nik AS nik_comment
+                                    FROM notif_post_commentbalas a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments_replies d ON d.id = a.id_commentReplies
+                                    LEFT JOIN comments e ON e.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('post.index',compact('notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas'));
     }
 
     public function insert(Request $request){
@@ -87,17 +109,9 @@ class PostController extends Controller
         
         if ($request->has('polling')) {
             $post->save();
-            $notif = new NotifPost();
-            $notif->nik = $post->nik;
-            $notif->id_post = $post->id;
-            $notif->save();
             Alert::success('Berhasil!','Membuat Post.');
             return redirect()->route('polling.create');
         } elseif($post->save()) {
-            $notif = new NotifPost();
-            $notif->nik = $post->nik;
-            $notif->id_post = $post->id;
-            $notif->save();
             Alert::success('Berhasil!','Membuat Post.');
             return back();
         } else {
@@ -154,7 +168,26 @@ class PostController extends Controller
                                     ORDER BY a.id DESC
                                     LIMIT 1;");
 
-        return view('post.komentar',compact('post','komen','replies','countReplies','commentLike','notifPost','notifPostLike','notifPostComment'));
+        $notifBadge = DB::select("SELECT * FROM notif_badge WHERE nik = '$userNik'");
+
+        $notifCommentLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, d.nik AS nik_comment
+                                    FROM notif_post_commentlike a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments d ON d.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifCommentBalas = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, e.nik AS nik_comment
+                                    FROM notif_post_commentbalas a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments_replies d ON d.id = a.id_commentReplies
+                                    LEFT JOIN comments e ON e.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('post.komentar',compact('post','komen','replies','countReplies','commentLike','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas'));
     }
 
     public function komen(Request $request){
@@ -174,6 +207,10 @@ class PostController extends Controller
         $value->komen += 1;
         $value->save();
 
+        $notifBadge = NotifBadge::where('nik',$value->nik)->first();
+        $notifBadge->value += 1;
+        $notifBadge->save();
+
         $notifKomen = new NotifPostComment();
         $notifKomen->id_post = $request->id_post;
         $notifKomen->nik = $request->nik;
@@ -191,6 +228,15 @@ class PostController extends Controller
         $value = Post::findOrFail($data->id_post);
         $value->komen -= 1;
         $value->save();
+
+        $notifBadge = NotifBadge::where('nik',$value->nik)->first();
+        if ($notifBadge->value == 0) {
+            $notifBadge->value = 0;
+            $notifBadge->save();
+        } else {
+            $notifBadge->value -= 1;
+            $notifBadge->save();
+        }
 
         toast('Berhasil Menghapus','success');
 
@@ -280,7 +326,26 @@ class PostController extends Controller
                                     ORDER BY a.id DESC
                                     LIMIT 1;");
 
-        return view('post.lihat', compact('data', 'komen', 'poll', 'jawaban', 'polling', 'jawabanModal','notifPost','notifPostLike','notifPostComment'));
+        $notifBadge = DB::select("SELECT * FROM notif_badge WHERE nik = '$user'");
+
+        $notifCommentLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, d.nik AS nik_comment
+                                    FROM notif_post_commentlike a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments d ON d.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifCommentBalas = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, e.nik AS nik_comment
+                                    FROM notif_post_commentbalas a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments_replies d ON d.id = a.id_commentReplies
+                                    LEFT JOIN comments e ON e.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('post.lihat', compact('data', 'komen', 'poll', 'jawaban', 'polling', 'jawabanModal','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas'));
     }
 
     public function edit($id){
@@ -292,6 +357,8 @@ class PostController extends Controller
 
         $jawaban = DB::select("SELECT * FROM poll_answers
                                 WHERE id_post = '$id';");
+
+        $nik = Auth::user()->nik;
 
         $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
                                 LEFT JOIN users b ON b.nik = a.nik
@@ -313,7 +380,26 @@ class PostController extends Controller
                                 ORDER BY a.id DESC
                                 LIMIT 1;");
 
-        return view('post.edit',compact('post','poll','jawaban','notifPost','notifPostLike','notifPostComment'));
+        $notifBadge = DB::select("SELECT * FROM notif_badge WHERE nik = '$nik'");
+
+        $notifCommentLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, d.nik AS nik_comment
+                                    FROM notif_post_commentlike a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments d ON d.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifCommentBalas = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, e.nik AS nik_comment
+                                    FROM notif_post_commentbalas a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments_replies d ON d.id = a.id_commentReplies
+                                    LEFT JOIN comments e ON e.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('post.edit',compact('post','poll','jawaban','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas'));
     }
 
     public function update(Request $request, $id){
@@ -395,6 +481,12 @@ class PostController extends Controller
         $data->comment = $request->comment;
         $data->save();
 
+        $comment = Comment::where('id',$request->id_comment)->first();
+
+        $notifBadge = NotifBadge::where('nik',$comment->nik)->first();
+        $notifBadge->value += 1;
+        $notifBadge->save();
+
         $value = Post::findOrFail($request->id_post);
         $value->komen += 1;
         $value->save();
@@ -403,6 +495,7 @@ class PostController extends Controller
         $notifKomen->id_post = $request->id_post;
         $notifKomen->nik = $request->nik;
         $notifKomen->id_commentReplies = $data->id;
+        $notifKomen->id_comment = $data->id_comment;
         $notifKomen->save();
 
         return response()->json($data);
@@ -422,6 +515,8 @@ class PostController extends Controller
                                     ->where('id_comment',$comment->id)
                                     ->first();
 
+        $notifBadge = NotifBadge::where('nik',$comment->nik)->first();
+
         if ($existingLike) {
             if ($existingLike->id_comment == $id) {
                 $existingLike->delete();
@@ -434,6 +529,14 @@ class PostController extends Controller
                                                     ->first();
 
                 $notifLike1->delete();
+
+                if ($notifBadge->value == 0) {
+                    $notifBadge->value = 0;
+                    $notifBadge->save();
+                } else {
+                    $notifBadge->value -= 1;
+                    $notifBadge->save();
+                }
 
                 return response()->json(['success' => true, 'message' => 'Like removed']);
             } else {
@@ -469,6 +572,9 @@ class PostController extends Controller
             $notifLike2->nik = $userNik;
             $notifLike2->id_comment = $comment->id;
             $notifLike2->save();
+
+            $notifBadge->value += 1;
+            $notifBadge->save();
 
             return response()->json(['success' => true, 'message' => 'Like added']);
         }
@@ -548,6 +654,13 @@ class PostController extends Controller
             $notif3 = NotifPostComment::where('id_post',$id)->delete();
             $notif4 = NotifPostCommentLike::where('id_post',$id)->delete();
             $notif5 = NotifPostCommentReplies::where('id_post',$id)->delete();
+
+            $notifBadge = NotifBadge::all();
+            foreach ($notifBadge as $item){
+                $item->value = 0;
+                $item->save();
+            }
+
             Alert::success('Berhasil menghapus');
             return redirect()->back();
         } else {

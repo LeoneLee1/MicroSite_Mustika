@@ -216,7 +216,7 @@
                         @if (Auth::user()->role == 'Pengamat')
                         @else
                             <div class="mt-2">
-                                <div class="d-flex justify-content-start col-sm-5">
+                                <div class="d-flex justify-content-start">
                                     <form method="POST" action="{{ route('comment.insert') }}"
                                         enctype="multipart/form-data"
                                         class="d-flex align-items-left w-100 comment-form">

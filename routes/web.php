@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\NotifBadge;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\PostController;
@@ -109,3 +110,15 @@ Route::get('/chat/json',[ChatController::class,'chat'])->name('chat.json');
 // ADMIN CONTROLLER
 Route::get('/admin/postingan',[AdminController::class,'postingan'])->name('admin.postingan');
 Route::get('/admin/postingan/edit/{id}',[AdminController::class,'edit'])->name('admin.postEdit');
+
+// NOTIF BADGE
+Route::get('/deleteNotifBadge', function(){
+    $nik = Auth::user()->nik;
+
+    $notifBadge = NotifBadge::where('nik',$nik)->first();
+    $notifBadge->value = 0;
+    $notifBadge->save();
+    
+    return response()->json(['message' => 'Notification badge cleared successfully.']);
+    
+})->name('delete.NotifBadge');

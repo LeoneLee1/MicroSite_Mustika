@@ -35,6 +35,8 @@ class UserController extends Controller
 
     public function index(){
 
+        $nik = Auth::user()->nik;
+
         $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
                                     LEFT JOIN users b ON b.nik = a.nik
                                     LEFT JOIN posts c ON c.id = a.id_post
@@ -54,7 +56,26 @@ class UserController extends Controller
                                     ORDER BY a.id DESC
                                     LIMIT 1;");
 
-        return view('users.index',compact('notifPost','notifPostLike','notifPostComment'));
+        $notifBadge = DB::select("SELECT * FROM notif_badge WHERE nik = '$nik'");
+
+        $notifCommentLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, d.nik AS nik_comment
+                                    FROM notif_post_commentlike a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments d ON d.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifCommentBalas = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, e.nik AS nik_comment
+                                    FROM notif_post_commentbalas a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments_replies d ON d.id = a.id_commentReplies
+                                    LEFT JOIN comments e ON e.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('users.index',compact('notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas'));
     }
 
     public function create(){
@@ -62,6 +83,8 @@ class UserController extends Controller
         $data = Unit::all();
 
         $ap = DB::select("SELECT * FROM tbl_pt ORDER BY koderegion ASC;");
+
+        $nik = Auth::user()->nik;
 
         $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
                                     LEFT JOIN users b ON b.nik = a.nik
@@ -82,7 +105,26 @@ class UserController extends Controller
                                     ORDER BY a.id DESC
                                     LIMIT 1;");
 
-        return view('users.create',compact('data','ap','notifPost','notifPostLike','notifPostComment'));
+        $notifBadge = DB::select("SELECT * FROM notif_badge WHERE nik = '$nik'");
+
+        $notifCommentLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, d.nik AS nik_comment
+                                    FROM notif_post_commentlike a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments d ON d.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifCommentBalas = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, e.nik AS nik_comment
+                                    FROM notif_post_commentbalas a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments_replies d ON d.id = a.id_commentReplies
+                                    LEFT JOIN comments e ON e.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('users.create',compact('data','ap','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas'));
     }
 
     public function insert(Request $request){
@@ -126,6 +168,8 @@ class UserController extends Controller
 
         $ap = DB::select("SELECT * FROM tbl_pt ORDER BY koderegion ASC;");
 
+        $nik = Auth::user()->nik;
+
         $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
                                     LEFT JOIN users b ON b.nik = a.nik
                                     LEFT JOIN posts c ON c.id = a.id_post
@@ -145,7 +189,26 @@ class UserController extends Controller
                                 ORDER BY a.id DESC
                                 LIMIT 1;");
 
-        return view('users.edit',compact('data','unit','ap','notifPost','notifPostLike','notifPostComment'));
+        $notifBadge = DB::select("SELECT * FROM notif_badge WHERE nik = '$nik'");
+
+        $notifCommentLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, d.nik AS nik_comment
+                                    FROM notif_post_commentlike a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments d ON d.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifCommentBalas = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, e.nik AS nik_comment
+                                    FROM notif_post_commentbalas a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments_replies d ON d.id = a.id_commentReplies
+                                    LEFT JOIN comments e ON e.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('users.edit',compact('data','unit','ap','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas'));
     }
 
     public function update(Request $request, $id)
@@ -232,7 +295,26 @@ class UserController extends Controller
                             ORDER BY a.id DESC
                             LIMIT 1;");
 
-        return view('profile.index',compact('data','post','save','notifPost','notifPostLike','notifPostComment'));
+        $notifBadge = DB::select("SELECT * FROM notif_badge WHERE nik = '$user'");
+
+        $notifCommentLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, d.nik AS nik_comment
+                                    FROM notif_post_commentlike a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments d ON d.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifCommentBalas = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, e.nik AS nik_comment
+                                    FROM notif_post_commentbalas a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments_replies d ON d.id = a.id_commentReplies
+                                    LEFT JOIN comments e ON e.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('profile.index',compact('data','post','save','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas'));
     }
 
     public function profileEdit(){
@@ -264,7 +346,26 @@ class UserController extends Controller
                                 ORDER BY a.id DESC
                                 LIMIT 1;");
 
-        return view('profile.edit',compact('data','unit','ap','notifPost','notifPostLike','notifPostComment'));
+        $notifBadge = DB::select("SELECT * FROM notif_badge WHERE nik = '$user'");
+
+        $notifCommentLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, d.nik AS nik_comment
+                                    FROM notif_post_commentlike a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments d ON d.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifCommentBalas = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, e.nik AS nik_comment
+                                    FROM notif_post_commentbalas a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments_replies d ON d.id = a.id_commentReplies
+                                    LEFT JOIN comments e ON e.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('profile.edit',compact('data','unit','ap','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas'));
     }
 
     public function profileInsert(Request $request)
@@ -333,6 +434,8 @@ class UserController extends Controller
 
     public function dataRegis(){
 
+        $nik = Auth::user()->nik;
+
         $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
                                     LEFT JOIN users b ON b.nik = a.nik
                                     LEFT JOIN posts c ON c.id = a.id_post
@@ -352,9 +455,30 @@ class UserController extends Controller
                                     ORDER BY a.id DESC
                                     LIMIT 1;");
 
-        return view('users.akunRegis',compact('notifPost','notifPostLike','notifPostComment'));
+        $notifBadge = DB::select("SELECT * FROM notif_badge WHERE nik = '$nik'");
+
+        $notifCommentLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, d.nik AS nik_comment
+                                    FROM notif_post_commentlike a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments d ON d.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifCommentBalas = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, e.nik AS nik_comment
+                                    FROM notif_post_commentbalas a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments_replies d ON d.id = a.id_commentReplies
+                                    LEFT JOIN comments e ON e.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('users.akunRegis',compact('notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas'));
     }
     public function dataRegisSee($id){
+
+        $nik = Auth::user()->nik;
 
         $data = AkunRegis::findOrFail($id);
 
@@ -377,7 +501,26 @@ class UserController extends Controller
                                     ORDER BY a.id DESC
                                     LIMIT 1;");
 
-        return view('users.approve',compact('data','notifPost','notifPostLike','notifPostComment'));
+        $notifBadge = DB::select("SELECT * FROM notif_badge WHERE nik = '$nik'");
+
+        $notifCommentLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, d.nik AS nik_comment
+                                    FROM notif_post_commentlike a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments d ON d.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifCommentBalas = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, e.nik AS nik_comment
+                                    FROM notif_post_commentbalas a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments_replies d ON d.id = a.id_commentReplies
+                                    LEFT JOIN comments e ON e.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('users.approve',compact('data','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas'));
     }
 
     public function dataRegisApprove(Request $request, $id){
