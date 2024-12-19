@@ -329,32 +329,37 @@ class PostController extends Controller
 
         if ($request->hasFile('media_file')) {
             if ($data->media_file) {
-                $oldFilePath = public_path('media/'. $data->media_file);
+                $oldFilePath = public_path('media/' . $data->media_file);
                 if (file_exists($oldFilePath)) {
                     unlink($oldFilePath);
                 }
-            } elseif($data->media_file === null) {
+            }
+            
+            if ($request->hasFile('media_file')) {
                 $file = $request->file('media_file');
-                $fileExtension = $file->getClientOriginalextension();
+                $fileExtension = $file->getClientOriginalExtension();
                 $fileName = time() . '.' . $fileExtension;
-
+            
                 $filePath = public_path('media/' . $fileName);
-                
-                if (in_array($fileExtension,['jpg','jpeg','png','gif'])) {
+            
+                if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif'])) {
                     $img = Image::make($file);
-                    $img->resize(700, 700,function ($constraint){
+                    $img->resize(700, 700, function ($constraint) {
                         $constraint->aspectRatio();
                         $constraint->upsize();
                     })->save($filePath);
-        
+            
                     $data->media_file = $fileName;
-                    $data->media = null;    
-                } elseif(in_array($fileExtension,['mp4','webm','ogg'])){
-                    $file->move(public_path('media/'),$fileName);
+                    $data->media = null;
+                } elseif (in_array($fileExtension, ['mp4', 'webm', 'ogg'])) {
+                    $file->move(public_path('media/'), $fileName);
+                    $data->media_file = $fileName;
+                    $data->media = null;
+                } elseif (in_array($fileExtension, ['pdf', 'xlsx', 'xls', 'xlsb', 'dotx', 'txt', 'docx'])) {
+                    $file->move(public_path('media/'), $fileName);
                     $data->media_file = $fileName;
                     $data->media = null;
                 }
-                
             }
         } else {
             if ($data->media_file) {
