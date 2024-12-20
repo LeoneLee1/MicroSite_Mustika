@@ -68,6 +68,7 @@
         <div class="row justify-content-center">
             @foreach ($post as $item)
                 @include('modal.akun')
+                @include('modal.viewMedia')
                 <div class="card mb-3" style="width: 55rem;">
                     <div class="card-body">
                         <div class="row">
@@ -157,8 +158,11 @@
                                         strpos($item->media, '.png') !== false ||
                                         strpos($item->media, 'data:image') !== false ||
                                         strpos($item->media, '.gif') !== false)
-                                    <img src="{{ $item->media }}" alt="media gambar" class="img-fluid lazyload"
-                                        style="height: 300px;">
+                                    <a href="#" style="cursor: pointer;" data-bs-toggle="modal"
+                                        data-bs-target="#viewMedia{{ $item->id }}">
+                                        <img src="{{ $item->media }}" alt="media gambar" class="img-fluid lazyload"
+                                            style="height: 300px;">
+                                    </a>
                                 @else
                                     @if (filter_var($item->media, FILTER_VALIDATE_URL))
                                         <div>
@@ -170,8 +174,11 @@
                                                 Material</a>
                                         </div>
                                     @elseif($item->media_file !== null)
-                                        <img src="{{ asset('media/' . $item->media_file) }}" alt="media gambar"
-                                            class="img-fluid lazyload" style="height: 300px;">
+                                        <a href="#" style="cursor: pointer;" data-bs-toggle="modal"
+                                            data-bs-target="#viewMedia{{ $item->id }}">
+                                            <img src="{{ asset('media/' . $item->media_file) }}" alt="media gambar"
+                                                class="img-fluid lazyload" style="height: 300px;">
+                                        </a>
                                     @else
                                     @endif
                                 @endif
