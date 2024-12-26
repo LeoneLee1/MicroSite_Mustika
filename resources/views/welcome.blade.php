@@ -33,7 +33,6 @@
         }
     </style>
 @endpush
-
 @include('modal.cariPost')
 @include('modal.menyukai')
 @section('content')
@@ -68,7 +67,6 @@
         <div class="row justify-content-center">
             @foreach ($post as $item)
                 @include('modal.akun')
-                @include('modal.viewMedia')
                 <div class="card mb-3" style="width: 55rem;">
                     <div class="card-body">
                         <div class="row">
@@ -158,8 +156,7 @@
                                         strpos($item->media, '.png') !== false ||
                                         strpos($item->media, 'data:image') !== false ||
                                         strpos($item->media, '.gif') !== false)
-                                    <a href="#" style="cursor: pointer;" data-bs-toggle="modal"
-                                        data-bs-target="#viewMedia{{ $item->id }}">
+                                    <a href="{{ $item->media }}">
                                         <img src="{{ $item->media }}" alt="media gambar" class="img-fluid lazyload"
                                             style="height: 300px;">
                                     </a>
@@ -174,8 +171,7 @@
                                                 Material</a>
                                         </div>
                                     @elseif($item->media_file !== null)
-                                        <a href="#" style="cursor: pointer;" data-bs-toggle="modal"
-                                            data-bs-target="#viewMedia{{ $item->id }}">
+                                        <a href="{{ asset('media/' . $item->media_file) }}">
                                             <img src="{{ asset('media/' . $item->media_file) }}" alt="media gambar"
                                                 class="img-fluid lazyload" style="height: 300px;">
                                         </a>

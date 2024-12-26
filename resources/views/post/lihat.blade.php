@@ -1,4 +1,4 @@
-@extends('layout.app')
+aa@extends('layout.app')
 
 @section('title', 'Post - Pendarasa')
 
@@ -112,8 +112,10 @@
                                     strpos($item->media, '.png') !== false ||
                                     strpos($item->media, 'data:image') !== false ||
                                     strpos($item->media, '.gif') !== false)
-                                <img src="{{ $item->media }}" alt="media gambar" class="img-fluid lazyload"
-                                    style="min-width: 300px; height: 300px;">
+                                <a href="{{ $item->media }}">
+                                    <img src="{{ $item->media }}" alt="media gambar" class="img-fluid lazyload"
+                                        style="min-width: 300px; height: 300px;">
+                                </a>
                             @else
                                 @if (filter_var($item->media, FILTER_VALIDATE_URL))
                                     <div>
@@ -124,8 +126,10 @@
                                             Material</a>
                                     </div>
                                 @elseif($item->media_file !== null)
-                                    <img src="{{ asset('media/' . $item->media_file) }}" alt="media gambar"
-                                        class="img-fluid lazyload" style="height: 300px;">
+                                    <a href="{{ asset('media/' . $item->media_file) }}">
+                                        <img src="{{ asset('media/' . $item->media_file) }}" alt="media gambar"
+                                            class="img-fluid lazyload" style="height: 300px;">
+                                    </a>
                                 @else
                                 @endif
                             @endif

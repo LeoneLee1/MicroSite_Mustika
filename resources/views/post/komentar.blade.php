@@ -307,6 +307,7 @@
                     if (response.success) {
                         console.log("Liked");
                         window.location.reload();
+                        return true;
                     } else {
                         console.error("Failed Like");
                     }
