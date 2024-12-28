@@ -538,7 +538,8 @@ class PostController extends Controller
                     $notifBadge->save();
                 }
 
-                return response()->json(['success' => true, 'message' => 'Like removed']);
+                // return response()->json(['success' => true, 'message' => 'Like removed']);
+                return redirect()->back();
             } else {
                 $oldLike = Comment::find($existingLike->id_comment);
                 if ($oldLike) {
@@ -554,7 +555,8 @@ class PostController extends Controller
                 $comment->likes += 1;
                 $comment->save();
 
-                return response()->json(['success' => true, 'message' => 'Like updated']);
+                // return response()->json(['success' => true, 'message' => 'Like updated']);
+                return redirect()->back();
             }
         } else {
             CommentLike::create([
@@ -576,7 +578,8 @@ class PostController extends Controller
             $notifBadge->value += 1;
             $notifBadge->save();
 
-            return response()->json(['success' => true, 'message' => 'Like added']);
+            // return response()->json(['success' => true, 'message' => 'Like added']);
+            return redirect()->back();
         }
     }
 

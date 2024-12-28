@@ -27,25 +27,28 @@
                             <input type="text" name="judul" placeholder="Judul" class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Media</label>
+                            <label class="form-label">Media 1</label>
                             <div class="mb-2">
                                 <label>
-                                    <input type="radio" name="input_type" onclick="toggleInput('text')" checked>
+                                    <input type="radio" name="input_type1" onclick="toggleInput('text')" checked>
                                     Isi Link
                                 </label>
                                 <label>
-                                    <input type="radio" name="input_type" onclick="toggleInput('file')">
+                                    <input type="radio" name="input_type1" onclick="toggleInput('file')">
                                     Unggah File
                                 </label>
                             </div>
-                            <input type="text" name="media" id="text_input_div"
-                                placeholder="Link URL Youtube/Article/Image" class="form-control">
-                            <input type="file" name="media_file" id="file_input_div" class="form-control"
-                                style="display: none;">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#panduan" style="margin-left: 2px;">
-                                <small>Panduan Media Link (Click Here!)</small>
-                                @include('modal.panduan')
-                            </a>
+                            <div class="mb-3">
+                                <input type="text" name="media" id="text_input_div"
+                                    placeholder="Link URL Youtube/Article/Image" class="form-control">
+                                <input type="file" name="media_file" id="file_input_div" class="form-control"
+                                    style="display: none;">
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#panduan"
+                                    style="margin-left: 2px;">
+                                    <small>Panduan Media Link (Click Here!)</small>
+                                    @include('modal.panduan')
+                                </a>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Deskripsi</label>

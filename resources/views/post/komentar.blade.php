@@ -56,11 +56,19 @@
                                         </div>
                                         <div>
                                             @if ($row->liked)
-                                                <i class="fa fa-heart" onclick="return like({{ $row->id }})"
-                                                    style="color: red; cursor: pointer;"></i>
+                                                {{-- <i class="fa fa-heart" onclick="return like({{ $row->id }})"
+                                                    style="color: red; cursor: pointer;"></i> --}}
+                                                <a href="{{ route('comment.like', $row->id) }}"
+                                                    style="color: red; cursor: pointer;">
+                                                    <i class="fa fa-heart"></i>
+                                                </a>
                                             @else
-                                                <i class="fa fa-heart" onclick="return like({{ $row->id }})"
-                                                    style="cursor: pointer;"></i>
+                                                <a href="{{ route('comment.like', $row->id) }}"
+                                                    style="color:#818f9f; cursor: pointer;">
+                                                    <i class="fa fa-heart"></i>
+                                                </a>
+                                                {{-- <i class="fa fa-heart" onclick="return like({{ $row->id }})"
+                                                            style="cursor: pointer;"></i> --}}
                                             @endif
                                             @if (Auth::user()->nik == 'daniel.it')
                                                 <a href="{{ route('comment.delete', $row->id) }}"
@@ -93,11 +101,19 @@
                                         </div>
                                         <div>
                                             @if ($row->liked)
-                                                <i class="fa fa-heart" onclick="return like({{ $row->id }})"
-                                                    style="color: red; cursor: pointer;"></i>
+                                                {{-- <i class="fa fa-heart" onclick="return like({{ $row->id }})"
+                                                    style="color: red; cursor: pointer;"></i> --}}
+                                                <a href="{{ route('comment.like', $row->id) }}"
+                                                    style="color: red; cursor: pointer;">
+                                                    <i class="fa fa-heart"></i>
+                                                </a>
                                             @else
-                                                <i class="fa fa-heart" onclick="return like({{ $row->id }})"
-                                                    style="cursor: pointer;"></i>
+                                                {{-- <i class="fa fa-heart" onclick="return like({{ $row->id }})"
+                                                    style="cursor: pointer;"></i> --}}
+                                                <a href="{{ route('comment.like', $row->id) }}"
+                                                    style="color:#818f9f; cursor: pointer;">
+                                                    <i class="fa fa-heart"></i>
+                                                </a>
                                             @endif
                                             @if (Auth::user()->nik == 'daniel.it')
                                                 <a href="{{ route('comment.delete', $row->id) }}"
@@ -292,11 +308,8 @@
             return false;
         }
     </script>
-    <script>
+    {{-- <script>
         function like(commentId) {
-            event.preventDefault();
-            console.log("Id Comment:", commentId);
-            var scrollPosition = $(window).scrollTop();
             $.ajax({
                 url: '/comment/like/' + commentId,
                 type: 'POST',
@@ -307,7 +320,6 @@
                     if (response.success) {
                         console.log("Liked");
                         window.location.reload();
-                        return true;
                     } else {
                         console.error("Failed Like");
                     }
@@ -316,12 +328,8 @@
                     console.error("Terjadi Kesalahan:", xhr.responseText);
                 }
             });
-            $(window).on('load', function() {
-                $(window).scrollTop(scrollPosition);
-            });
-            return true;
         }
-    </script>
+    </script> --}}
     <script type="text/javascript">
         $(document).ready(function() {
             // Handle "Lihat balasan" click

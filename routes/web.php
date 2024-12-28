@@ -58,7 +58,7 @@ Route::post('/post/edit/update/soal/{id_post}', [PostController::class, 'updateS
 Route::post('/post/edit/update/jawaban/{id_post}', [PostController::class, 'updateJawaban'])->name('post.update.jawaban');
 Route::get('/post/delete/{id}',[PostController::class,'delete'])->name('post.delete');
 Route::post('/comment/balas',[PostController::class,'repliesComment'])->name('comment.balas');
-Route::post('/comment/like/{id_comment}',[PostController::class,'likeComments'])->name('comment.like');
+Route::get('/comment/like/{id_comment}',[PostController::class,'likeComments'])->name('comment.like');
 Route::post('/comment/likeReplies/{id_comment}',[PostController::class,'likeCommentsReplies'])->name('comment.likeReplies');
 Route::get('/comment/delete/{id}',[PostController::class,'deleteKomen'])->name('comment.delete');
 

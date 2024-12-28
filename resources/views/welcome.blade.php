@@ -410,6 +410,17 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            new Splide('#media-slider', {
+                type: 'loop',
+                perPage: 1,
+                autoplay: true,
+                pagination: true,
+                arrows: true,
+            }).mount();
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
             var myModal = new bootstrap.Modal(document.getElementById('autoShowModal'));
             myModal.show();
         });
