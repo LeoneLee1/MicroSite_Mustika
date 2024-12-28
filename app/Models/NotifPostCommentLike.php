@@ -9,7 +9,7 @@ class NotifPostCommentLike extends Model
 {
     use HasFactory;
 
-    protected $table = 'notif_post_commentLike';
+    protected $table = 'notif_post_commentlike';
 
     protected $fillable = [
         'id_post',
