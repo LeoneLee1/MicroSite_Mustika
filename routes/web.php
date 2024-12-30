@@ -34,6 +34,7 @@ Route::post('/save/{id}',[DashboardController::class,'save'])->name('save');
 Route::get('/viewVote/{id}',[DashboardController::class,'viewVote'])->name('viewVote');
 Route::get('/viewNotification',[DashboardController::class,'viewNotification'])->name('viewNotification');
 Route::post('/beranda/insertNomorHp',[DashboardController::class,'insertNomorHp'])->name('beranda.insertNomorHp');
+Route::post('/deleteBadge',[DashboardController::class,'deleteBadge'])->name('delete.badge');
 
 // LOGIN CONTROLLER
 Route::get('/login',[LoginController::class,'login'])->name('login');
@@ -110,15 +111,3 @@ Route::get('/chat/json',[ChatController::class,'chat'])->name('chat.json');
 // ADMIN CONTROLLER
 Route::get('/admin/postingan',[AdminController::class,'postingan'])->name('admin.postingan');
 Route::get('/admin/postingan/edit/{id}',[AdminController::class,'edit'])->name('admin.postEdit');
-
-// NOTIF BADGE
-Route::get('/deleteNotifBadge', function(){
-    $nik = Auth::user()->nik;
-
-    $notifBadge = NotifBadge::where('nik',$nik)->first();
-    $notifBadge->value = 0;
-    $notifBadge->save();
-    
-    return response()->json(['message' => 'Notification badge cleared successfully.']);
-    
-})->name('delete.NotifBadge');

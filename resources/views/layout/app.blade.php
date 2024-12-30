@@ -132,17 +132,19 @@
             $('#notification-dropdown').on('click', function(e) {
                 e.preventDefault();
                 $('.notification-badge').remove();
-                // $.ajax({
-                //     url: "{{ route('delete.NotifBadge') }}",
-                //     type: "GET",
-                //     success: function(response) {
-                //         console.log(response.message);
-                //         $('.notification-badge').remove();
-                //     },
-                //     error: function(xhr) {
-                //         console.error(xhr.responseText);
-                //     }
-                // });
+                $.ajax({
+                    url: "{{ route('delete.badge') }}",
+                    method: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        console.log(response);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Gagal menghapus badge:', xhr.responseText || error);
+                    }
+                });
             });
         });
     </script>

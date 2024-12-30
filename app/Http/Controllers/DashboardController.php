@@ -383,6 +383,27 @@ class DashboardController extends Controller
         return view('notifications',compact('post','postLike','postComment','notifPost','notifPostLike','notifPostComment','notif_post_all','notifBadge','notifCommentLike','notifCommentBalas'));
     }
 
+    public function deleteBadge(Request $request){
+
+        $nik = Auth::user()->nik;
+
+        $cekBadge = DB::table('notif_badge')->where('nik',$nik)->first();
+
+        if ($cekBadge->value == 0) {
+            return response()->json([
+                'message' => 'NOTIF BADGE SUDAH 0'
+            ]);
+        } else {
+            $badge = DB::table('notif_badge')->where('nik',$nik)->update([
+                'value' => 0
+            ]);
+    
+            return response()->json(['success' => true, 'message' => 'Badge Berhasil dihapus']);
+        }
+
+        
+    }
+
     public function insertNomorHp(Request $request){
         $request->validate([
             'no_hp' => 'required',
