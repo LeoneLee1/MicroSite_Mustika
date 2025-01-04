@@ -140,7 +140,7 @@ class PostController extends Controller
         
         $post = Post::findOrFail($id);
 
-        $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.foto,c.id, p.id AS post_id, cl.nik AS liked, u.unit, u.gender, u.ap FROM comments c
+        $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.foto,c.id, p.id AS post_id, cl.nik AS liked, u.unit, u.gender, u.ap, u.nik FROM comments c
                         LEFT JOIN users u ON u.nik = c.nik
                         LEFT JOIN posts p ON p.id = c.id_post
                         LEFT JOIN comments_likes cl ON cl.id_comment = c.id

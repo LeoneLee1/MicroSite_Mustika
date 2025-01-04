@@ -10,6 +10,10 @@
                 <div class="modal-body">
                     <p style="color: black; font-weight: bold;">Nama Lengkap:</p>
                     <p style="color: #003366;">{{ $item->nama }}</p>
+                    @if (Auth::user()->nik === 'daniel.it')
+                        <p style="color: black; font-weight: bold;">NIK:</p>
+                        <p style="color: #003366;">{{ $item->nik }}</p>
+                    @endif
                     <p style="color: black; font-weight: bold;">Unit:</p>
                     <p style="color: #003366;">{{ $item->unit }}</p>
                     <p style="color: black; font-weight: bold;">Gender:</p>
