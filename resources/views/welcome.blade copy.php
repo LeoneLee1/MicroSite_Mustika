@@ -32,7 +32,6 @@
             font-size: 15px;
         }
     </style>
-    <link rel="stylesheet" href="css/slideshow.css">
 @endpush
 @include('modal.cariPost')
 @include('modal.menyukai')
@@ -122,76 +121,9 @@
                                 </div>
                             </div>
                             <div class="text-center">
-                                <div class="slide-container" id="slide-container-{{ $item->id }}">
-                                    @foreach ($post_gambar as $row)
-                                        @if ($row->id_post == $item->id)
-                                            <div class="mySlides" data-slide-id="{{ $item->id }}">
-                                                @if (strpos($row->media, '.mp4') !== false ||
-                                                        strpos($row->media, '.webm') !== false ||
-                                                        strpos($row->media, '.ogg') !== false)
-                                                    <video controls class="img-fluid" style="max-width: 50%; height: auto;">
-                                                        <source src="{{ asset('media/' . $row->media) }}" type="video/mp4">
-                                                        Your browser does not support the video tag.
-                                                    </video>
-                                                @elseif (strpos($row->media, 'youtube.com') !== false || strpos($row->media, 'youtu.be') !== false)
-                                                    @php
-                                                        preg_match(
-                                                            '/(youtube\.com\/(watch\?v=|shorts\/)|youtu\.be\/)([^\&\?\/]+)/',
-                                                            $row->media,
-                                                            $matches,
-                                                        );
-                                                        $youtubeId = $matches[3] ?? null;
-                                                    @endphp
-                                                    @if ($youtubeId)
-                                                        <div class="d-none d-sm-block">
-                                                            <iframe
-                                                                style="max-width: 750px; min-width: 750px; height: 350px;"
-                                                                src="https://www.youtube.com/embed/{{ $youtubeId }}"
-                                                                frameborder="0"
-                                                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                                                allowfullscreen class="img-fluid lazyload"></iframe>
-                                                        </div>
-                                                        <div class="d-block d-sm-none">
-                                                            <iframe
-                                                                style="max-width: 260px; min-width: 260px; height: 200px;"
-                                                                src="https://www.youtube.com/embed/{{ $youtubeId }}"
-                                                                frameborder="0"
-                                                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                                                allowfullscreen class="img-fluid lazyload"></iframe>
-                                                        </div>
-                                                    @endif
-                                                @else
-                                                    @if (filter_var($row->media, FILTER_VALIDATE_URL))
-                                                        <div>
-                                                            <a href="{{ $row->media }}" target="_blank"
-                                                                class="btn btn-primary btn-sm">Read
-                                                                Article
-                                                                or
-                                                                View
-                                                                Material</a>
-                                                        </div>
-                                                    @else
-                                                        <a href="{{ asset('media/' . $row->media) }}">
-                                                            <img src="{{ asset('media/' . $row->media) }}"
-                                                                alt="media gambar" class="img-fluid lazyload"
-                                                                style="height: 300px;">
-                                                        </a>
-                                                    @endif
-                                                @endif
-                                            </div>
-                                        @endif
-                                    @endforeach
-                                    <a class="prev" onclick="plusSlides(-1, {{ $item->id }})">
-                                        <span style="color: #ffffff;">&#10094;</span>
-                                    </a>
-                                    <a class="next" onclick="plusSlides(1, {{ $item->id }})">
-                                        <span style="color: #ffffff;">&#10095;</span>
-                                    </a>
-
-                                    {{-- <a class="prev" onclick="plusSlides(-1, {{ $item->id }})">&#10094;</a>
-                                    <a class="next" onclick="plusSlides(1, {{ $item->id }})">&#10095;</a> --}}
-                                </div>
-                                {{-- @if (strpos($item->media_file, '.mp4') !== false || strpos($item->media_file, '.webm') !== false || strpos($item->media_file, '.ogg') !== false)
+                                @if (strpos($item->media_file, '.mp4') !== false ||
+                                        strpos($item->media_file, '.webm') !== false ||
+                                        strpos($item->media_file, '.ogg') !== false)
                                     <video controls class="img-fluid" style="max-width: 50%; height: auto;">
                                         <source src="{{ asset('media/' . $item->media_file) }}" type="video/mp4">
                                         Your browser does not support the video tag.
@@ -245,7 +177,7 @@
                                         </a>
                                     @else
                                     @endif
-                                @endif --}}
+                                @endif
                             </div>
                             <div class="text-left mt-4">
                                 <h5 style="color: black; font-weight: bold;">{{ $item->judul }}</h5>
@@ -476,7 +408,6 @@
 @push('after-script')
     <script src="{{ asset('js/jquery.jscroll.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="js/slideshow.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var myModal = new bootstrap.Modal(document.getElementById('autoShowModal'));

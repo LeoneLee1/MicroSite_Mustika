@@ -1,0 +1,92 @@
+.slide-container {
+    position: relative;
+    max-width: 750px;
+    margin: auto;
+}
+.mySlides {
+    display: none;
+    text-align: center;
+}
+.prev,
+.next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: auto;
+    padding: 16px;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.6s ease;
+    border-radius: 30%;
+    background-color: rgba(0, 0, 0, 0.5);
+    user-select: none;
+    z-index: 10;
+}
+.prev,
+.next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #2a2a2a, #404040);
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5),
+        -5px -5px 10px rgba(255, 255, 255, 0.1);
+    z-index: 10;
+}
+
+.prev {
+    left: -40px;
+}
+
+.next {
+    right: -40px;
+}
+
+.prev:hover,
+.next:hover {
+    background: linear-gradient(145deg, #404040, #2a2a2a);
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6),
+        -5px -5px 15px rgba(255, 255, 255, 0.15);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.prev span,
+.next span {
+    transition: transform 0.3s ease;
+}
+
+.prev:hover span {
+    transform: translateX(-5px);
+}
+
+.next:hover span {
+    transform: translateX(5px);
+}
+
+.prev:active,
+.next:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+/* .prev {
+    left: -30px;
+}
+.next {
+    right: -30px;
+}
+.prev:hover,
+.next:hover {
+    background-color: rgba(57, 57, 57, 0.8);
+} */

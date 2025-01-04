@@ -19,37 +19,36 @@
         <div class="col col-18 col-md-9">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('post.insert') }}" method="POST" enctype="multipart/form-data" id="myForm">
+                    <form action="{{ route('post.insert') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="nik" value="{{ Auth::user()->nik }}">
                         <div class="mb-3">
                             <label class="form-label">Judul</label>
                             <input type="text" name="judul" placeholder="Judul" class="form-control" required>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Media 1</label>
-                            <div class="mb-2">
-                                <label>
-                                    <input type="radio" name="input_type1" onclick="toggleInput('text')" checked>
-                                    Isi Link
-                                </label>
-                                <label>
-                                    <input type="radio" name="input_type1" onclick="toggleInput('file')">
-                                    Unggah File
-                                </label>
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" name="media" id="text_input_div"
-                                    placeholder="Link URL Youtube/Article/Image" class="form-control">
-                                <input type="file" name="media_file" id="file_input_div" class="form-control"
-                                    style="display: none;">
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#panduan"
-                                    style="margin-left: 2px;">
-                                    <small>Panduan Media Link (Click Here!)</small>
-                                    @include('modal.panduan')
-                                </a>
+                        <div id="media-wrapper">
+                            <div class="mb-3" id="media-slide-1">
+                                <label class="form-label">Media</label>
+                                <div class="mb-2">
+                                    <label>
+                                        <input type="radio" name="input_type1" onclick="toggleInput(1, 'text')" checked>
+                                        Isi Link
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="input_type1" onclick="toggleInput(1, 'file')">
+                                        Unggah File
+                                    </label>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="text" name="media[]" id="text_input_div1" placeholder="Link URL Youtube"
+                                        class="form-control">
+                                    <input type="file" name="media[]" id="file_input_div1" class="form-control"
+                                        style="display: none;">
+                                </div>
                             </div>
                         </div>
+                        <button type="button" class="btn btn-primary btn-sm mb-4" id="add-media-button">Tambah
+                            Media</button>
                         <div class="mb-3">
                             <label class="form-label">Deskripsi</label>
                             <textarea name="deskripsi" id="deskripsi" rows="8" class="form-control"></textarea>
@@ -73,19 +72,50 @@
     <script src="https://cdn.tiny.cloud/1/fermvmni7gzbmep9r0j3sek3jmb2mbkko0ekabe63b26alyx/tinymce/7/tinymce.min.js"
         referrerpolicy="origin"></script>
     <script>
-        function toggleInput(type) {
+        let mediaCount = 1;
+
+        $('#add-media-button').click(function() {
+            mediaCount++;
+            let newMedia = `<div class="mb-3" id="media-slide-${mediaCount}">
+                        <label class="form-label">Media ${mediaCount - 1}</label>
+                        <div class="mb-2">
+                            <label>
+                                <input type="radio" name="input_type${mediaCount}" onclick="toggleInput(${mediaCount}, 'text')" checked>
+                                Isi Link
+                            </label>
+                            <label>
+                                <input type="radio" name="input_type${mediaCount}" onclick="toggleInput(${mediaCount}, 'file')">
+                                Unggah File
+                            </label>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" name="media[]" id="text_input_div${mediaCount}" placeholder="Link URL Youtube" class="form-control">
+                            <input type="file" name="media[]" id="file_input_div${mediaCount}" class="form-control" style="display: none;">
+                        </div>
+                        <div class="text-end">
+                            <button type="button" class="btn btn-danger btn-sm remove-media-button" data-media-id="${mediaCount}">Hapus Media</button>
+                        </div>
+                    </div>`;
+            $('#media-wrapper').append(newMedia);
+        });
+
+        $(document).on('click', '.remove-media-button', function() {
+            let mediaId = $(this).data('media-id');
+            $('#media-slide-' + mediaId).remove();
+        });
+
+        function toggleInput(id, type) {
             if (type === 'text') {
-                document.getElementById('text_input_div').style.display = 'block';
-                document.getElementById('file_input_div').style.display = 'none';
-                document.getElementById('file_input_div').value = '';
+                document.getElementById(`text_input_div${id}`).style.display = 'block';
+                document.getElementById(`file_input_div${id}`).style.display = 'none';
+                document.getElementById(`file_input_div${id}`).value = '';
             } else if (type === 'file') {
-                document.getElementById('text_input_div').style.display = 'none';
-                document.getElementById('file_input_div').style.display = 'block';
-                document.getElementById('text_input_div').value = '';
+                document.getElementById(`text_input_div${id}`).style.display = 'none';
+                document.getElementById(`file_input_div${id}`).style.display = 'block';
+                document.getElementById(`text_input_div${id}`).value = '';
             }
         }
-    </script>
-    <script>
+
         tinymce.init({
             selector: 'textarea',
             plugins: 'anchor autolink charmap codesample emoticons lists searchreplace table visualblocks wordcount linkchecker',

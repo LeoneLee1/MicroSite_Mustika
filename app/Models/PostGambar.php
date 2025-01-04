@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class PostGambar extends Model
+{
+    use HasFactory;
+
+    protected $table = 'post_gambar';
+
+    protected $fillable = [
+        'id_post',
+        'media_slide',
+        'media_slide_file',
+    ];
+}

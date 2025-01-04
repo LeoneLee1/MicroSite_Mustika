@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Poll;
 use App\Models\Post;
 use App\Models\Comment;
@@ -10,7 +11,9 @@ use App\Models\NotifPost;
 use App\Models\AnswerVote;
 use App\Models\NotifBadge;
 use App\Models\PollAnswer;
+use App\Models\PostGambar;
 use App\Models\CommentLike;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\NotifPostLike;
 use App\Models\CommentReplies;
@@ -71,7 +74,7 @@ class PostController extends Controller
 
         return view('post.index',compact('notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas'));
     }
-
+    
     public function insert(Request $request){
         $request->validate([
             'nik' => 'required',
@@ -82,44 +85,55 @@ class PostController extends Controller
         $post = new Post();
         $post->nik = $request->nik;
         $post->judul = $request->judul;
-        $post->media = $request->media;
         $post->deskripsi = $request->deskripsi;
 
-        if ($request->hasFile('media_file')) {
-            $file = $request->file('media_file');
-            $fileExtension = $file->getClientOriginalExtension();
-            $fileName = time() . '.' . $fileExtension;
+        if ($post->save()) {
+            if ($request->has('media') || $request->hasFile('media')) {
+                foreach ($request->media as $key => $mediaSlide) {
+                    $postGambar = new PostGambar();
+                    $postGambar->id_post = $post->id;
+                    $postGambar->media = $mediaSlide;
+    
+                    if ($request->hasFile('media.' . $key)) {
+                        $postGambar->media = $this->handleMediaUpload($request->file('media')[$key]);
+                    }
+    
+                    $postGambar->save();
+                }
+            }
 
-            $filePath = public_path('media/' . $fileName);
+            if ($request->has('polling')) {
+                Alert::success('Berhasil!', 'Membuat Post.');
+                return redirect()->route('polling.create');
+            }
 
-            if (in_array($fileExtension, ['jpg','jpeg','png','gif'])) {
-                $img = Image::make($file);
-                $img->resize(700, 700,function ($constraint){
-                $constraint->aspectRatio();
-                $constraint->upsize();
-                })->save($filePath);
-
-                $post->media_file = $fileName;
-            } elseif(in_array($fileExtension,['mp4','webm','ogg'])){
-                $file->move(public_path('media/'),$fileName);
-                $post->media_file = $fileName;
-            }    
-            
-        }
-        
-        if ($request->has('polling')) {
-            $post->save();
-            Alert::success('Berhasil!','Membuat Post.');
-            return redirect()->route('polling.create');
-        } elseif($post->save()) {
-            Alert::success('Berhasil!','Membuat Post.');
-            return back();
-        } else {
-            Alert::error('Gagal!','Membuat Post, Mohon Coba Lagi.');
+            Alert::success('Berhasil!', 'Membuat Post.');
             return back();
         }
+
+            Alert::error('Gagal!', 'Membuat Post, Mohon Coba Lagi.');
+            return back();
     }
 
+    private function handleMediaUpload($file) {
+        $fileExtension = $file->getClientOriginalExtension();
+        $fileName = time() . '_' . Str::random(10) . '.' . $fileExtension;
+    
+        $filePath = public_path('media/' . $fileName);
+    
+        if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif'])) {
+            $img = Image::make($file);
+            $img->resize(700, 700, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })->save($filePath);
+        } elseif (in_array($fileExtension, ['mp4', 'webm', 'ogg'])) {
+            $file->move(public_path('media/'), $fileName);
+        }
+    
+        return $fileName;
+    }
+    
     public function viewComment($id){
 
         $userNik = Auth::user()->nik;
@@ -637,8 +651,17 @@ class PostController extends Controller
     public function delete($id){
         $post = Post::findOrFail($id);
 
+        $post_gambar = PostGambar::where('id_post',$id)->first();
+        
         if ($post->media_file) {
             $oldFilePath = public_path('media/'.$post->media_file);
+            if (file_exists($oldFilePath)) {
+                unlink($oldFilePath);
+            }
+        }
+
+        if ($post_gambar->media) {
+            $oldFilePath = public_path('media/'.$post_gambar->media);
             if (file_exists($oldFilePath)) {
                 unlink($oldFilePath);
             }
@@ -657,13 +680,12 @@ class PostController extends Controller
             $notif3 = NotifPostComment::where('id_post',$id)->delete();
             $notif4 = NotifPostCommentLike::where('id_post',$id)->delete();
             $notif5 = NotifPostCommentReplies::where('id_post',$id)->delete();
-
+            $pg = PostGambar::where('id_post',$id)->delete();
             $notifBadge = NotifBadge::all();
             foreach ($notifBadge as $item){
                 $item->value = 0;
                 $item->save();
             }
-
             Alert::success('Berhasil menghapus');
             return redirect()->back();
         } else {

@@ -77,10 +77,10 @@ class PollingController extends Controller
         $request->validate([
             'id_post' => 'required',
             'soal' => 'required|array|min:1',
-            'soal.*' => 'required|string|max:255',
+            'soal.*' => 'required',
             'jawaban' => 'required|array|min:1',
             'jawaban.*' => 'required|array|min:1',
-            'jawaban.*.*' => 'required|string|max:255', 
+            'jawaban.*.*' => 'required', 
         ]);
 
         foreach ($request->soal as $key => $soal) {

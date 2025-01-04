@@ -31,10 +31,10 @@ class DashboardController extends Controller
             DB::raw("CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama"),
             'u.unit', 
             'u.ap', 
-            'u.gender', 
+            'u.gender',
             'u.foto', 
             'p.created_at as time_post',
-            'l.nik as liked'
+            'l.nik as liked',
         )
         ->leftJoin('users as u', 'u.nik', '=', 'p.nik')
         ->leftJoin('post_like as l', function($join) use ($user) {
@@ -50,8 +50,9 @@ class DashboardController extends Controller
         $postQuery->orderBy('p.id', 'desc');
 
         $post = $postQuery->paginate(15);
-        // $post = $postQuery->get();
-        
+
+        $post_gambar = DB::select("SELECT * FROM post_gambar;");
+
         $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.foto FROM comments c
                         LEFT JOIN users u ON u.nik = c.nik
                         ORDER BY c.id DESC;");
@@ -119,7 +120,7 @@ class DashboardController extends Controller
                                     ORDER BY a.id DESC
                                     LIMIT 1;");
         
-        return view('welcome',compact('post','komen','poll','jawaban','polling','postLike','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas'));
+        return view('welcome',compact('post','komen','poll','jawaban','polling','postLike','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas','post_gambar'));
 
     }
 
@@ -295,7 +296,9 @@ class DashboardController extends Controller
                                         ORDER BY a.id DESC
                                         LIMIT 1;");
 
-        return view('polling.viewVotes',compact('poll','jawabanModal','post','answer_vote','notifPost','notifPostLike','notifPostComment','notifCommentLike','notifCommentBalas'));
+        $notifBadge = DB::select("SELECT * FROM notif_badge WHERE nik = '$user'");
+
+        return view('polling.viewVotes',compact('poll','jawabanModal','post','answer_vote','notifPost','notifPostLike','notifPostComment','notifCommentLike','notifCommentBalas','notifBadge'));
     }
 
     public function viewNotification(){
