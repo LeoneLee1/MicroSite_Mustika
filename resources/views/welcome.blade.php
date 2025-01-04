@@ -161,15 +161,7 @@
                                                         </div>
                                                     @endif
                                                 @else
-                                                    @if (filter_var($row->media, FILTER_VALIDATE_URL))
-                                                        <div>
-                                                            <a href="{{ $row->media }}" target="_blank"
-                                                                class="btn btn-primary btn-sm">Read
-                                                                Article
-                                                                or
-                                                                View
-                                                                Material</a>
-                                                        </div>
+                                                    @if ($row->media === null)
                                                     @else
                                                         <a href="{{ asset('media/' . $row->media) }}">
                                                             <img src="{{ asset('media/' . $row->media) }}"
@@ -187,65 +179,7 @@
                                     <a class="next" onclick="plusSlides(1, {{ $item->id }})">
                                         <span style="color: #ffffff;">&#10095;</span>
                                     </a>
-
-                                    {{-- <a class="prev" onclick="plusSlides(-1, {{ $item->id }})">&#10094;</a>
-                                    <a class="next" onclick="plusSlides(1, {{ $item->id }})">&#10095;</a> --}}
                                 </div>
-                                {{-- @if (strpos($item->media_file, '.mp4') !== false || strpos($item->media_file, '.webm') !== false || strpos($item->media_file, '.ogg') !== false)
-                                    <video controls class="img-fluid" style="max-width: 50%; height: auto;">
-                                        <source src="{{ asset('media/' . $item->media_file) }}" type="video/mp4">
-                                        Your browser does not support the video tag.
-                                    </video>
-                                @elseif (strpos($item->media, 'youtube.com') !== false || strpos($item->media, 'youtu.be') !== false)
-                                    @php
-                                        preg_match(
-                                            '/(youtube\.com\/(watch\?v=|shorts\/)|youtu\.be\/)([^\&\?\/]+)/',
-                                            $item->media,
-                                            $matches,
-                                        );
-                                        $youtubeId = $matches[3] ?? null;
-                                    @endphp
-                                    @if ($youtubeId)
-                                        <div class="d-none d-sm-block">
-                                            <iframe style="max-width: 750px; min-width: 750px; height: 350px;"
-                                                src="https://www.youtube.com/embed/{{ $youtubeId }}" frameborder="0"
-                                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                                allowfullscreen class="img-fluid lazyload"></iframe>
-                                        </div>
-                                        <div class="d-block d-sm-none">
-                                            <iframe style="max-width: 260px; min-width: 260px; height: 200px;"
-                                                src="https://www.youtube.com/embed/{{ $youtubeId }}" frameborder="0"
-                                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                                allowfullscreen class="img-fluid lazyload"></iframe>
-                                        </div>
-                                    @endif
-                                @elseif (strpos($item->media, '.jpg') !== false ||
-                                        strpos($item->media, '.jpeg') !== false ||
-                                        strpos($item->media, '.png') !== false ||
-                                        strpos($item->media, 'data:image') !== false ||
-                                        strpos($item->media, '.gif') !== false)
-                                    <a href="{{ $item->media }}">
-                                        <img src="{{ $item->media }}" alt="media gambar" class="img-fluid lazyload"
-                                            style="height: 300px;">
-                                    </a>
-                                @else
-                                    @if (filter_var($item->media, FILTER_VALIDATE_URL))
-                                        <div>
-                                            <a href="{{ $item->media }}" target="_blank"
-                                                class="btn btn-primary btn-sm">Read
-                                                Article
-                                                or
-                                                View
-                                                Material</a>
-                                        </div>
-                                    @elseif($item->media_file !== null)
-                                        <a href="{{ asset('media/' . $item->media_file) }}">
-                                            <img src="{{ asset('media/' . $item->media_file) }}" alt="media gambar"
-                                                class="img-fluid lazyload" style="height: 300px;">
-                                        </a>
-                                    @else
-                                    @endif
-                                @endif --}}
                             </div>
                             <div class="text-left mt-4">
                                 <h5 style="color: black; font-weight: bold;">{{ $item->judul }}</h5>

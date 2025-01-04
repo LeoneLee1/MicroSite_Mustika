@@ -289,6 +289,8 @@ class PostController extends Controller
 
         $data = DB::select($postQuery, $queryParams);
 
+        $post_gambar = DB::select("SELECT * FROM post_gambar;");
+
         // Sisa kode tetap sama
         $komen = DB::select("SELECT c.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama FROM comments c
                             LEFT JOIN users u ON u.nik = c.nik
@@ -359,7 +361,7 @@ class PostController extends Controller
                                     ORDER BY a.id DESC
                                     LIMIT 1;");
 
-        return view('post.lihat', compact('data', 'komen', 'poll', 'jawaban', 'polling', 'jawabanModal','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas'));
+        return view('post.lihat', compact('data', 'komen', 'poll', 'jawaban', 'polling', 'jawabanModal','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas','post_gambar'));
     }
 
     public function edit($id){

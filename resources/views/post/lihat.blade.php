@@ -1,4 +1,4 @@
-aa@extends('layout.app')
+@extends('layout.app')
 
 @section('title', 'Post - Pendarasa')
 
@@ -11,6 +11,91 @@ aa@extends('layout.app')
 
         input[type="radio"]:disabled+label {
             color: #000000;
+        }
+
+        .slide-container {
+            position: relative;
+            max-width: 750px;
+            margin: auto;
+        }
+
+        .mySlides {
+            display: none;
+            text-align: center;
+        }
+
+        .prev,
+        .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: auto;
+            padding: 16px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.6s ease;
+            border-radius: 30%;
+            background-color: rgba(0, 0, 0, 0.5);
+            user-select: none;
+            z-index: 10;
+        }
+
+        .prev,
+        .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #2a2a2a, #404040);
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5),
+                -5px -5px 10px rgba(255, 255, 255, 0.1);
+            z-index: 10;
+        }
+
+        .prev {
+            left: -40px;
+        }
+
+        .next {
+            right: -40px;
+        }
+
+        .prev:hover,
+        .next:hover {
+            background: linear-gradient(145deg, #404040, #2a2a2a);
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6),
+                -5px -5px 15px rgba(255, 255, 255, 0.15);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .prev span,
+        .next span {
+            transition: transform 0.3s ease;
+        }
+
+        .prev:hover span {
+            transform: translateX(-5px);
+        }
+
+        .next:hover span {
+            transform: translateX(5px);
+        }
+
+        .prev:active,
+        .next:active {
+            transform: translateY(-50%) scale(0.95);
         }
     </style>
 @endpush
@@ -77,9 +162,62 @@ aa@extends('layout.app')
                             </div>
                         </div>
                         <div class="text-center">
-                            @if (strpos($item->media_file, '.mp4') !== false ||
-                                    strpos($item->media_file, '.webm') !== false ||
-                                    strpos($item->media_file, '.ogg') !== false)
+                            <div class="slide-container" id="slide-container-{{ $item->id }}">
+                                @foreach ($post_gambar as $row)
+                                    @if ($row->id_post == $item->id)
+                                        <div class="mySlides" data-slide-id="{{ $item->id }}">
+                                            @if (strpos($row->media, '.mp4') !== false ||
+                                                    strpos($row->media, '.webm') !== false ||
+                                                    strpos($row->media, '.ogg') !== false)
+                                                <video controls class="img-fluid" style="max-width: 50%; height: auto;">
+                                                    <source src="{{ asset('media/' . $row->media) }}" type="video/mp4">
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            @elseif (strpos($row->media, 'youtube.com') !== false || strpos($row->media, 'youtu.be') !== false)
+                                                @php
+                                                    preg_match(
+                                                        '/(youtube\.com\/(watch\?v=|shorts\/)|youtu\.be\/)([^\&\?\/]+)/',
+                                                        $row->media,
+                                                        $matches,
+                                                    );
+                                                    $youtubeId = $matches[3] ?? null;
+                                                @endphp
+                                                @if ($youtubeId)
+                                                    <div class="d-none d-sm-block">
+                                                        <iframe style="max-width: 750px; min-width: 750px; height: 350px;"
+                                                            src="https://www.youtube.com/embed/{{ $youtubeId }}"
+                                                            frameborder="0"
+                                                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                                            allowfullscreen class="img-fluid lazyload"></iframe>
+                                                    </div>
+                                                    <div class="d-block d-sm-none">
+                                                        <iframe style="max-width: 260px; min-width: 260px; height: 200px;"
+                                                            src="https://www.youtube.com/embed/{{ $youtubeId }}"
+                                                            frameborder="0"
+                                                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                                            allowfullscreen class="img-fluid lazyload"></iframe>
+                                                    </div>
+                                                @endif
+                                            @else
+                                                @if ($row->media === null)
+                                                @else
+                                                    <a href="{{ asset('media/' . $row->media) }}">
+                                                        <img src="{{ asset('media/' . $row->media) }}" alt="media gambar"
+                                                            class="img-fluid lazyload" style="height: 300px;">
+                                                    </a>
+                                                @endif
+                                            @endif
+                                        </div>
+                                    @endif
+                                @endforeach
+                                <a class="prev" onclick="plusSlides(-1, {{ $item->id }})">
+                                    <span style="color: #ffffff;">&#10094;</span>
+                                </a>
+                                <a class="next" onclick="plusSlides(1, {{ $item->id }})">
+                                    <span style="color: #ffffff;">&#10095;</span>
+                                </a>
+                            </div>
+                            {{-- @if (strpos($item->media_file, '.mp4') !== false || strpos($item->media_file, '.webm') !== false || strpos($item->media_file, '.ogg') !== false)
                                 <video controls class="img-fluid" style="max-width: 50%; height: auto;">
                                     <source src="{{ asset('media/' . $item->media_file) }}" type="video/mp4">
                                     Your browser does not support the video tag.
@@ -132,7 +270,7 @@ aa@extends('layout.app')
                                     </a>
                                 @else
                                 @endif
-                            @endif
+                            @endif --}}
                         </div>
                         <div class="text-left mt-4">
                             <h5 style="color: black; font-weight: bold;">{{ $item->judul }}</h5>
@@ -353,6 +491,38 @@ aa@extends('layout.app')
 @push('after-script')
 <script src="{{ asset('js/jquery.jscroll.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    function plusSlides(n, id) {
+        const container = document.getElementById(`slide-container-${id}`);
+        const slides = container.querySelectorAll(`[data-slide-id="${id}"]`);
+        let slideIndex = parseInt(container.getAttribute("data-slide-index")) || 1;
+
+        slideIndex += n;
+        if (slideIndex > slides.length) {
+            slideIndex = 1;
+        }
+        if (slideIndex < 1) {
+            slideIndex = slides.length;
+        }
+
+        container.setAttribute("data-slide-index", slideIndex);
+
+        slides.forEach((slide) => (slide.style.display = "none"));
+        slides[slideIndex - 1].style.display = "block";
+    }
+
+    document.querySelectorAll(".slide-container").forEach((container) => {
+        container.setAttribute("data-slide-index", 1);
+        const slides = container.querySelectorAll(`[data-slide-id]`);
+        if (slides.length > 0) slides[0].style.display = "block";
+        const prev = container.querySelector(".prev");
+        const next = container.querySelector(".next");
+        if (slides.length <= 1) {
+            if (prev) prev.style.display = "none";
+            if (next) next.style.display = "none";
+        }
+    });
+</script>
 <script>
     function toggleText(uniqueId) {
         const shortText = document.getElementById('shortText-' + uniqueId);
