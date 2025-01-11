@@ -13,7 +13,6 @@ class PostGambar extends Model
 
     protected $fillable = [
         'id_post',
-        'media_slide',
-        'media_slide_file',
+        'media',
     ];
 }

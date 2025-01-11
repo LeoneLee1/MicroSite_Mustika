@@ -79,14 +79,3 @@
 .next:active {
     transform: translateY(-50%) scale(0.95);
 }
-
-/* .prev {
-    left: -30px;
-}
-.next {
-    right: -30px;
-}
-.prev:hover,
-.next:hover {
-    background-color: rgba(57, 57, 57, 0.8);
-} */

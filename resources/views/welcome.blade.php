@@ -31,9 +31,32 @@
             align-items: center;
             font-size: 15px;
         }
+
+        #ask_ai {
+            outline: none;
+            border: none;
+            background: transparent;
+        }
+
+        #icon-input {
+            outline: none;
+            border: none;
+            background: transparent;
+        }
     </style>
     <link rel="stylesheet" href="css/slideshow.css">
 @endpush
+
+
+@section('navbar-item')
+    <a href="{{ route('ai') }}">
+        <div class="d-inline">
+            <i class="fa fa-robot me-1"></i>
+            <span>Ask Gemini AI</span>
+        </div>
+    </a>
+@endsection
+
 @include('modal.cariPost')
 @include('modal.menyukai')
 @section('content')
@@ -210,6 +233,14 @@
                                         <a href="{{ route('comment', $item->id) }}">
                                             <i class="fa fa-comment" style="font-size: 1.70em; color: #696cff;"></i>
                                         </a>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <a href="{{ route('analyze', $item->id) }}" class="btn btn-sm btn-danger">Tanya
+                                            AI&nbsp;<i class="fa fa-thumbs-up"></i></a>
+                                        {{-- <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                            data-bs-target="#ai{{ $item->id }}">Tanya AI&nbsp;<i
+                                                class="fa fa-thumbs-up"></i></button>
+                                        @include('modal.ask_ai') --}}
                                     </div>
                                 @endif
                             </div>

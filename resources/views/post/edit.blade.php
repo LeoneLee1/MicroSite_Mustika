@@ -35,10 +35,10 @@
                                 value="{{ $post->media }}">
                             <input type="file" name="media_file" id="file_input_div" class="form-control"
                                 style="display: none;">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#panduan" style="margin-left: 2px;">
+                            {{-- <a href="#" data-bs-toggle="modal" data-bs-target="#panduan" style="margin-left: 2px;">
                                 <small>Panduan Media Link (Click Here!)</small>
                                 @include('modal.panduan')
-                            </a>
+                            </a> --}}
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Deskripsi</label>

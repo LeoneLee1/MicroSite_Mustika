@@ -9,10 +9,13 @@ use App\Models\PostLike;
 use App\Models\AnswerVote;
 use App\Models\NotifBadge;
 use App\Models\PollAnswer;
+use App\Models\PostGambar;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\NotifPostLike;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Intervention\Image\Facades\Image;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class DashboardController extends Controller
@@ -404,7 +407,6 @@ class DashboardController extends Controller
             return response()->json(['success' => true, 'message' => 'Badge Berhasil dihapus']);
         }
 
-        
     }
 
     public function insertNomorHp(Request $request){
@@ -424,6 +426,239 @@ class DashboardController extends Controller
         }
         
     }
+
+    public function gemini_ai(Request $request, $id){
+        $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyD2tVRYyM8Q_Dgah-e560wKd-6m4VXV8RY';
+
+        $post = Post::findOrFail($id);
+
+        $deskripsi = strip_tags($post->deskripsi);
+
+        $data = [
+            "contents" => [
+                [
+                    "parts" => [
+                        ["text" => "Jelaskan penjelasan berikut{\n}" . $deskripsi]
+                    ],
+                ],
+            ],
+        ];
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+            ],
+            CURLOPT_POSTFIELDS => json_encode($data),
+        ]);
+
+        $response = curl_exec($curl);
+
+        if (curl_errno($curl)) {
+            return response()->json([
+                'error' => curl_error($curl)
+            ], 500);
+        }
+        curl_close($curl);
+
+        $responseData = json_decode($response, true);
+
+        if (isset($responseData['candidates']) && !empty($responseData['candidates'])) {
+            $penjelasan = $responseData['candidates'][0]['content']['parts'][0]['text'];
+        } else {
+            $penjelasan = "Data tidak ditemukan.";
+        }
+
+        $nik = Auth::user()->nik;
+
+        $gemini_ai = DB::table('tbl_ai')->insert([
+            'nik' => $nik,
+            'question' => $deskripsi,
+            'text' => $penjelasan ?? '',
+            'image' => $fileName ?? '',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        if ($gemini_ai) {            
+            return redirect()->route('ai');
+        } else {
+            Alert::error('Gagal!','Coba lagi');
+        }
+
+    }
+
+    public function index_ai(){
+
+        $user = Auth::user()->nik;
+
+        $data = DB::table('tbl_ai')->get();
+
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul FROM notif_post a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 2;");
+
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_like a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifPostComment = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post FROM notif_post_comment a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifBadge = DB::select("SELECT * FROM notif_badge WHERE nik = '$user'");
+
+        $notifCommentLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, d.nik AS nik_comment
+                                    FROM notif_post_commentlike a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments d ON d.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifCommentBalas = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, e.nik AS nik_comment
+                                    FROM notif_post_commentbalas a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments_replies d ON d.id = a.id_commentReplies
+                                    LEFT JOIN comments e ON e.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('gemini_ai',compact('notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas','data'));
+    }
+
+    public function ask_ai(Request $request){
+        $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyD2tVRYyM8Q_Dgah-e560wKd-6m4VXV8RY';
+
+        $text = $request->text;
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $fileExtension = $image->getClientOriginalExtension();
+            $fileName = time() . '_'. Str::random(5) . '_' . $fileExtension;
+
+            $filePath = public_path('chatAI/' . $fileName);
+
+            $img = Image::make($image);
+            $img->resize(700,700, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })->save($filePath);
+
+            $imageData = base64_encode(file_get_contents($image->path()));
+            $mimeType = $image->getMimeType();
+
+            $data = [
+                "contents" => [
+                    [
+                        "parts" => [
+                            [
+                                "text" => $text
+                            ],
+                            [
+                            "inline_data" => [
+                                "mime_type" => $mimeType,
+                                "data" => $imageData
+                            ]
+                            ]
+                        ],
+                    ],
+                ],
+            ];
+
+        } else {
+
+            $data = [
+                "contents" => [
+                    [
+                        "parts" => [
+                            ["text" => $text],
+                        ],
+                    ],
+                ],
+            ];
+
+        }
+
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+            ],
+            CURLOPT_POSTFIELDS => json_encode($data),
+        ]);
+
+        $response = curl_exec($curl);
+
+        if (curl_errno($curl)) {
+            return response()->json([
+                'error' => curl_error($curl)
+            ], 500);
+        }
+        curl_close($curl);
+
+        $responseData = json_decode($response, true);
+
+        if (isset($responseData['candidates']) && !empty($responseData['candidates'])) {
+            $penjelasan = $responseData['candidates'][0]['content']['parts'][0]['text'];
+        } else {
+            $penjelasan = "Data tidak ditemukan.";
+        }
+
+        $nik = Auth::user()->nik;
+
+        $gemini_ai = DB::table('tbl_ai')->insert([
+            'nik' => $nik,
+            'question' => $text,
+            'text' => $penjelasan,
+            'image' => $fileName ?? '',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+
+        if ($gemini_ai) {
+            return redirect()->back();
+        } else {
+            Alert::error('Gagal!','Coba lagi');
+        }
+    }
+
+    public function clearChatAi($nik){
+        $data = DB::table('tbl_ai')->where('nik',$nik)->get();
+
+        foreach ($data as $item) {
+            if ($item->image) {
+                $oldFilePath = public_path('chatAI/'. $item->image);
+                if (file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                }
+            }
+        }
+
+        $delete = DB::table('tbl_ai')->where('nik',$nik)->delete();
+
+        if ($delete) {
+            toast('Chat telah dibersihkan','success');
+            return redirect()->back();
+        } else {
+            toast('Chat gagal dibersihkan','error');
+            return redirect()->back();
+        }
+    }
+    
 
     private function no_wa($nohp){
         $nohp = trim($nohp); 

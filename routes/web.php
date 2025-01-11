@@ -2,6 +2,7 @@
 
 use App\Models\NotifBadge;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AIController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
@@ -35,6 +36,10 @@ Route::get('/viewVote/{id}',[DashboardController::class,'viewVote'])->name('view
 Route::get('/viewNotification',[DashboardController::class,'viewNotification'])->name('viewNotification');
 Route::post('/beranda/insertNomorHp',[DashboardController::class,'insertNomorHp'])->name('beranda.insertNomorHp');
 Route::post('/deleteBadge',[DashboardController::class,'deleteBadge'])->name('delete.badge');
+Route::get('/ai',[DashboardController::class,'index_ai'])->name('ai');
+Route::post('/ask_ai',[DashboardController::class,'ask_ai'])->name('ask_ai');
+Route::get('/clear/chat/ai/{nik}',[DashboardController::class,'clearChatAi'])->name('clear.chat');
+Route::get('/analyze/{id}',[DashboardController::class,'gemini_ai'])->name('analyze');
 
 // LOGIN CONTROLLER
 Route::get('/login',[LoginController::class,'login'])->name('login');
