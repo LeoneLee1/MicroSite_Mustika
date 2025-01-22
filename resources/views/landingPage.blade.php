@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/logo pendarasa.jpg') }}">
     <title>Pendarrasa</title>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
 
@@ -141,34 +142,43 @@
             <p id="date"></p>
             <p id="time"></p>
         </div> --}}
-        <div class="welcome">Selamat datang di pendarrasa</div>
+        <div class="welcome" data-aos="fade-right" data-aos-duration="1000">Selamat datang di pendarrasa</div>
         <div class="content-wrapper">
             <div class="left-content">
-                <div class="main-text">
+                <div class="main-text" data-aos="fade-right" data-aos-duration="2000">
                     Pendaran rasa yang tak tampak mata, yang tak tersentuh tangan dan yang terabaikan oleh kepentingan
                 </div>
-                <a href="{{ route('beranda') }}" class="btn">Get Started</a>
+                <a href="{{ route('beranda') }}" class="btn" data-aos="flip-right" data-aos-duration="3000">Get
+                    Started</a>
             </div>
             <div class="sub-text">
-                <p>Selamat datang di pendarrasa, sebuah platform yang mewadahi 'pendaran rasa' setiap insan manusia yang
+                <p data-aos="fade-down" data-aos-duration="1500">Selamat datang di pendarrasa, sebuah platform yang
+                    mewadahi 'pendaran rasa' setiap insan manusia yang
                     saling bersentuhan dalam kebersamaan organisasi Mustika...</p>
-                <p>Seperti yang tertuang di dalam namanya. 'Pendar' secara harafiah berarti 'pancaran cahaya lembut'
+                <p data-aos="fade-down" data-aos-duration="2500">Seperti yang tertuang di dalam namanya. 'Pendar' secara
+                    harafiah berarti 'pancaran cahaya lembut'
                     dari benda yang tidak mengeluarkan panas. Berbeda dengan 'pijar', yang mengandung pengertian
                     'panas'. Sedangkan 'rasa' itu sendiri secara harafiah adalah 'perasaan' yang diterima oleh panca
                     indera secara fisik dan juga oleh perasaan hati. Namun, ketika kedua kata ini digabungkan, ia
                     memiliki makna yang sangat khusus menjelaskan tentang 'perasaan hati' yang dipancarkan dari setiap
                     insan dan menyentuh insan lainnya...</p>
-                <p>Platform pendarrasa ini mewadahi seluruh 'perasaan hati insan manusia' yang diharapkan bisa menyentuh
+                <p data-aos="fade-down" data-aos-duration="3000">Platform pendarrasa ini mewadahi seluruh 'perasaan hati
+                    insan manusia' yang diharapkan bisa menyentuh
                     'nurani' yang paling dalam dan membuka kesadaran akan dirinya sebagai manusia yang bersentuhan
                     'rasa' dengan manusia lainnya...</p>
-                <p>Platform pendarrasa ini akan berisikan obrolan ringan, diskusi dan postingan bebas berbasis 'rasa
+                <p data-aos="fade-down" data-aos-duration="3000">Platform pendarrasa ini akan berisikan obrolan ringan,
+                    diskusi dan postingan bebas berbasis 'rasa
                     sebagai manusia'. Platform ini sama sekali tidak akan membahas hal-hal teknis pekerjaan, melainkan
                     hanya akan berfokus pada 'rasa sebagai manusia' dan 'hubungan antar manusia' serta bagaimana
                     memperbaiki sebuah hubungan kebersamaan...</p>
-                <p>Sekali lagi, selamat bergabung dan berdiskusi...</p>
+                <p data-aos="fade-down" data-aos-duration="3000">Sekali lagi, selamat bergabung dan berdiskusi...</p>
             </div>
         </div>
     </div>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
     <script>
         const WEEK = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
 

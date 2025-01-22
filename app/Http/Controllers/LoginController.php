@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Unit;
 use App\Models\User;
 use App\Models\AkunRegis;
@@ -20,6 +21,13 @@ class LoginController extends Controller
 
     public function proses(Request $request){
         if (Auth::attempt($request->only('nik','password'))) {
+            $data = DB::table('logs')->insert([
+                'tanggal' => Carbon::now()->format('Y-m-d'),
+                'nik' => Auth::user()->nik,
+                'activity' => 'Login ke sistem Pendarrasa',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
             return redirect('/beranda');
         } else {
             Alert::error('Gagal!','Nik atau Password anda salah!');
@@ -154,6 +162,13 @@ Terima kasih,
     }
 
     public function logout(){
+        $data = DB::table('logs')->insert([
+            'tanggal' => Carbon::now()->format('Y-m-d'),
+            'nik' => Auth::user()->nik,
+            'activity' => 'Keluar dari sistem Pendarrasa',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
         Auth::logout();
         return redirect('/');
     }

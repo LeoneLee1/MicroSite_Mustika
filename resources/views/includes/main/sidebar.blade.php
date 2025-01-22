@@ -25,6 +25,12 @@
                 <div data-i18n="Analytics">Cari</div>
             </a>
         </li>
+        <li class="menu-item {{ request()->is('log*') ? 'active' : '' }} mb-2">
+            <a href="{{ route('log') }}" class="menu-link">
+                <i class="menu-icon fa fa-clock-rotate-left"></i>
+                <div data-i18n="LogHistory">Log History</div>
+            </a>
+        </li>
         @if (Auth::user()->role === 'Admin' || Auth::user()->role === 'Anonymous')
             <li
                 class="menu-item {{ request()->is('post*') ? 'active' : '' }} {{ request()->is('polling/create*') ? 'active' : '' }} mb-2">
@@ -69,5 +75,11 @@
                 </a>
             </li>
         @endif
+        <li class="menu-item mb-2">
+            <a href="{{ route('logout') }}" class="menu-link" onclick="return confirmLogout()">
+                <i class="menu-icon fa fa-power-off"></i>
+                <div data-i18n="Analytics">Logout</div>
+            </a>
+        </li>
     </ul>
 </aside>

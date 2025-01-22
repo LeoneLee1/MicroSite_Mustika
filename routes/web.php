@@ -3,6 +3,7 @@
 use App\Models\NotifBadge;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AIController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
@@ -116,3 +117,6 @@ Route::get('/chat/json',[ChatController::class,'chat'])->name('chat.json');
 // ADMIN CONTROLLER
 Route::get('/admin/postingan',[AdminController::class,'postingan'])->name('admin.postingan');
 Route::get('/admin/postingan/edit/{id}',[AdminController::class,'edit'])->name('admin.postEdit');
+
+// LOG CONTROLLER
+Route::get('/log',[LogController::class,'logHistory'])->name('log')->middleware('auth');

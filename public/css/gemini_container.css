@@ -236,6 +236,11 @@
     gap: 8px;
 }
 
+.back-button:hover {
+    background-color: #6366f1;
+    color: white;
+}
+
 .delete-button {
     background-color: #ff0000;
     color: #fbfbfb;
@@ -251,11 +256,6 @@
 
 .delete-button:hover {
     background-color: #000000;
-    color: white;
-}
-
-.back-button:hover {
-    background-color: #6366f1;
     color: white;
 }
 
