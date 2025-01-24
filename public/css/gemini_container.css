@@ -1,8 +1,8 @@
 .chat-container {
-    max-width: 900px;
+    max-width: 1500px;
     margin: 0 auto;
     position: relative;
-    height: calc(100vh - 200px);
+    height: calc(105vh - 200px);
 }
 
 .chat-card {
@@ -111,7 +111,7 @@
 
 .message {
     margin-bottom: 15px;
-    max-width: 80%;
+    max-width: 60%;
     animation: fadeIn 0.3s ease-in-out;
 }
 
@@ -427,7 +427,7 @@
 }
 
 .image-preview-container {
-    width: 200px;
+    width: 100px;
     background: #f8fafc;
     padding: 8px;
     border-radius: 10px;
@@ -441,8 +441,8 @@
 }
 
 .image-preview-wrapper img {
-    width: 150px; /* Fixed width */
-    height: 100px; /* Fixed height */
+    width: 80px; /* Fixed width */
+    height: 80px; /* Fixed height */
     border-radius: 8px;
     object-fit: cover; /* This will maintain aspect ratio */
     border: 1px solid #e5e7eb;
@@ -456,15 +456,15 @@
     color: white;
     border: none;
     border-radius: 50%;
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
     padding: 0;
-    font-size: 12px;
+    font-size: 10px;
 }
 
 .remove-image:hover {

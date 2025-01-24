@@ -54,7 +54,7 @@
                         @if ($item->nik === Auth::user()->nik)
                             <div class="message user-message">
                                 @if ($item->image !== '')
-                                    <img src="{{ asset('chatAI/' . $item->image) }}" alt="image" style="width: 250px;"
+                                    <img src="{{ asset('chatAI/' . $item->image) }}" alt="image" style="width: auto;"
                                         class="img-fluid lazyload mb-4">
                                 @endif
                                 <p><strong>You</strong> {{ $item->question }}</p>
@@ -80,7 +80,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <input type="file" name="image" id="buttonFile" hidden accept="image/*">
+                            <input type="file" name="image" id="buttonFile" accept="image/*" hidden>
                             <button type="button" class="attachment-btn btn-sm"
                                 onclick="document.getElementById('buttonFile').click();" id="fileClick">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
@@ -105,6 +105,51 @@
 
 @push('after-script')
     <script>
+        document.addEventListener('paste', event => {
+            const file = event.clipboardData.files[0];
+
+            if (file) {
+                // Check if file is an image
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select an image file');
+                    this.value = '';
+                    return;
+                }
+
+                // Check file size (e.g., 5MB limit)
+                const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+                if (file.size > maxSize) {
+                    alert('File size should not exceed 5MB');
+                    this.value = '';
+                    return;
+                }
+
+                const formFile = document.getElementById('buttonFile');
+                if (formFile) {
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    formFile.files = dataTransfer.files;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewContainer = document.getElementById('imagePreviewContainer');
+                    const previewImage = document.getElementById('imagePreview');
+
+                    previewImage.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                    document.getElementById('fileClick').style.display = 'none';
+
+                    // Scroll chat to bottom to show new preview
+                    const chatMessages = document.getElementById('chat-messages');
+                    setTimeout(() => {
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 100);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
         document.getElementById('buttonFile').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file) {

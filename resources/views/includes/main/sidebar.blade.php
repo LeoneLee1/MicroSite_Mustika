@@ -25,6 +25,12 @@
                 <div data-i18n="Analytics">Cari</div>
             </a>
         </li>
+        {{-- <li class="menu-item {{ request()->is('chat') ? 'active' : '' }} mb-2">
+            <a href="{{ route('chat') }}" class="menu-link">
+                <i class="menu-icon fa fa-comments"></i>
+                <div data-i18n="Chat">Chat</div>
+            </a>
+        </li> --}}
         <li class="menu-item {{ request()->is('log*') ? 'active' : '' }} mb-2">
             <a href="{{ route('log') }}" class="menu-link">
                 <i class="menu-icon fa fa-clock-rotate-left"></i>
