@@ -60,7 +60,7 @@ Route::post('/post/insert',[PostController::class,'insert'])->name('post.insert'
 Route::get('/post/lihat/{id}',[PostController::class,'lihat'])->name('post.lihat')->middleware('auth');
 Route::get('/search', [PostController::class, 'search'])->name('post.search');
 Route::get('/post/edit/{id}', [PostController::class, 'edit'])->name('post.edit');
-Route::post('/post/edit/update/{id}', [PostController::class, 'update'])->name('post.update');
+Route::post('/post/edit/update/{id_post}', [PostController::class, 'update'])->name('post.update');
 Route::post('/post/edit/update/soal/{id_post}', [PostController::class, 'updateSoal'])->name('post.update.soal');
 Route::post('/post/edit/update/jawaban/{id_post}', [PostController::class, 'updateJawaban'])->name('post.update.jawaban');
 Route::get('/post/delete/{id}',[PostController::class,'delete'])->name('post.delete');
@@ -68,6 +68,7 @@ Route::post('/comment/balas',[PostController::class,'repliesComment'])->name('co
 Route::get('/comment/like/{id_comment}',[PostController::class,'likeComments'])->name('comment.like');
 Route::post('/comment/likeReplies/{id_comment}',[PostController::class,'likeCommentsReplies'])->name('comment.likeReplies');
 Route::get('/comment/delete/{id}',[PostController::class,'deleteKomen'])->name('comment.delete');
+Route::post('/post/slide/update/{id}',[PostController::class,'updateSlidePost'])->name('post.slideUpdate');
 
 
 // USER CONTROLLER

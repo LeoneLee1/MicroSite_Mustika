@@ -368,6 +368,8 @@ class PostController extends Controller
         
         $post = Post::findOrFail($id);
 
+        $media = DB::table('post_gambar')->where('id_post',$id)->get();
+
         $poll = DB::select("SELECT * FROM polls
                             WHERE id_post = '$id';");
 
@@ -415,71 +417,67 @@ class PostController extends Controller
                                     ORDER BY a.id DESC
                                     LIMIT 1;");
 
-        return view('post.edit',compact('post','poll','jawaban','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas'));
+        return view('post.edit',compact('post','poll','jawaban','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas','media'));
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id_post){
         $request->validate([
             'judul' => 'required',
             'deskripsi' => 'required',
         ]);
 
-        $data = Post::findOrFail($id);
+        $data = Post::findOrFail($id_post);
+
         $data->judul = $request->judul;
-        $data->media = $request->media;
         $data->deskripsi = $request->deskripsi;
 
-        if ($request->hasFile('media_file')) {
-            if ($data->media_file) {
-                $oldFilePath = public_path('media/' . $data->media_file);
-                if (file_exists($oldFilePath)) {
-                    unlink($oldFilePath);
-                }
-            }
-            
-            if ($request->hasFile('media_file')) {
-                $file = $request->file('media_file');
-                $fileExtension = $file->getClientOriginalExtension();
-                $fileName = time() . '.' . $fileExtension;
-            
-                $filePath = public_path('media/' . $fileName);
-            
-                if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif'])) {
-                    $img = Image::make($file);
-                    $img->resize(700, 700, function ($constraint) {
-                        $constraint->aspectRatio();
-                        $constraint->upsize();
-                    })->save($filePath);
-            
-                    $data->media_file = $fileName;
-                    $data->media = null;
-                } elseif (in_array($fileExtension, ['mp4', 'webm', 'ogg'])) {
-                    $file->move(public_path('media/'), $fileName);
-                    $data->media_file = $fileName;
-                    $data->media = null;
-                } elseif (in_array($fileExtension, ['pdf', 'xlsx', 'xls', 'xlsb', 'dotx', 'txt', 'docx'])) {
-                    $file->move(public_path('media/'), $fileName);
-                    $data->media_file = $fileName;
-                    $data->media = null;
-                }
-            }
+        if ($data->save()) {
+            Alert::success('Berhasil!', 'Mengubah Post.');
+            return redirect()->route('beranda');
         } else {
-            if ($data->media_file) {
-                $oldFilePath = public_path('media/'. $data->media_file);
+            Alert::error('Gagal!', 'Mengubah Post.');
+            return redirect()->back();
+        }
+        
+    }
+
+    public function updateSlidePost(Request $request, $id){
+
+        $slidePost = DB::table('post_gambar')->where('id',$id);
+
+        
+        if ($request->hasFile('media')) {
+            
+            $image = DB::table('post_gambar')->where('id',$id)->first();
+            if ($image->media) {
+                $oldFilePath = public_path('media/'. $image->media);
                 if (file_exists($oldFilePath)) {
                     unlink($oldFilePath);
                 }
-                $data->media_file = null;
             }
+
+            $mediaPath = $this->handleMediaUpload($request->file('media'));
+            
+            $slidePost->update([
+                'media' => $mediaPath
+            ]);
+            Alert::success('Berhasil!', 'Mengubah Slide Post.');
+            return redirect()->back();
+        } else {
+            $image = DB::table('post_gambar')->where('id',$id)->first();
+            if ($image->media) {
+                $oldFilePath = public_path('media/'. $image->media);
+                if (file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                }
+            }
+            $slidePost->update([
+                'media' => $request->media,
+            ]);
+            Alert::success('Berhasil!', 'Mengubah Slide Post.');
+            return redirect()->back();
         }
 
-        if ($data->save()) {
-            Alert::success('Berhasil!','Mengubah Post.');
-            return back();
-        } else {
-            Alert::error('Gagal!','Mengubah Post.');
-            return back();
-        }
     }
 
     public function repliesComment(Request $request){

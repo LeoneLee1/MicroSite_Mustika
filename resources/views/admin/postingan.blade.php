@@ -17,7 +17,7 @@
                                 <th>NO</th>
                                 <th>NIK</th>
                                 <th>NAMA</th>
-                                <th>MEDIA</th>
+                                <th>JUDUL</th>
                                 <th>AKSI</th>
                             </tr>
                         </thead>
@@ -27,63 +27,7 @@
                                     <td>{{ $no++ }}</td>
                                     <td>{{ $item->nik }}</td>
                                     <td>{{ $item->nama }}</td>
-                                    <td>
-                                        @if (strpos($item->media_file, '.mp4') !== false ||
-                                                strpos($item->media_file, '.webm') !== false ||
-                                                strpos($item->media_file, '.ogg') !== false)
-                                            <video controls class="img-fluid" style="max-width: 30%; height: auto;">
-                                                <source src="{{ asset('media/' . $item->media_file) }}" type="video/mp4">
-                                                Your browser does not support the video tag.
-                                            </video>
-                                        @elseif (strpos($item->media, 'youtube.com') !== false || strpos($item->media, 'youtu.be') !== false)
-                                            @php
-                                                preg_match(
-                                                    '/(youtube\.com\/(watch\?v=|shorts\/)|youtu\.be\/)([^\&\?\/]+)/',
-                                                    $item->media,
-                                                    $matches,
-                                                );
-                                                $youtubeId = $matches[3] ?? null;
-                                            @endphp
-                                            @if ($youtubeId)
-                                                <div class="d-none d-sm-block">
-                                                    <iframe style="max-width: 300px; min-width: 300px; height: auto;"
-                                                        src="https://www.youtube.com/embed/{{ $youtubeId }}"
-                                                        frameborder="0"
-                                                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                                        allowfullscreen class="img-fluid lazyload"></iframe>
-                                                </div>
-                                                <div class="d-block d-sm-none">
-                                                    <iframe style="max-width: 300px; min-width: 300px; height: auto;"
-                                                        src="https://www.youtube.com/embed/{{ $youtubeId }}"
-                                                        frameborder="0"
-                                                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                                        allowfullscreen class="img-fluid lazyload"></iframe>
-                                                </div>
-                                            @endif
-                                        @elseif (strpos($item->media, '.jpg') !== false ||
-                                                strpos($item->media, '.jpeg') !== false ||
-                                                strpos($item->media, '.png') !== false ||
-                                                strpos($item->media, 'data:image') !== false ||
-                                                strpos($item->media, '.gif') !== false)
-                                            <img src="{{ $item->media }}" alt="media gambar" class="img-fluid lazyload"
-                                                style="min-width: 100px; height: 100px;">
-                                        @else
-                                            @if (filter_var($item->media, FILTER_VALIDATE_URL))
-                                                <div>
-                                                    <a href="{{ $item->media }}" target="_blank"
-                                                        class="btn btn-primary btn-sm">Read
-                                                        Article
-                                                        or
-                                                        View
-                                                        Material</a>
-                                                </div>
-                                            @elseif($item->media_file !== null)
-                                                <img src="{{ asset('media/' . $item->media_file) }}" alt="media gambar"
-                                                    class="img-fluid lazyload" style="min-width: 100px; height: 100px;">
-                                            @else
-                                            @endif
-                                        @endif
-                                    </td>
+                                    <td title="{{ $item->judul }}">{!! Str::limit($item->judul, 15, '....') !!}</td>
                                     <td>
                                         <a href="{{ route('post.lihat', $item->id) }}" class="btn btn-sm btn-warning"><i
                                                 class="fa fa-eye"></i></a>

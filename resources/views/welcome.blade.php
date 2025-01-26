@@ -8,7 +8,7 @@
 
 
 @section('navbar-item')
-    <a href="{{ route('ai') }}">
+    <a href="{{ route('ai') }}" target="_blank">
         <div class="d-inline">
             <i class="fa fa-robot me-1"></i>
             <span>Ask AI</span>
