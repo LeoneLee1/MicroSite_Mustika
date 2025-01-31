@@ -460,23 +460,64 @@ class DashboardController extends Controller
         
     }
 
-    public function gemini_ai(Request $request, $id){
+    public function gemini_ai(Request $request, $id) {
         $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=AIzaSyD2tVRYyM8Q_Dgah-e560wKd-6m4VXV8RY';
-
+    
         $post = Post::findOrFail($id);
-
         $deskripsi = strip_tags($post->deskripsi);
-
-        $data = [
-            "contents" => [
-                [
-                    "parts" => [
-                        ["text" => "Jelaskan penjelasan berikut{\n}" . $deskripsi]
-                    ],
+    
+        $nik = Auth::user()->nik;
+    
+        $chatHistory = DB::table('tbl_history_ai')
+            ->where('nik', $nik)
+            ->orderBy('created_at', 'asc')
+            ->get();
+    
+        $contents = [];
+        foreach ($chatHistory as $chat) {
+            $contents[] = [
+                "role" => $chat->role,
+                "parts" => [
+                    ["text" => $chat->message]
                 ],
+            ];
+        }
+    
+        $contents[] = [
+            "role" => "user",
+            "parts" => [
+                ["text" => "Jelaskan penjelasan berikut{\n}" . $deskripsi]
             ],
         ];
-
+    
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $fileExtension = $image->getClientOriginalExtension();
+            $fileName = time() . '_'. Str::random(5) . '_' . $fileExtension;
+    
+            $filePath = public_path('chatAI/' . $fileName);
+    
+            $img = Image::make($image);
+            $img->resize(700,700, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })->save($filePath);
+    
+            $imageData = base64_encode(file_get_contents($image->path()));
+            $mimeType = $image->getMimeType();
+    
+            $contents[count($contents) - 1]['parts'][] = [
+                "inline_data" => [
+                    "mime_type" => $mimeType,
+                    "data" => $imageData
+                ]
+            ];
+        }
+    
+        $data = [
+            "contents" => $contents,
+        ];
+    
         $curl = curl_init();
         curl_setopt_array($curl, [
             CURLOPT_URL => $url,
@@ -487,26 +528,38 @@ class DashboardController extends Controller
             ],
             CURLOPT_POSTFIELDS => json_encode($data),
         ]);
-
+    
         $response = curl_exec($curl);
-
+    
         if (curl_errno($curl)) {
             return response()->json([
                 'error' => curl_error($curl)
             ], 500);
         }
         curl_close($curl);
-
+    
         $responseData = json_decode($response, true);
-
+    
         if (isset($responseData['candidates']) && !empty($responseData['candidates'])) {
             $penjelasan = $responseData['candidates'][0]['content']['parts'][0]['text'];
         } else {
             $penjelasan = "Data tidak ditemukan.";
         }
-
-        $nik = Auth::user()->nik;
-
+    
+        DB::table('tbl_history_ai')->insert([
+            'nik' => $nik,
+            'role' => 'user',
+            'message' => $deskripsi,
+            'created_at' => Carbon::now(),
+        ]);
+    
+        DB::table('tbl_history_ai')->insert([
+            'nik' => $nik,
+            'role' => 'assistant',
+            'message' => $penjelasan,
+            'created_at' => Carbon::now(),
+        ]);
+    
         $gemini_ai = DB::table('tbl_ai')->insert([
             'nik' => $nik,
             'question' => $deskripsi,
@@ -515,13 +568,12 @@ class DashboardController extends Controller
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
-
+    
         if ($gemini_ai) {            
             return redirect()->route('ai');
         } else {
             Alert::error('Gagal!','Coba lagi');
         }
-
     }
 
     public function index_ai(){
@@ -684,6 +736,45 @@ class DashboardController extends Controller
         }
     }
 
+    public function clearChatAi($nik){
+        $data = DB::table('tbl_ai')->where('nik',$nik)->get();
+
+        foreach ($data as $item) {
+            if ($item->image) {
+                $oldFilePath = public_path('chatAI/'. $item->image);
+                if (file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                }
+            }
+        }
+
+        $delete = DB::table('tbl_ai')->where('nik',$nik)->delete();
+        $deleteHistory = DB::table('tbl_history_ai')->where('nik',$nik)->delete();
+
+        if ($delete) {
+            toast('Chat telah dibersihkan','success');
+            return redirect()->back();
+        } else {
+            toast('Chat gagal dibersihkan','error');
+            return redirect()->back();
+        }
+    }
+    
+
+    private function no_wa($nohp){
+        $nohp = trim($nohp); 
+        if(!preg_match("/[^+0-9]/", $nohp)){
+            if(substr($nohp, 0, 2) == "62"){
+                return $nohp; 
+            }
+            else if(substr($nohp, 0, 1) == "0"){
+                return "62" . substr($nohp, 1); 
+            }
+        }
+        return $nohp; 
+    }
+
+
     // public function ask_ai(Request $request){
     //     $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=AIzaSyD2tVRYyM8Q_Dgah-e560wKd-6m4VXV8RY';
 
@@ -782,42 +873,5 @@ class DashboardController extends Controller
     //         Alert::error('Gagal!','Coba lagi');
     //     }
     // }
-
-    public function clearChatAi($nik){
-        $data = DB::table('tbl_ai')->where('nik',$nik)->get();
-
-        foreach ($data as $item) {
-            if ($item->image) {
-                $oldFilePath = public_path('chatAI/'. $item->image);
-                if (file_exists($oldFilePath)) {
-                    unlink($oldFilePath);
-                }
-            }
-        }
-
-        $delete = DB::table('tbl_ai')->where('nik',$nik)->delete();
-
-        if ($delete) {
-            toast('Chat telah dibersihkan','success');
-            return redirect()->back();
-        } else {
-            toast('Chat gagal dibersihkan','error');
-            return redirect()->back();
-        }
-    }
-    
-
-    private function no_wa($nohp){
-        $nohp = trim($nohp); 
-        if(!preg_match("/[^+0-9]/", $nohp)){
-            if(substr($nohp, 0, 2) == "62"){
-                return $nohp; 
-            }
-            else if(substr($nohp, 0, 1) == "0"){
-                return "62" . substr($nohp, 1); 
-            }
-        }
-        return $nohp; 
-    }
 
 }
