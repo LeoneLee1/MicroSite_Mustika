@@ -570,59 +570,62 @@ class DashboardController extends Controller
         return view('gemini_ai',compact('notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas','data'));
     }
 
-    public function ask_ai(Request $request){
+    public function ask_ai(Request $request) {
         $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=AIzaSyD2tVRYyM8Q_Dgah-e560wKd-6m4VXV8RY';
-
+    
         $text = $request->text;
-
+        $nik = Auth::user()->nik;
+    
+        $chatHistory = DB::table('tbl_history_ai')
+            ->where('nik', $nik)
+            ->orderBy('created_at', 'asc')
+            ->get();
+    
+        $contents = [];
+        foreach ($chatHistory as $chat) {
+            $contents[] = [
+                "role" => $chat->role,
+                "parts" => [
+                    ["text" => $chat->message]
+                ],
+            ];
+        }
+    
+        $contents[] = [
+            "role" => "user",
+            "parts" => [
+                ["text" => $text]
+            ],
+        ];
+    
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $fileExtension = $image->getClientOriginalExtension();
             $fileName = time() . '_'. Str::random(5) . '_' . $fileExtension;
-
+    
             $filePath = public_path('chatAI/' . $fileName);
-
+    
             $img = Image::make($image);
             $img->resize(700,700, function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();
             })->save($filePath);
-
+    
             $imageData = base64_encode(file_get_contents($image->path()));
             $mimeType = $image->getMimeType();
-
-            $data = [
-                "contents" => [
-                    [
-                        "parts" => [
-                            [
-                                "text" => $text
-                            ],
-                            [
-                            "inline_data" => [
-                                "mime_type" => $mimeType,
-                                "data" => $imageData
-                            ]
-                            ]
-                        ],
-                    ],
-                ],
+    
+            $contents[count($contents) - 1]['parts'][] = [
+                "inline_data" => [
+                    "mime_type" => $mimeType,
+                    "data" => $imageData
+                ]
             ];
-
-        } else {
-
-            $data = [
-                "contents" => [
-                    [
-                        "parts" => [
-                            ["text" => $text],
-                        ],
-                    ],
-                ],
-            ];
-
         }
-
+    
+        $data = [
+            "contents" => $contents,
+        ];
+    
         $curl = curl_init();
         curl_setopt_array($curl, [
             CURLOPT_URL => $url,
@@ -633,26 +636,38 @@ class DashboardController extends Controller
             ],
             CURLOPT_POSTFIELDS => json_encode($data),
         ]);
-
+    
         $response = curl_exec($curl);
-
+    
         if (curl_errno($curl)) {
             return response()->json([
                 'error' => curl_error($curl)
             ], 500);
         }
         curl_close($curl);
-
+    
         $responseData = json_decode($response, true);
-
+    
         if (isset($responseData['candidates']) && !empty($responseData['candidates'])) {
             $penjelasan = $responseData['candidates'][0]['content']['parts'][0]['text'];
         } else {
             $penjelasan = "Data tidak ditemukan.";
         }
-
-        $nik = Auth::user()->nik;
-
+    
+        DB::table('tbl_history_ai')->insert([
+            'nik' => $nik,
+            'role' => 'user',
+            'message' => $text,
+            'created_at' => Carbon::now(),
+        ]);
+    
+        DB::table('tbl_history_ai')->insert([
+            'nik' => $nik,
+            'role' => 'assistant',
+            'message' => $penjelasan,
+            'created_at' => Carbon::now(),
+        ]);
+    
         $gemini_ai = DB::table('tbl_ai')->insert([
             'nik' => $nik,
             'question' => $text,
@@ -661,13 +676,112 @@ class DashboardController extends Controller
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
-
+    
         if ($gemini_ai) {
             return redirect()->back();
         } else {
             Alert::error('Gagal!','Coba lagi');
         }
     }
+
+    // public function ask_ai(Request $request){
+    //     $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=AIzaSyD2tVRYyM8Q_Dgah-e560wKd-6m4VXV8RY';
+
+    //     $text = $request->text;
+
+    //     if ($request->hasFile('image')) {
+    //         $image = $request->file('image');
+    //         $fileExtension = $image->getClientOriginalExtension();
+    //         $fileName = time() . '_'. Str::random(5) . '_' . $fileExtension;
+
+    //         $filePath = public_path('chatAI/' . $fileName);
+
+    //         $img = Image::make($image);
+    //         $img->resize(700,700, function ($constraint) {
+    //             $constraint->aspectRatio();
+    //             $constraint->upsize();
+    //         })->save($filePath);
+
+    //         $imageData = base64_encode(file_get_contents($image->path()));
+    //         $mimeType = $image->getMimeType();
+
+    //         $data = [
+    //             "contents" => [
+    //                 [
+    //                     "parts" => [
+    //                         [
+    //                             "text" => $text
+    //                         ],
+    //                         [
+    //                         "inline_data" => [
+    //                             "mime_type" => $mimeType,
+    //                             "data" => $imageData
+    //                         ]
+    //                         ]
+    //                     ],
+    //                 ],
+    //             ],
+    //         ];
+
+    //     } else {
+
+    //         $data = [
+    //             "contents" => [
+    //                 [
+    //                     "parts" => [
+    //                         ["text" => $text],
+    //                     ],
+    //                 ],
+    //             ],
+    //         ];
+
+    //     }
+
+    //     $curl = curl_init();
+    //     curl_setopt_array($curl, [
+    //         CURLOPT_URL => $url,
+    //         CURLOPT_RETURNTRANSFER => true,
+    //         CURLOPT_POST => true,
+    //         CURLOPT_HTTPHEADER => [
+    //             'Content-Type: application/json',
+    //         ],
+    //         CURLOPT_POSTFIELDS => json_encode($data),
+    //     ]);
+
+    //     $response = curl_exec($curl);
+
+    //     if (curl_errno($curl)) {
+    //         return response()->json([
+    //             'error' => curl_error($curl)
+    //         ], 500);
+    //     }
+    //     curl_close($curl);
+
+    //     $responseData = json_decode($response, true);
+
+    //     if (isset($responseData['candidates']) && !empty($responseData['candidates'])) {
+    //         $penjelasan = $responseData['candidates'][0]['content']['parts'][0]['text'];
+    //     } else {
+    //         $penjelasan = "Data tidak ditemukan.";
+    //     }
+
+    //     $nik = Auth::user()->nik;
+
+    //     $gemini_ai = DB::table('tbl_ai')->insert([
+    //         'nik' => $nik,
+    //         'question' => $text,
+    //         'text' => $penjelasan,
+    //         'image' => $fileName ?? '',
+    //         'created_at' => Carbon::now(),
+    //         'updated_at' => Carbon::now(),
+    //     ]);
+
+    //     if ($gemini_ai) {
+    //         return redirect()->back();
+    //     } else {
+    //         Alert::error('Gagal!','Coba lagi');
+    //     }
+    // }
 
     public function clearChatAi($nik){
         $data = DB::table('tbl_ai')->where('nik',$nik)->get();
