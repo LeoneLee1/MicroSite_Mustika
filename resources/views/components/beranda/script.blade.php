@@ -2,6 +2,12 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="js/slideshow.js"></script>
 <script>
+    function askAI() {
+        $('.buttonload').show();
+        $('#buttonTanyaAI').hide();
+    }
+</script>
+<script>
     document.addEventListener('DOMContentLoaded', function() {
         var myModal = new bootstrap.Modal(document.getElementById('autoShowModal'));
         myModal.show();

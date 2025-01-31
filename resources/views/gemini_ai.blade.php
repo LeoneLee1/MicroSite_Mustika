@@ -85,8 +85,11 @@
                             </button>
                             <textarea name="text" class="form-control" placeholder="Type your message here..." id="chat-input" rows="1"
                                 autocomplete="off"></textarea>
-                            <button class="btn btn-sm" id="send-message" type="submit" hidden>
+                            <button class="btn btn-sm" id="send-message" type="submit">
                                 <i class="fa fa-arrow-right"></i>
+                            </button>
+                            <button class="buttonload" style="display: none;">
+                                <i class="fa fa-spinner fa-spin"></i>
                             </button>
                         </div>
                     </form>
@@ -97,6 +100,37 @@
 @endsection
 
 @push('after-script')
+    <script>
+        $(document).ready(function() {
+            $('form').on('submit', function(e) {
+                e.preventDefault();
+
+                $('.buttonload').show();
+
+                $('#send-message').hide();
+                $('#send-message').prop('disabled', true);
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: $(this).attr('method'),
+                    data: new FormData(this),
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        $('.buttonload').hide();
+                        $('#send-message').prop('disabled', false);
+                        console.log(response);
+                        window.location.reload();
+                    },
+                    error: function(xhr) {
+                        $('.buttonload').hide();
+                        $('#send-message').prop('disabled', false);
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
     <script>
         document.addEventListener('paste', event => {
             const file = event.clipboardData.files[0];
@@ -221,13 +255,20 @@
                 subtree: true
             });
 
-            document.getElementById('chat-input').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault(); // Hindari line break
-                    document.getElementById('send-message').click(); // Kirim pesan otomatis
-                    scrollToBottom();
-                }
-            });
+            var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator
+                .userAgent);
+
+            if (isMobile) {
+                console.log("Anda dalam keadaan Mobile Device hehe");
+            } else {
+                document.getElementById('chat-input').addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        document.getElementById('send-message').click();
+                        scrollToBottom();
+                    }
+                });
+            }
 
             // Auto resize textarea
             document.getElementById('chat-input').addEventListener('input', function() {

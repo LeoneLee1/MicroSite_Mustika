@@ -194,8 +194,12 @@
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-center">
-                                        <a href="{{ route('analyze', $item->id) }}" class="btn btn-sm btn-danger">Tanya
+                                        <a href="{{ route('analyze', $item->id) }}" class="btn btn-sm btn-danger"
+                                            onclick="askAI()" id="buttonTanyaAI">Tanya
                                             AI</a>
+                                        <button class="buttonload btn btn-danger" style="display: none;">
+                                            <i class="fa fa-spinner fa-spin"></i>
+                                        </button>
                                     </div>
                                 @endif
                             </div>
