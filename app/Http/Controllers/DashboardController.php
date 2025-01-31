@@ -136,84 +136,117 @@ class DashboardController extends Controller
         return response()->json($data);
     }
 
-    public function like($postId, Request $request){
-        $userNik = Auth::user()->nik;
+    public function like(Request $request){
+        $like = PostLike::where('nik', Auth::user()->nik)->where('id_post', $request->id_post)->first();
 
-        $time = Carbon::now();
+        $post = Post::where('id',$request->id_post)->first();
 
-        $post = Post::find($postId);
-
-        if (!$post) {
-            return response()->json(['success' => false, 'message' => 'Post not found'], 404);
-        }
-
-        $existingLike = PostLike::where('nik', $userNik)
-                                    ->where('id_post', $post->id)
-                                    ->first();
-
-        $notifBadge = NotifBadge::where('nik',$post->nik)->first();
-
-        if ($existingLike) {
-            if ($existingLike->id_post == $postId) {
-                $existingLike->delete();
-
-                $post->like -= 1;
-                $post->save();
-
-                $notifLike1 = NotifPostLike::where('nik',$userNik)
-                                            ->where('id_post',$postId)
-                                            ->first();
-
-                $notifLike1->delete();
-
-                if ($notifBadge->value == 0) {
-                    $notifBadge->value = 0;
-                    $notifBadge->save();
-                } else {
-                    $notifBadge->value -= 1;
-                    $notifBadge->save();
-                }
-
-                return response()->json(['success' => true, 'message' => 'Like removed']);
-            } else {
-
-                $oldLike = Post::find($existingLike->id_post);
-                if ($oldLike) {
-                    $oldLike->like -= 1;
-                    $oldLike->save();
-                }
-                
-                $existingLike->id_post = $postId;
-                $existingLike->judul = $post->judul;
-                $existingLike->save();
-
-                $post->like += 1;
-                $post->save();
-
-                return response()->json(['success' => true, 'message' => 'Like updated']);
-
-            }
-        } else {
+        if (!$like) {
             PostLike::create([
-                'nik' => $userNik,
-                'id_post' => $postId,
-                'judul' => $post->judul,
+                'nik' => Auth::user()->nik,
+                'id_post' => $request->id_post,
             ]);
 
             $post->like += 1;
             $post->save();
 
-            $notifLike2 = new NotifPostLike();
-            $notifLike2->id_post = $postId;
-            $notifLike2->nik = $userNik;
-            $notifLike2->save();
-
-            $notifBadge->value += 1;
-            $notifBadge->save();
-
-            return response()->json(['success' => true, 'message' => 'Like added']);
         }
+
+        return response()->json(['status' => 'success']);
     }
+
+    public function unlike(Request $request)
+    {
+        $like = PostLike::where('nik', Auth::user()->nik)->where('id_post', $request->id_post)->first();
+        $post = Post::where('id',$request->id_post)->first();
+
+        if ($like) {
+            $like->delete();
+            $post->like -= 1;
+            $post->save();
+        }
+
+        return response()->json(['status' => 'success']);
+    }
+
+    // public function like($postId, Request $request){
+    //     $userNik = Auth::user()->nik;
+
+    //     $time = Carbon::now();
+
+    //     $post = Post::find($postId);
+
+    //     if (!$post) {
+    //         return response()->json(['success' => false, 'message' => 'Post not found'], 404);
+    //     }
+
+    //     $existingLike = PostLike::where('nik', $userNik)
+    //                                 ->where('id_post', $post->id)
+    //                                 ->first();
+
+    //     $notifBadge = NotifBadge::where('nik',$post->nik)->first();
+
+    //     if ($existingLike) {
+    //         if ($existingLike->id_post == $postId) {
+    //             $existingLike->delete();
+
+    //             $post->like -= 1;
+    //             $post->save();
+
+    //             $notifLike1 = NotifPostLike::where('nik',$userNik)
+    //                                         ->where('id_post',$postId)
+    //                                         ->first();
+
+    //             $notifLike1->delete();
+
+    //             if ($notifBadge->value == 0) {
+    //                 $notifBadge->value = 0;
+    //                 $notifBadge->save();
+    //             } else {
+    //                 $notifBadge->value -= 1;
+    //                 $notifBadge->save();
+    //             }
+
+    //             return response()->json(['success' => true, 'message' => 'Like removed']);
+    //         } else {
+
+    //             $oldLike = Post::find($existingLike->id_post);
+    //             if ($oldLike) {
+    //                 $oldLike->like -= 1;
+    //                 $oldLike->save();
+    //             }
+                
+    //             $existingLike->id_post = $postId;
+    //             $existingLike->judul = $post->judul;
+    //             $existingLike->save();
+
+    //             $post->like += 1;
+    //             $post->save();
+
+    //             return response()->json(['success' => true, 'message' => 'Like updated']);
+
+    //         }
+    //     } else {
+    //         PostLike::create([
+    //             'nik' => $userNik,
+    //             'id_post' => $postId,
+    //             'judul' => $post->judul,
+    //         ]);
+
+    //         $post->like += 1;
+    //         $post->save();
+
+    //         $notifLike2 = new NotifPostLike();
+    //         $notifLike2->id_post = $postId;
+    //         $notifLike2->nik = $userNik;
+    //         $notifLike2->save();
+
+    //         $notifBadge->value += 1;
+    //         $notifBadge->save();
+
+    //         return response()->json(['success' => true, 'message' => 'Like added']);
+    //     }
+    // }
 
     public function save(Request $request,$id){
         $userNik = Auth::user()->nik;

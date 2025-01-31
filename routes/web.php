@@ -31,7 +31,7 @@ Route::get('/',function(){
 // DASHBOARD CONTROLLER
 Route::get('/beranda',[DashboardController::class,'index'])->name('beranda')->middleware('auth');
 Route::get('/chart/json/{id}',[DashboardController::class,'chart'])->name('chart.json');
-Route::post('/like/{postId}',[DashboardController::class,'like'])->name('like.post');
+// Route::post('/like/{postId}',[DashboardController::class,'like'])->name('like.post');
 Route::post('/save/{id}',[DashboardController::class,'save'])->name('save');
 Route::get('/viewVote/{id}',[DashboardController::class,'viewVote'])->name('viewVote');
 Route::get('/viewNotification',[DashboardController::class,'viewNotification'])->name('viewNotification');
@@ -41,6 +41,8 @@ Route::get('/ai',[DashboardController::class,'index_ai'])->name('ai');
 Route::post('/ask_ai',[DashboardController::class,'ask_ai'])->name('ask_ai');
 Route::get('/clear/chat/ai/{nik}',[DashboardController::class,'clearChatAi'])->name('clear.chat');
 Route::get('/analyze/{id}',[DashboardController::class,'gemini_ai'])->name('analyze');
+Route::post('/like',[DashboardController::class,'like'])->name('like');
+Route::post('/unlike',[DashboardController::class,'unlike'])->name('unlike');
 
 // LOGIN CONTROLLER
 Route::get('/login',[LoginController::class,'login'])->name('login');

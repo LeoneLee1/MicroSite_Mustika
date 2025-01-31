@@ -210,32 +210,41 @@
     }
 </script>
 <script>
-    function like(postId) {
-        console.log("Id Post:", postId);
-        // var scrollPosition = $(window).scrollTop();
-        $.ajax({
-            url: '/like/' + postId,
-            type: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            success: function(response) {
-                if (response.success) {
-                    console.log("Liked");
-                    window.location.reload();
-                } else {
-                    console.error("Failed Like");
-                }
-            },
-            error: function(xhr) {
-                console.error("Terjadi Kesalahan:", xhr.responseText);
+    $(document).ready(function() {
+        $('.like-button').click(function() {
+            var postId = $(this).data('post-id'); // Ambil ID postingan dari atribut data
+            var icon = $(this);
+            var likeCount = $('#like-count' + postId); // Ambil elemen jumlah like yang sesuai
+
+            if (icon.css('color') === 'rgb(255, 0, 0)') { // Jika sudah di-like (merah)
+                $.ajax({
+                    url: "{{ route('unlike') }}",
+                    method: 'POST',
+                    data: {
+                        id_post: postId,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        icon.css('color', 'grey');
+                        likeCount.text(parseInt(likeCount.text()) - 1);
+                    }
+                });
+            } else { // Jika belum di-like (abu-abu)
+                $.ajax({
+                    url: "{{ route('like') }}",
+                    method: 'POST',
+                    data: {
+                        id_post: postId,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        icon.css('color', 'red');
+                        likeCount.text(parseInt(likeCount.text()) + 1);
+                    }
+                });
             }
         });
-        // $(window).on('load', function() {
-        //     $(window).scrollTop(scrollPosition);
-        // });
-        // return false;
-    }
+    });
 </script>
 <script>
     function vote(answerId) {

@@ -138,10 +138,6 @@
 <body>
     <div class="leaves"></div>
     <div class="content">
-        {{-- <div class="clock" id="waktu">
-            <p id="date"></p>
-            <p id="time"></p>
-        </div> --}}
         <div class="welcome" data-aos="fade-right" data-aos-duration="1000">Selamat datang di pendarrasa</div>
         <div class="content-wrapper">
             <div class="left-content">
@@ -179,7 +175,7 @@
     <script>
         AOS.init();
     </script>
-    <script>
+    {{-- <script>
         const WEEK = ["MINGGU", "SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU"];
 
         function updateTime() {
@@ -203,7 +199,7 @@
         function zeroPadding(num, digit) {
             return String(num).padStart(digit, '0');
         }
-    </script>
+    </script> --}}
 </body>
 
 </html>

@@ -6,13 +6,6 @@
     <link rel="stylesheet" href="{{ asset('css/gemini_container.css') }}">
 @endpush
 
-@section('navbar-item')
-    <a href="/beranda" class="back-button btn-sm">
-        <i class="fa fa-arrow-left"></i>
-        <span class="d-none d-sm-block">Back</span>
-    </a>
-@endsection
-
 @section('content')
     <div class="container py-4">
         <div class="chat-container">
@@ -52,7 +45,7 @@
                     @endif
                     @foreach ($data as $item)
                         @if ($item->nik === Auth::user()->nik)
-                            <div class="message user-message">
+                            <div class="message user-message" id="scrollableDiv">
                                 @if ($item->image !== '')
                                     <img src="{{ asset('chatAI/' . $item->image) }}" alt="image" style="width: auto;"
                                         class="img-fluid lazyload mb-4">
@@ -92,7 +85,7 @@
                             </button>
                             <textarea name="text" class="form-control" placeholder="Type your message here..." id="chat-input" rows="1"
                                 autocomplete="off"></textarea>
-                            <button class="btn btn-sm" id="send-message" type="submit">
+                            <button class="btn btn-sm" id="send-message" type="submit" hidden>
                                 <i class="fa fa-arrow-right"></i>
                             </button>
                         </div>
@@ -208,35 +201,43 @@
         }
     </script>
     <script>
-        // Auto-resize textarea
-        document.getElementById('chat-input').addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
-
-            if (this.value === '') {
-                this.style.height = '60px';
-            }
-
-            if (this.scrollHeight > 150) {
-                this.style.height = '150px';
-            }
-        });
-
-        // Submit on Ctrl/Cmd + Enter
-        document.getElementById('chat-input').addEventListener('keydown', function(e) {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                document.getElementById('send-message').click();
-            }
-        });
-
-        // Auto scroll to bottom when new messages arrive
-        function scrollToBottom() {
+        document.addEventListener("DOMContentLoaded", function() {
             const chatMessages = document.getElementById('chat-messages');
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
 
-        // Call scrollToBottom when page loads and when new messages are added
-        window.onload = scrollToBottom;
-        // You should also call scrollToBottom whenever a new message is added
+            function scrollToBottom() {
+                setTimeout(() => {
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 50);
+            }
+
+            scrollToBottom();
+
+            const observer = new MutationObserver(() => {
+                scrollToBottom();
+            });
+
+            observer.observe(chatMessages, {
+                childList: true,
+                subtree: true
+            });
+
+            document.getElementById('chat-input').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault(); // Hindari line break
+                    document.getElementById('send-message').click(); // Kirim pesan otomatis
+                    scrollToBottom();
+                }
+            });
+
+            // Auto resize textarea
+            document.getElementById('chat-input').addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+
+                if (this.scrollHeight > 150) {
+                    this.style.height = '150px';
+                }
+            });
+        });
     </script>
 @endpush

@@ -108,7 +108,7 @@ class PostController extends Controller
             }
 
             Alert::success('Berhasil!', 'Membuat Post.');
-            return back();
+            return redirect()->route('beranda');
         }
 
             Alert::error('Gagal!', 'Membuat Post, Mohon Coba Lagi.');

@@ -169,7 +169,7 @@
                             <div class="d-flex justify-content-start">
                                 @if (Auth::user()->role == 'Pengamat')
                                     <div class="d-flex align-items-center me-3">
-                                        <i class="fa fa-heart" style="font-size: 1.70em; color: red;"></i>
+                                        <i class="fa fa-heart" style="font-size: 1.70em; color: grey;"></i>
                                     </div>
                                     <div class="d-flex align-items-center me-3">
                                         <a href="{{ route('comment', $item->id) }}">
@@ -177,17 +177,17 @@
                                         </a>
                                     </div>
                                 @else
-                                    @if ($item->liked)
-                                        <div class="d-flex align-items-center me-3">
-                                            <i class="fa fa-heart" style="font-size: 1.70em; cursor: pointer; color: red;"
-                                                onclick="return like({{ $item->id }})"></i>
-                                        </div>
-                                    @else
-                                        <div class="d-flex align-items-center me-3">
-                                            <i class="fa fa-heart" style="font-size: 1.70em; cursor: pointer;"
-                                                onclick="return like({{ $item->id }})"></i>
-                                        </div>
-                                    @endif
+                                    <div class="d-flex align-items-center me-3">
+                                        <i class="fa fa-heart me-2 like-button" id="like-button{{ $item->id }}"
+                                            data-post-id="{{ $item->id }}"
+                                            style="font-size: 1.70rem; cursor: pointer; color: {{ Auth::user()->hasLiked($item->id) ? 'red' : 'grey' }};">
+                                        </i>
+                                        <a href="#" data-bs-toggle="modal"
+                                            data-bs-target="#menyukai{{ $item->id }}">
+                                            <span style="color: black; font-weight: bold;"
+                                                id="like-count{{ $item->id }}">{{ $item->like }}</span>
+                                        </a>
+                                    </div>
                                     <div class="d-flex align-items-center me-3">
                                         <a href="{{ route('comment', $item->id) }}">
                                             <i class="fa fa-comment" style="font-size: 1.70em; color: #696cff;"></i>
@@ -198,12 +198,6 @@
                                             AI</a>
                                     </div>
                                 @endif
-                            </div>
-                            <div class="text-left mt-2">
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#menyukai{{ $item->id }}">
-                                    <span style="color: black; font-weight: bold;">{{ $item->like }}
-                                        suka</span>
-                                </a>
                             </div>
                             <div class="text-left mt-2">
                                 @php

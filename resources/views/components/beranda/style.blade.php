@@ -38,5 +38,9 @@
         border: none;
         background: transparent;
     }
+
+    .fa-heart.liked {
+        color: red;
+    }
 </style>
 <link rel="stylesheet" href="css/slideshow.css">
