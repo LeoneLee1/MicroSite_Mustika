@@ -107,75 +107,75 @@ class PollingController extends Controller
         return redirect('/beranda'); 
     }
 
-    public function vote($answerId, Request $request){
+    // public function vote($answerId, Request $request){
 
-        $userNik = Auth::user()->nik;
+    //     $userNik = Auth::user()->nik;
 
-        $pollAnswer = PollAnswer::find($answerId);
+    //     $pollAnswer = PollAnswer::find($answerId);
 
-        $poll = Poll::findOrFail($pollAnswer->poll_id);
+    //     $poll = Poll::findOrFail($pollAnswer->poll_id);
 
-        if (!$pollAnswer) {
-            return response()->json(['success' => false, 'message' => 'Answer not found'], 404);
-        }
+    //     if (!$pollAnswer) {
+    //         return response()->json(['success' => false, 'message' => 'Answer not found'], 404);
+    //     }
 
-        $existingVote = AnswerVote::where('nik', $userNik)
-                                    ->where('poll_id', $pollAnswer->poll_id)
-                                    ->first();
+    //     $existingVote = AnswerVote::where('nik', $userNik)
+    //                                 ->where('poll_id', $pollAnswer->poll_id)
+    //                                 ->first();
 
-        if ($existingVote) {
-            if ($existingVote->id_jawaban == $answerId) {
-                // $existingVote->delete();
+    //     if ($existingVote) {
+    //         if ($existingVote->id_jawaban == $answerId) {
+    //             // $existingVote->delete();
 
-                // $pollAnswer->value -= 1;
-                // $pollAnswer->save();
+    //             // $pollAnswer->value -= 1;
+    //             // $pollAnswer->save();
 
-                // $poll->voting -= 1;
-                // $poll->save();
+    //             // $poll->voting -= 1;
+    //             // $poll->save();
 
-                return response()->json(['success' => true, 'message' => 'Sudah Vote']);
-            } else {
-                $oldAnswer = PollAnswer::find($existingVote->id_jawaban);
-                if ($oldAnswer) {
-                    // $oldAnswer->value -= 1;
-                    // $oldAnswer->save();
-                }
+    //             return response()->json(['success' => true, 'message' => 'Sudah Vote']);
+    //         } else {
+    //             $oldAnswer = PollAnswer::find($existingVote->id_jawaban);
+    //             if ($oldAnswer) {
+    //                 // $oldAnswer->value -= 1;
+    //                 // $oldAnswer->save();
+    //             }
                 
-                // $existingVote->id_jawaban = $answerId;
-                // $existingVote->jawaban = $pollAnswer->jawaban;
-                // $existingVote->save();
+    //             // $existingVote->id_jawaban = $answerId;
+    //             // $existingVote->jawaban = $pollAnswer->jawaban;
+    //             // $existingVote->save();
 
-                // $pollAnswer->value += 1;
-                // $pollAnswer->save();
+    //             // $pollAnswer->value += 1;
+    //             // $pollAnswer->save();
 
-                return response()->json(['success' => true, 'message' => 'Sudah Vote']);
+    //             return response()->json(['success' => true, 'message' => 'Sudah Vote']);
 
-                // return response()->json(['success' => false, 'message' => 'You have already voted in this poll'], 403);
-            }
-        } else {
-            AnswerVote::create([
-                'nik' => $userNik,
-                'id_jawaban' => $answerId,
-                'jawaban' => $pollAnswer->jawaban,
-                'poll_id' => $pollAnswer->poll_id,
-                'id_post' => $pollAnswer->id_post,
-            ]);
+    //             // return response()->json(['success' => false, 'message' => 'You have already voted in this poll'], 403);
+    //         }
+    //     } else {
+    //         AnswerVote::create([
+    //             'nik' => $userNik,
+    //             'id_jawaban' => $answerId,
+    //             'jawaban' => $pollAnswer->jawaban,
+    //             'poll_id' => $pollAnswer->poll_id,
+    //             'id_post' => $pollAnswer->id_post,
+    //         ]);
 
-            $pollAnswer->value += 1;
-            $pollAnswer->save();
+    //         $pollAnswer->value += 1;
+    //         $pollAnswer->save();
 
-            $poll->voting += 1;
-            $poll->save();
+    //         $poll->voting += 1;
+    //         $poll->save();
 
-            // $notifVote = new NotifPostVote();
-            // $notifVote->id_post = $pollAnswer->id_post;
-            // $notifVote->id_vote = $answerId;
-            // $notifVote->nik = $userNik;
-            // $notifVote->save();
+    //         // $notifVote = new NotifPostVote();
+    //         // $notifVote->id_post = $pollAnswer->id_post;
+    //         // $notifVote->id_vote = $answerId;
+    //         // $notifVote->nik = $userNik;
+    //         // $notifVote->save();
 
-            return response()->json(['success' => true, 'message' => 'Vote added']);
-        }
-    }
+    //         return response()->json(['success' => true, 'message' => 'Vote added']);
+    //     }
+    // }
 
     public function deleteVote($id){
         $answer_vote = AnswerVote::findOrFail($id);

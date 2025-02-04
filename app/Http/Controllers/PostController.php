@@ -420,62 +420,120 @@ class PostController extends Controller
         return view('post.edit',compact('post','poll','jawaban','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas','media'));
     }
 
-    public function update(Request $request, $id_post){
-        $request->validate([
-            'judul' => 'required',
-            'deskripsi' => 'required',
+    public function update(Request $request, $id){
+
+        $data = DB::table('posts')->where('id',$id)->update([
+            'judul' => $request->judul,
+            'deskripsi' => $request->deskripsi,
+            'updated_at' => Carbon::now(),
         ]);
 
-        $data = Post::findOrFail($id_post);
-
-        $data->judul = $request->judul;
-        $data->deskripsi = $request->deskripsi;
-
-        if ($data->save()) {
-            Alert::success('Berhasil!', 'Mengubah Post.');
-            return redirect()->route('beranda');
-        } else {
-            Alert::error('Gagal!', 'Mengubah Post.');
-            return redirect()->back();
-        }
+        Alert::success('Berhasil!', 'Mengubah Post.');
+        return back();
         
+    }
+
+    public function editMedia($id){
+        
+        $nik = Auth::user()->nik;
+
+        $item = DB::table('post_gambar')->where('id',$id)->first();
+
+        $notifPost = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul 
+                                    FROM notif_post a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 2;");
+        
+        $notifPostLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post 
+                                    FROM notif_post_like a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifPostComment = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, c.nik AS nik_post 
+                                    FROM notif_post_comment a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifBadge = DB::select("SELECT * FROM notif_badge WHERE nik = '$nik'");
+
+        $notifCommentLike = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, d.nik AS nik_comment
+                                    FROM notif_post_commentlike a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments d ON d.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        $notifCommentBalas = DB::select("SELECT a.*, CASE WHEN b.role = 'Anonymous' THEN 'NoName' WHEN b.role = 'admin' THEN 'INSAN MUSTIKA' ELSE b.nama END AS nama, b.foto, c.judul, e.nik AS nik_comment
+                                    FROM notif_post_commentbalas a
+                                    LEFT JOIN users b ON b.nik = a.nik
+                                    LEFT JOIN posts c ON c.id = a.id_post
+                                    LEFT JOIN comments_replies d ON d.id = a.id_commentReplies
+                                    LEFT JOIN comments e ON e.id = a.id_comment
+                                    ORDER BY a.id DESC
+                                    LIMIT 1;");
+
+        return view('post.editMedia',compact('notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas','item'));
     }
 
     public function updateSlidePost(Request $request, $id){
 
-        $slidePost = DB::table('post_gambar')->where('id',$id);
+        $request->validate([
+            'media' => 'required',
+        ]);
 
-        
+        $media = DB::table('post_gambar')->where('id',$id)->first();
+
         if ($request->hasFile('media')) {
-            
-            $image = DB::table('post_gambar')->where('id',$id)->first();
-            if ($image->media) {
-                $oldFilePath = public_path('media/'. $image->media);
+            if ($media->media) {
+                $oldFilePath = public_path('media/'.$media->media);
                 if (file_exists($oldFilePath)) {
                     unlink($oldFilePath);
                 }
             }
 
             $mediaPath = $this->handleMediaUpload($request->file('media'));
-            
-            $slidePost->update([
-                'media' => $mediaPath
+
+            $updateMedia = DB::table('post_gambar')->where('id',$id)->update([
+                'media' => $mediaPath,
+                'updated_at' => Carbon::now(),
             ]);
-            Alert::success('Berhasil!', 'Mengubah Slide Post.');
-            return redirect()->back();
+
+            if ($updateMedia) {
+                Alert::success('Berhasil Mengubah Media');
+                return redirect()->back();
+            } else {
+                Alert::error('Gagal Mengubah Media');
+                return redirect()->back();
+            }
         } else {
-            $image = DB::table('post_gambar')->where('id',$id)->first();
-            if ($image->media) {
-                $oldFilePath = public_path('media/'. $image->media);
-                if (file_exists($oldFilePath)) {
-                    unlink($oldFilePath);
+
+            if ($media->media) {
+                $oldFilePath2 = public_path('media/'.$media->media);
+                if (file_exists($oldFilePath2)) {
+                    unlink($oldFilePath2);
                 }
             }
-            $slidePost->update([
+    
+            $data = DB::table('post_gambar')->where('id',$id)->update([
                 'media' => $request->media,
+                'updated_at' => Carbon::now(),
             ]);
-            Alert::success('Berhasil!', 'Mengubah Slide Post.');
-            return redirect()->back();
+    
+            if ($data) {
+                Alert::success('Berhasil Mengubah Media');
+                return redirect()->back();
+            } else {
+                Alert::error('Gagal Mengubah Media');
+                return redirect()->back();
+            }
+
         }
 
     }

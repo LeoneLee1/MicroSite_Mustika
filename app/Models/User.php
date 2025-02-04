@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\PostLike;
+use App\Models\AnswerVote;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -33,7 +34,6 @@ class User extends Authenticatable
         return $this->likes()->where('id_post', $postId)->exists();
     }
 
-    // Relationship dengan model Like
     public function likes()
     {
         return $this->hasMany(PostLike::class, 'nik', 'nik');

@@ -294,50 +294,41 @@
                                         <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
                                             <div class="row">
                                                 <div class="col-md-8">
-                                                    @php
-                                                        $userVotedOption = null;
-                                                        foreach ($jawaban as $a) {
-                                                            if (
-                                                                $a->id_post == $item->id &&
-                                                                $a->poll_id == $p->id &&
-                                                                $a->voted
-                                                            ) {
-                                                                $userVotedOption = $a->id;
-                                                                break;
-                                                            }
-                                                        }
-                                                    @endphp
                                                     @foreach ($jawaban as $a)
                                                         @if ($a->id_post == $item->id && $a->poll_id == $p->id)
+                                                            @php
+                                                                $userVotedPoll = DB::table('answer_vote')
+                                                                    ->where('nik', Auth::user()->nik)
+                                                                    ->where('poll_id', $a->poll_id)
+                                                                    ->exists();
+
+                                                                $userVote = DB::table('answer_vote')
+                                                                    ->where('nik', Auth::user()->nik)
+                                                                    ->where('poll_id', $a->poll_id)
+                                                                    ->where('id_post', $a->id_post)
+                                                                    ->where('id_jawaban', $a->id)
+                                                                    ->exists();
+                                                            @endphp
                                                             <div
                                                                 class="mb-2 d-flex justify-content-between align-items-center">
                                                                 <div class="form-check">
-                                                                    @if ($userVotedOption !== null)
-                                                                        <input type="radio"
-                                                                            id="option{{ $a->id }}"
-                                                                            name="poll{{ $p->id }}"
-                                                                            class="form-check-input"
-                                                                            {{ $userVotedOption == $a->id ? 'checked' : '' }}
+                                                                    <input type="radio" class="form-check-input"
+                                                                        id="vote{{ $a->id }}"
+                                                                        data-answer-id="{{ $a->id }}"
+                                                                        data-poll-id="{{ $a->poll_id }}"
+                                                                        data-post-id="{{ $a->id_post }}"
+                                                                        data-answer="{{ $a->jawaban }}"
+                                                                        {{ $userVotedPoll ? 'disabled' : '' }}
+                                                                        {{ $userVote ? 'checked' : '' }}>
+                                                                    @if (Auth::user()->role === 'Pengamat')
+                                                                        <input type="radio" class="form-check-input"
                                                                             disabled>
-                                                                    @else
-                                                                        @if (Auth::user()->role === 'Pengamat')
-                                                                            <input type="radio"
-                                                                                id="option{{ $a->id }}"
-                                                                                name="poll{{ $p->id }}"
-                                                                                class="form-check-input" disabled>
-                                                                        @else
-                                                                            <input type="radio"
-                                                                                id="option{{ $a->id }}"
-                                                                                name="poll{{ $p->id }}"
-                                                                                class="form-check-input"
-                                                                                onclick="return vote({{ $a->id }})">
-                                                                        @endif
                                                                     @endif
-                                                                    <label class="form-check-label"
-                                                                        for="option{{ $a->id }}">{{ $a->jawaban }}</label>
+                                                                    <label
+                                                                        class="form-check-label">{{ $a->jawaban }}</label>
                                                                 </div>
-                                                                <span
-                                                                    class="badge bg-primary">{{ $a->value }}</span>
+                                                                <span class="badge bg-primary"
+                                                                    id="vote-count{{ $a->id }}">{{ $a->value }}</span>
                                                             </div>
                                                         @endif
                                                     @endforeach

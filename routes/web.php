@@ -31,7 +31,6 @@ Route::get('/',function(){
 // DASHBOARD CONTROLLER
 Route::get('/beranda',[DashboardController::class,'index'])->name('beranda')->middleware('auth');
 Route::get('/chart/json/{id}',[DashboardController::class,'chart'])->name('chart.json');
-// Route::post('/like/{postId}',[DashboardController::class,'like'])->name('like.post');
 Route::post('/save/{id}',[DashboardController::class,'save'])->name('save');
 Route::get('/viewVote/{id}',[DashboardController::class,'viewVote'])->name('viewVote');
 Route::get('/viewNotification',[DashboardController::class,'viewNotification'])->name('viewNotification');
@@ -43,6 +42,8 @@ Route::get('/clear/chat/ai/{nik}',[DashboardController::class,'clearChatAi'])->n
 Route::get('/analyze/{id}',[DashboardController::class,'gemini_ai'])->name('analyze');
 Route::post('/like',[DashboardController::class,'like'])->name('like');
 Route::post('/unlike',[DashboardController::class,'unlike'])->name('unlike');
+Route::post('/vote',[DashboardController::class,'vote'])->name('vote');
+
 
 // LOGIN CONTROLLER
 Route::get('/login',[LoginController::class,'login'])->name('login');
@@ -62,14 +63,13 @@ Route::post('/post/insert',[PostController::class,'insert'])->name('post.insert'
 Route::get('/post/lihat/{id}',[PostController::class,'lihat'])->name('post.lihat')->middleware('auth');
 Route::get('/search', [PostController::class, 'search'])->name('post.search');
 Route::get('/post/edit/{id}', [PostController::class, 'edit'])->name('post.edit');
-Route::post('/post/edit/update/{id_post}', [PostController::class, 'update'])->name('post.update');
-Route::post('/post/edit/update/soal/{id_post}', [PostController::class, 'updateSoal'])->name('post.update.soal');
-Route::post('/post/edit/update/jawaban/{id_post}', [PostController::class, 'updateJawaban'])->name('post.update.jawaban');
+Route::post('/post/edit/update/{id}', [PostController::class, 'update'])->name('post.update');
 Route::get('/post/delete/{id}',[PostController::class,'delete'])->name('post.delete');
 Route::post('/comment/balas',[PostController::class,'repliesComment'])->name('comment.balas');
 Route::get('/comment/like/{id_comment}',[PostController::class,'likeComments'])->name('comment.like');
 Route::post('/comment/likeReplies/{id_comment}',[PostController::class,'likeCommentsReplies'])->name('comment.likeReplies');
 Route::get('/comment/delete/{id}',[PostController::class,'deleteKomen'])->name('comment.delete');
+Route::get('/post/slide/edit/{id}',[PostController::class,'editMedia'])->name('edit.media');
 Route::post('/post/slide/update/{id}',[PostController::class,'updateSlidePost'])->name('post.slideUpdate');
 
 
@@ -95,7 +95,6 @@ Route::post('/profile/edit/insert',[UserController::class,'profileInsert'])->nam
 // POLLING CONTROLLER
 Route::get('/polling/create',[PollingController::class,'create'])->name('polling.create');
 Route::post('/polling/create/insert',[PollingController::class,'insert'])->name('polling.insert');
-Route::post('/vote/{answerId}',[PollingController::class,'vote'])->name('vote');
 Route::get('/vote/view/{poll_id}',[PollingController::class,'viewVotes'])->name('vote.view');
 Route::get('/vote/view/delete/{id}',[PollingController::class,'deleteVote'])->name('vote.delete');
 

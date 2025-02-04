@@ -11,12 +11,32 @@
         <div class="col col-18 col-md-9">
             <div class="card">
                 <div class="card-body">
-                    <a href="javascript:void(0)" onclick="window.history.go(-1); return false;" class="btn btn-warning"><i
-                            class="fa fa-arrow-left"></i>&nbsp;Batal</a>
-                    <div class="text-center">
-                        <h4 style="color: black; font-weight: bold;">Post</h4>
-                    </div>
-                    <form action="{{ route('post.update', $post->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('post.update', $post->id) }}" method="POST" name="myForm">
+                        @csrf
+                        <div class="mb-3">
+                            <label>Judul</label>
+                            <input type="text" name="judul" class="form-control" value="{{ $post->judul }}">
+                        </div>
+                        <label class="form-label">Media</label>
+                        <div class="mb-3">
+                            @foreach ($media as $item)
+                                @if ($item->media === null)
+                                @else
+                                    <div class="d-inline">
+                                        <a href="/post/slide/edit/{{ $item->id }}"
+                                            class="btn btn-sm btn-primary me-1">Slide
+                                            {{ $no++ }}</a>
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                        <div class="mb-3">
+                            <label>Deskripsi</label>
+                            <textarea name="deskripsi" cols="30" rows="8">{!! $post->deskripsi !!}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </form>
+                    {{-- <form action="{{ route('post.update', $post->id) }}" method="POST">
                         @csrf
                         <div class="mb-3">
                             <label class="form-label">Judul</label>
@@ -34,11 +54,10 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Deskripsi</label>
-                            <textarea name="deskripsi" class="form-control" rows="8" required>{{ $post->deskripsi }}</textarea>
+                            <textarea name="deskripsi" class="form-control" rows="8">{{ $post->deskripsi }}</textarea>
                         </div>
-
-                        <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
-                    </form>
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                    </form> --}}
                 </div>
             </div>
         </div>

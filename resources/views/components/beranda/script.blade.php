@@ -95,7 +95,6 @@
         }
     });
 </script>
-
 <script type="text/javascript">
     function initializeCharts() {
         const polling = @json($polling);
@@ -177,7 +176,7 @@
             }
         });
     }
-    // Inisialisasi chart saat dokumen pertama kali dimuat
+
     $(document).ready(function() {
         initializeCharts();
     });
@@ -218,11 +217,11 @@
 <script>
     $(document).ready(function() {
         $('.like-button').click(function() {
-            var postId = $(this).data('post-id'); // Ambil ID postingan dari atribut data
+            var postId = $(this).data('post-id');
             var icon = $(this);
-            var likeCount = $('#like-count' + postId); // Ambil elemen jumlah like yang sesuai
+            var likeCount = $('#like-count' + postId);
 
-            if (icon.css('color') === 'rgb(255, 0, 0)') { // Jika sudah di-like (merah)
+            if (icon.css('color') === 'rgb(255, 0, 0)') {
                 $.ajax({
                     url: "{{ route('unlike') }}",
                     method: 'POST',
@@ -235,7 +234,7 @@
                         likeCount.text(parseInt(likeCount.text()) - 1);
                     }
                 });
-            } else { // Jika belum di-like (abu-abu)
+            } else {
                 $.ajax({
                     url: "{{ route('like') }}",
                     method: 'POST',
@@ -253,32 +252,42 @@
     });
 </script>
 <script>
-    function vote(answerId) {
-        console.log("Id Answer:", answerId);
-        var scrollPosition = $(window).scrollTop();
-        $.ajax({
-            url: '/vote/' + answerId,
-            type: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            success: function(response) {
-                if (response.success) {
-                    console.log("Voted");
-                    window.location.reload();
-                } else {
-                    console.error("Failed Vote");
-                }
-            },
-            error: function(xhr) {
-                console.error("Terjadi Kesalahan:", xhr.responseText);
+    $(document).ready(function() {
+        $('input[type="radio"].form-check-input').click(function() {
+            var answerId = $(this).data('answer-id');
+            var pollId = $(this).data('poll-id');
+            var postId = $(this).data('post-id');
+            var jawaban = $(this).data('answer');
+            var voteCount = $('#vote-count' + answerId);
+            var input = $(this);
+
+            if (input.prop('disabled')) {
+                return;
             }
+
+            $.ajax({
+                url: "{{ route('vote') }}",
+                method: 'POST',
+                data: {
+                    poll_id: pollId,
+                    id_jawaban: answerId,
+                    id_post: postId,
+                    jawaban: jawaban,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        input.prop('checked', true);
+                        voteCount.text(parseInt(voteCount.text()) + 1);
+                        $('input[type="radio"][data-poll-id="' + pollId + '"]').prop(
+                            'disabled', true);
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
         });
-        $(window).on('load', function() {
-            $(window).scrollTop(scrollPosition);
-        });
-        return false;
-    }
+    });
 </script>
 <script type="text/javascript">
     $(document).ready(function() {

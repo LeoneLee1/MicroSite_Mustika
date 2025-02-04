@@ -72,6 +72,8 @@ class DashboardController extends Controller
                                 LEFT JOIN posts p ON p.id = pa.id_post
                                 LEFT JOIN polls pl ON pl.id = pa.poll_id;");
 
+        $votes = AnswerVote::all();
+
         $postLike = DB::select("SELECT pl.*, CASE WHEN u.role = 'Anonymous' THEN 'NoName' WHEN u.role = 'admin' THEN 'INSAN MUSTIKA' ELSE u.nama END AS nama, u.foto, p.judul FROM post_like pl
                                 LEFT JOIN users u ON u.nik = pl.nik
                                 LEFT JOIN posts p ON p.id = pl.id_post;");
@@ -123,7 +125,7 @@ class DashboardController extends Controller
                                     ORDER BY a.id DESC
                                     LIMIT 1;");
         
-        return view('welcome',compact('post','komen','poll','jawaban','polling','postLike','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas','post_gambar'));
+        return view('welcome',compact('post','komen','poll','jawaban','polling','postLike','notifPost','notifPostLike','notifPostComment','notifBadge','notifCommentLike','notifCommentBalas','post_gambar','votes'));
 
     }
 
@@ -147,6 +149,11 @@ class DashboardController extends Controller
                 'id_post' => $request->id_post,
             ]);
 
+            NotifPostLike::create([
+                'nik' => Auth::user()->nik,
+                'id_post' => $request->id_post,
+            ]);
+
             $post->like += 1;
             $post->save();
 
@@ -164,89 +171,35 @@ class DashboardController extends Controller
             $like->delete();
             $post->like -= 1;
             $post->save();
+
         }
 
         return response()->json(['status' => 'success']);
     }
 
-    // public function like($postId, Request $request){
-    //     $userNik = Auth::user()->nik;
+    public function vote(Request $request){
 
-    //     $time = Carbon::now();
+            DB::table('answer_vote')->insert([
+                'nik' => Auth::user()->nik,
+                'poll_id' => $request->poll_id,
+                'id_jawaban' => $request->id_jawaban,
+                'id_post' => $request->id_post,
+                'jawaban' => $request->jawaban,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+    
+            DB::table('polls')
+                ->where('id',$request->poll_id)
+                ->where('nik', Auth::user()->nik)
+                ->increment('voting');
+    
+            DB::table('poll_answers')
+                ->where('id', $request->id_jawaban)
+                ->increment('value');
 
-    //     $post = Post::find($postId);
-
-    //     if (!$post) {
-    //         return response()->json(['success' => false, 'message' => 'Post not found'], 404);
-    //     }
-
-    //     $existingLike = PostLike::where('nik', $userNik)
-    //                                 ->where('id_post', $post->id)
-    //                                 ->first();
-
-    //     $notifBadge = NotifBadge::where('nik',$post->nik)->first();
-
-    //     if ($existingLike) {
-    //         if ($existingLike->id_post == $postId) {
-    //             $existingLike->delete();
-
-    //             $post->like -= 1;
-    //             $post->save();
-
-    //             $notifLike1 = NotifPostLike::where('nik',$userNik)
-    //                                         ->where('id_post',$postId)
-    //                                         ->first();
-
-    //             $notifLike1->delete();
-
-    //             if ($notifBadge->value == 0) {
-    //                 $notifBadge->value = 0;
-    //                 $notifBadge->save();
-    //             } else {
-    //                 $notifBadge->value -= 1;
-    //                 $notifBadge->save();
-    //             }
-
-    //             return response()->json(['success' => true, 'message' => 'Like removed']);
-    //         } else {
-
-    //             $oldLike = Post::find($existingLike->id_post);
-    //             if ($oldLike) {
-    //                 $oldLike->like -= 1;
-    //                 $oldLike->save();
-    //             }
-                
-    //             $existingLike->id_post = $postId;
-    //             $existingLike->judul = $post->judul;
-    //             $existingLike->save();
-
-    //             $post->like += 1;
-    //             $post->save();
-
-    //             return response()->json(['success' => true, 'message' => 'Like updated']);
-
-    //         }
-    //     } else {
-    //         PostLike::create([
-    //             'nik' => $userNik,
-    //             'id_post' => $postId,
-    //             'judul' => $post->judul,
-    //         ]);
-
-    //         $post->like += 1;
-    //         $post->save();
-
-    //         $notifLike2 = new NotifPostLike();
-    //         $notifLike2->id_post = $postId;
-    //         $notifLike2->nik = $userNik;
-    //         $notifLike2->save();
-
-    //         $notifBadge->value += 1;
-    //         $notifBadge->save();
-
-    //         return response()->json(['success' => true, 'message' => 'Like added']);
-    //     }
-    // }
+        return response()->json(['status' => 'success']);
+    }
 
     public function save(Request $request,$id){
         $userNik = Auth::user()->nik;
@@ -774,6 +727,85 @@ class DashboardController extends Controller
         return $nohp; 
     }
 
+
+    // public function like($postId, Request $request){
+    //     $userNik = Auth::user()->nik;
+
+    //     $time = Carbon::now();
+
+    //     $post = Post::find($postId);
+
+    //     if (!$post) {
+    //         return response()->json(['success' => false, 'message' => 'Post not found'], 404);
+    //     }
+
+    //     $existingLike = PostLike::where('nik', $userNik)
+    //                                 ->where('id_post', $post->id)
+    //                                 ->first();
+
+    //     $notifBadge = NotifBadge::where('nik',$post->nik)->first();
+
+    //     if ($existingLike) {
+    //         if ($existingLike->id_post == $postId) {
+    //             $existingLike->delete();
+
+    //             $post->like -= 1;
+    //             $post->save();
+
+    //             $notifLike1 = NotifPostLike::where('nik',$userNik)
+    //                                         ->where('id_post',$postId)
+    //                                         ->first();
+
+    //             $notifLike1->delete();
+
+    //             if ($notifBadge->value == 0) {
+    //                 $notifBadge->value = 0;
+    //                 $notifBadge->save();
+    //             } else {
+    //                 $notifBadge->value -= 1;
+    //                 $notifBadge->save();
+    //             }
+
+    //             return response()->json(['success' => true, 'message' => 'Like removed']);
+    //         } else {
+
+    //             $oldLike = Post::find($existingLike->id_post);
+    //             if ($oldLike) {
+    //                 $oldLike->like -= 1;
+    //                 $oldLike->save();
+    //             }
+                
+    //             $existingLike->id_post = $postId;
+    //             $existingLike->judul = $post->judul;
+    //             $existingLike->save();
+
+    //             $post->like += 1;
+    //             $post->save();
+
+    //             return response()->json(['success' => true, 'message' => 'Like updated']);
+
+    //         }
+    //     } else {
+    //         PostLike::create([
+    //             'nik' => $userNik,
+    //             'id_post' => $postId,
+    //             'judul' => $post->judul,
+    //         ]);
+
+    //         $post->like += 1;
+    //         $post->save();
+
+    //         $notifLike2 = new NotifPostLike();
+    //         $notifLike2->id_post = $postId;
+    //         $notifLike2->nik = $userNik;
+    //         $notifLike2->save();
+
+    //         $notifBadge->value += 1;
+    //         $notifBadge->save();
+
+    //         return response()->json(['success' => true, 'message' => 'Like added']);
+    //     }
+    // }
 
     // public function ask_ai(Request $request){
     //     $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=AIzaSyD2tVRYyM8Q_Dgah-e560wKd-6m4VXV8RY';
