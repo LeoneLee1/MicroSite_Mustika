@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\PostLike;
 use App\Models\AnswerVote;
+use App\Models\CommentLike;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -29,13 +30,24 @@ class User extends Authenticatable
         'foto',
     ];
 
+    public function likes()
+    {
+        return $this->hasMany(PostLike::class, 'nik', 'nik');
+    }
+
     public function hasLiked($postId)
     {
         return $this->likes()->where('id_post', $postId)->exists();
     }
 
-    public function likes()
+    public function likeComments()
     {
-        return $this->hasMany(PostLike::class, 'nik', 'nik');
+        return $this->hasMany(CommentLike::class, 'nik', 'nik');
     }
+
+    public function hasLikedComment($id)
+    {
+        return $this->likeComments()->where('id_comment', $id)->exists();
+    }
+
 }

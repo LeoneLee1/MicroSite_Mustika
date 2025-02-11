@@ -16,6 +16,7 @@ class CommentReplies extends Model
         'id_post',
         'nik',
         'comment',
+        'clip',
         'likes',
     ];
 }

@@ -15,5 +15,11 @@ class Comment extends Model
         'id_post',
         'nik',
         'comment',
+        'clip',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'nik', 'nik');
+    }
 }

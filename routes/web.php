@@ -66,11 +66,10 @@ Route::get('/post/edit/{id}', [PostController::class, 'edit'])->name('post.edit'
 Route::post('/post/edit/update/{id}', [PostController::class, 'update'])->name('post.update');
 Route::get('/post/delete/{id}',[PostController::class,'delete'])->name('post.delete');
 Route::post('/comment/balas',[PostController::class,'repliesComment'])->name('comment.balas');
-Route::get('/comment/like/{id_comment}',[PostController::class,'likeComments'])->name('comment.like');
-Route::post('/comment/likeReplies/{id_comment}',[PostController::class,'likeCommentsReplies'])->name('comment.likeReplies');
-Route::get('/comment/delete/{id}',[PostController::class,'deleteKomen'])->name('comment.delete');
 Route::get('/post/slide/edit/{id}',[PostController::class,'editMedia'])->name('edit.media');
 Route::post('/post/slide/update/{id}',[PostController::class,'updateSlidePost'])->name('post.slideUpdate');
+Route::post('/comment/like',[PostController::class,'likeComments'])->name('comment.like');
+Route::post('/comment/unlike',[PostController::class,'unLikeComments'])->name('comment.unlike');
 
 
 // USER CONTROLLER

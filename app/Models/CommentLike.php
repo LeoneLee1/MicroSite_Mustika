@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
+use App\Models\Comment;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CommentLike extends Model
 {
@@ -17,4 +19,13 @@ class CommentLike extends Model
         'nik',
         'comment',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'nik', 'nik');
+    }
+
+    public function comment(){
+        return $this->belongsTo(Comment::class);
+    }
 }

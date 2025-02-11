@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class LogController extends Controller
 {
-    public function logHistory(){
+    public function logHistory(Request $request){
 
         $user = Auth::user()->nik;
 

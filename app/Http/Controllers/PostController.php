@@ -21,6 +21,7 @@ use App\Models\NotifPostComment;
 use Illuminate\Support\Facades\DB;
 use App\Models\NotifPostCommentLike;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Intervention\Image\Facades\Image;
 use App\Models\NotifPostCommentReplies;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -211,37 +212,94 @@ class PostController extends Controller
             'comment' => 'required',
         ]);
 
-        $k = new Comment();
-        $k->id_post = $request->id_post;
-        $k->nik = $request->nik;
-        $k->comment = $request->comment;
-        $k->save();
+        if ($request->hasFile('clip')) {
+            $clip = $request->file('clip');
+            $fileExtension = $clip->getClientOriginalExtension();
+            $fileName = time() . '_' . Str::random(5) . '.' . $fileExtension;
 
-        $value = Post::findOrFail($request->id_post);
-        $value->komen += 1;
-        $value->save();
+            $folderClip = public_path('clip');
 
-        $notifBadge = NotifBadge::where('nik',$value->nik)->first();
-        $notifBadge->value += 1;
-        $notifBadge->save();
+            if (!File::exists($folderClip)) {
+                File::makeDirectory($folderClip, 0755, true, true);
+            }
 
-        $notifKomen = new NotifPostComment();
-        $notifKomen->id_post = $request->id_post;
-        $notifKomen->nik = $request->nik;
-        $notifKomen->id_comment = $k->id;
-        $notifKomen->save();
+            $filePath = public_path('clip/' . $fileName);
+
+            if (in_array($fileExtension,['jpg', 'jpeg', 'png'])) {
+                $img = Image::make($clip);
+                $img->resize(700,700, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })->save($filePath);
+            } elseif (in_array($fileExtension, ['mp4', 'webm', 'ogg','gif','MOV'])) {
+                $clip->move(public_path('clip/'), $fileName);
+            }
+
+            $k = Comment::create([
+                'id_post' => $request->id_post,
+                'nik' => $request->nik,
+                'comment' => $request->comment,
+                'clip' => $fileName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+
+        } else {
+
+            $k = Comment::create([
+                'id_post' => $request->id_post,
+                'nik' => $request->nik,
+                'comment' => $request->comment,
+                'clip' => null,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
         
-        return response()->json($k);
+
+        if ($k) {
+            $value = Post::findOrFail($request->id_post);
+            $value->komen += 1;
+            $value->save();
+
+            $notifBadge = NotifBadge::where('nik',$value->nik)->first();
+            $notifBadge->value += 1;
+            $notifBadge->save();
+
+            $notifKomen = new NotifPostComment();
+            $notifKomen->id_comment = $k->id;
+            $notifKomen->id_post = $request->id_post;
+            $notifKomen->nik = $request->nik;
+            $notifKomen->save();
+
+            return redirect()->back();
+        } else {
+            toast('Gagal memberikan komentar','error');
+            return redirect()->back();
+        }
+
     }
 
     public function deleteComment($id_comment){
 
         $data = Comment::findOrFail($id_comment);
+        
+        if ($data->clip) {
+            $oldFilePath = public_path('clip/'. $data->clip);
+                if (file_exists($oldFilePath)) {
+                    unlink($oldFilePath);
+                }
+        }
+
         $data->delete();
 
         $value = Post::findOrFail($data->id_post);
         $value->komen -= 1;
         $value->save();
+
+        $like = DB::table('comments_likes')->where('id_comment',$id_comment)->delete();
+
+        $notif_comment = DB::table('notif_post_comment')->where('id_comment',$id_comment)->delete();
 
         $notifBadge = NotifBadge::where('nik',$value->nik)->first();
         if ($notifBadge->value == 0) {
@@ -546,165 +604,252 @@ class PostController extends Controller
             'comment' => 'required',
         ]);
 
-        $data = new CommentReplies();
-        $data->id_post = $request->id_post;
-        $data->id_comment = $request->id_comment;
-        $data->nik = $request->nik;
-        $data->comment = $request->comment;
-        $data->save();
+        if ($request->hasFile('clip')) {
+            $clip = $request->file('clip');
+            $fileExtension = $clip->getClientOriginalExtension();
+            $fileName = time() . '_' . Str::random(5) . '.' . $fileExtension;
 
-        $comment = Comment::where('id',$request->id_comment)->first();
+            $folderClip = public_path('clip');
 
-        $notifBadge = NotifBadge::where('nik',$comment->nik)->first();
-        $notifBadge->value += 1;
-        $notifBadge->save();
-
-        $value = Post::findOrFail($request->id_post);
-        $value->komen += 1;
-        $value->save();
-
-        $notifKomen = new NotifPostCommentReplies();
-        $notifKomen->id_post = $request->id_post;
-        $notifKomen->nik = $request->nik;
-        $notifKomen->id_commentReplies = $data->id;
-        $notifKomen->id_comment = $data->id_comment;
-        $notifKomen->save();
-
-        return response()->json($data);
-
-    }
-
-    public function likeComments(Request $request, $id){
-        $userNik = Auth::user()->nik;
-
-        $comment = Comment::find($id);
-
-        if (!$comment) {
-            return response()->json(['success' => false, 'message' => 'Post not found'], 404);
-        }
-
-        $existingLike = CommentLike::where('nik',$userNik)
-                                    ->where('id_comment',$comment->id)
-                                    ->first();
-
-        $notifBadge = NotifBadge::where('nik',$comment->nik)->first();
-
-        if ($existingLike) {
-            if ($existingLike->id_comment == $id) {
-                $existingLike->delete();
-
-                $comment->likes -= 1;
-                $comment->save();
-
-                $notifLike1 = NotifPostCommentLike::where('nik',$userNik)
-                                                    ->where('id_post',$comment->id_post)
-                                                    ->first();
-
-                $notifLike1->delete();
-
-                if ($notifBadge->value == 0) {
-                    $notifBadge->value = 0;
-                    $notifBadge->save();
-                } else {
-                    $notifBadge->value -= 1;
-                    $notifBadge->save();
-                }
-
-                // return response()->json(['success' => true, 'message' => 'Like removed']);
-                return redirect()->back();
-            } else {
-                $oldLike = Comment::find($existingLike->id_comment);
-                if ($oldLike) {
-                    $oldLike->likes -= 1;
-                    $oldLike->save();
-                }
-
-                $existingLike->id_comment = $id;
-                $existingLike->comment = $comment->comment;
-                $existingLike->id_post = $comment->id_post;
-                $existingLike->save();
-
-                $comment->likes += 1;
-                $comment->save();
-
-                // return response()->json(['success' => true, 'message' => 'Like updated']);
-                return redirect()->back();
+            if (!File::exists($folderClip)) {
+                File::makeDirectory($folderClip, 0755, true, true);
             }
-        } else {
-            CommentLike::create([
-                'nik' => $userNik,
-                'id_comment' => $id,
-                'id_post' => $comment->id_post,
-                'comment' => $comment->comment,
+
+            $filePath = public_path('clip/' . $fileName);
+
+            if (in_array($fileExtension,['jpg', 'jpeg', 'png'])) {
+                $img = Image::make($clip);
+                $img->resize(700,700, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })->save($filePath);
+            } elseif (in_array($fileExtension, ['mp4', 'webm', 'ogg','gif','MOV'])) {
+                $clip->move(public_path('clip/'), $fileName);
+            }
+
+            $rk = CommentReplies::create([
+                'id_post' => $request->id_post,
+                'id_comment' => $request->id_comment,
+                'nik' => $request->nik,
+                'comment' => $request->comment,
+                'clip' => $fileName,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
 
-            $comment->likes += 1;
-            $comment->save();
+        } else {
+            $rk = CommentReplies::create([
+                'id_post' => $request->id_post,
+                'id_comment' => $request->id_comment,
+                'nik' => $request->nik,
+                'comment' => $request->comment,
+                'clip' => null,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
 
-            $notifLike2 = new NotifPostCommentLike();
-            $notifLike2->id_post = $comment->id_post;
-            $notifLike2->nik = $userNik;
-            $notifLike2->id_comment = $comment->id;
-            $notifLike2->save();
+        if ($rk) {
+            $comment = Comment::where('id',$request->id_comment)->first();
 
+            $notifBadge = NotifBadge::where('nik',$comment->nik)->first();
             $notifBadge->value += 1;
             $notifBadge->save();
 
-            // return response()->json(['success' => true, 'message' => 'Like added']);
+            $value = Post::findOrFail($request->id_post);
+            $value->komen += 1;
+            $value->save();
+
+            $notifKomen = new NotifPostCommentReplies();
+            $notifKomen->id_post = $request->id_post;
+            $notifKomen->nik = $request->nik;
+            $notifKomen->id_commentReplies = $rk->id;
+            $notifKomen->id_comment = $rk->id_comment;
+            $notifKomen->save();
+
+            return redirect()->back();
+        } else {
+            toast('Gagal membalas komentar','error');
             return redirect()->back();
         }
+
     }
 
-    public function likeCommentsReplies(Request $request, $id){
-        $userNik = Auth::user()->nik;
+    public function likeComments(Request $request){
+        $like = DB::table('comments_likes')
+                    ->where('nik', Auth::user()->nik)
+                    ->where('id_comment', $request->id_comment)
+                    ->first();
 
-        $comment = CommentReplies::find($id);
-
-        if (!$comment) {
-            return response()->json(['success' => false, 'message' => 'Post not found'], 404);
-        }
-
-        $existingLike = CommentLike::where('nik',$userNik)
-                                    ->where('id_comment',$comment->id)
-                                    ->first();
-
-        if ($existingLike) {
-            if ($existingLike->id_comment == $id) {
-                $existingLike->delete();
-
-                $comment->likes -= 1;
-                $comment->save();
-
-                return response()->json(['success' => true, 'message' => 'Like removed']);
-            } else {
-                $oldLike = CommentReplies::find($existingLike->id_comment);
-                if ($oldLike) {
-                    $oldLike->likes -= 1;
-                    $oldLike->save();
-                }
-
-                $existingLike->id_comment = $id;
-                $existingLike->comment = $comment->comment;
-                $existingLike->save();
-
-                $comment->likes += 1;
-                $comment->save();
-
-                return response()->json(['success' => true, 'message' => 'Like updated']);
-            }
-        } else {
-            CommentLike::create([
-                'nik' => $userNik,
-                'id_comment' => $id,
-                'comment' => $comment->comment,
+        if (!$like) {
+            DB::table('comments_likes')->insert([
+                'id_comment' => $request->id_comment,
+                'id_post' => $request->id_post,
+                'nik' => Auth::user()->nik,
+                'comment' => $request->comment,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
 
-            $comment->likes += 1;
-            $comment->save();
-
-            return response()->json(['success' => true, 'message' => 'Like added']);
+            $like_count = Comment::where('id', $request->id_comment)->first();
+            $like_count->likes += 1;
+            $like_count->save();
         }
+
+        return response()->json([
+            'status' => 'success'
+        ]);
     }
+
+    public function unLikeComments(Request $request){
+        $like = DB::table('comments_likes')
+                    ->where('nik', Auth::user()->nik)
+                    ->where('id_comment', $request->id_comment)
+                    ->delete();
+
+        if ($like) {
+            $like_count = Comment::where('id', $request->id_comment)->first();
+            $like_count->likes -= 1;
+            $like_count->save();
+        }
+
+        return response()->json([
+            'status' => 'success'
+        ]);
+
+    }
+
+    // public function likeComments(Request $request, $id){
+    //     $userNik = Auth::user()->nik;
+
+    //     $comment = Comment::find($id);
+
+    //     if (!$comment) {
+    //         return response()->json(['success' => false, 'message' => 'Post not found'], 404);
+    //     }
+
+    //     $existingLike = CommentLike::where('nik',$userNik)
+    //                                 ->where('id_comment',$comment->id)
+    //                                 ->first();
+
+    //     $notifBadge = NotifBadge::where('nik',$comment->nik)->first();
+
+    //     if ($existingLike) {
+    //         if ($existingLike->id_comment == $id) {
+    //             $existingLike->delete();
+
+    //             $comment->likes -= 1;
+    //             $comment->save();
+
+    //             $notifLike1 = NotifPostCommentLike::where('nik',$userNik)
+    //                                                 ->where('id_post',$comment->id_post)
+    //                                                 ->first();
+
+    //             $notifLike1->delete();
+
+    //             if ($notifBadge->value == 0) {
+    //                 $notifBadge->value = 0;
+    //                 $notifBadge->save();
+    //             } else {
+    //                 $notifBadge->value -= 1;
+    //                 $notifBadge->save();
+    //             }
+
+    //             // return response()->json(['success' => true, 'message' => 'Like removed']);
+    //             return redirect()->back();
+    //         } else {
+    //             $oldLike = Comment::find($existingLike->id_comment);
+    //             if ($oldLike) {
+    //                 $oldLike->likes -= 1;
+    //                 $oldLike->save();
+    //             }
+
+    //             $existingLike->id_comment = $id;
+    //             $existingLike->comment = $comment->comment;
+    //             $existingLike->id_post = $comment->id_post;
+    //             $existingLike->save();
+
+    //             $comment->likes += 1;
+    //             $comment->save();
+
+    //             // return response()->json(['success' => true, 'message' => 'Like updated']);
+    //             return redirect()->back();
+    //         }
+    //     } else {
+    //         CommentLike::create([
+    //             'nik' => $userNik,
+    //             'id_comment' => $id,
+    //             'id_post' => $comment->id_post,
+    //             'comment' => $comment->comment,
+    //         ]);
+
+    //         $comment->likes += 1;
+    //         $comment->save();
+
+    //         $notifLike2 = new NotifPostCommentLike();
+    //         $notifLike2->id_post = $comment->id_post;
+    //         $notifLike2->nik = $userNik;
+    //         $notifLike2->id_comment = $comment->id;
+    //         $notifLike2->save();
+
+    //         $notifBadge->value += 1;
+    //         $notifBadge->save();
+
+    //         // return response()->json(['success' => true, 'message' => 'Like added']);
+    //         return redirect()->back();
+    //     }
+    // }
+
+    // public function likeCommentsReplies(Request $request, $id){
+    //     $userNik = Auth::user()->nik;
+
+    //     $comment = CommentReplies::find($id);
+
+    //     if (!$comment) {
+    //         return response()->json(['success' => false, 'message' => 'Post not found'], 404);
+    //     }
+
+    //     $existingLike = CommentLike::where('nik',$userNik)
+    //                                 ->where('id_comment',$comment->id)
+    //                                 ->first();
+
+    //     if ($existingLike) {
+    //         if ($existingLike->id_comment == $id) {
+    //             $existingLike->delete();
+
+    //             $comment->likes -= 1;
+    //             $comment->save();
+
+    //             return response()->json(['success' => true, 'message' => 'Like removed']);
+    //         } else {
+    //             $oldLike = CommentReplies::find($existingLike->id_comment);
+    //             if ($oldLike) {
+    //                 $oldLike->likes -= 1;
+    //                 $oldLike->save();
+    //             }
+
+    //             $existingLike->id_comment = $id;
+    //             $existingLike->comment = $comment->comment;
+    //             $existingLike->save();
+
+    //             $comment->likes += 1;
+    //             $comment->save();
+
+    //             return response()->json(['success' => true, 'message' => 'Like updated']);
+    //         }
+    //     } else {
+    //         CommentLike::create([
+    //             'nik' => $userNik,
+    //             'id_comment' => $id,
+    //             'comment' => $comment->comment,
+    //         ]);
+
+    //         $comment->likes += 1;
+    //         $comment->save();
+
+    //         return response()->json(['success' => true, 'message' => 'Like added']);
+    //     }
+    // }
 
     public function delete($id){
         $post = Post::findOrFail($id);

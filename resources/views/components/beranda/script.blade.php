@@ -2,6 +2,42 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="js/slideshow.js"></script>
 <script>
+    document.getElementById('buttonFile').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+
+            const maxSize = 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert('File size should not exceed 5MB');
+                this.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewContainer = document.getElementById('imagePreviewContainer');
+                const previewImage = document.getElementById('imagePreview');
+
+                previewImage.src = e.target.result;
+                previewContainer.style.display = 'block';
+                document.getElementById('fileClick').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function removeImage() {
+        const fileInput = document.getElementById('buttonFile');
+        const previewContainer = document.getElementById('imagePreviewContainer');
+        const previewImage = document.getElementById('imagePreview');
+
+        fileInput.value = ''; // Clear file input
+        previewImage.src = ''; // Clear preview
+        previewContainer.style.display = 'none'; // Hide preview container
+        document.getElementById('fileClick').style.display = 'block';
+    }
+</script>
+<script>
     function askAI() {
         $('.buttonload').show();
         $('#buttonTanyaAI').hide();
