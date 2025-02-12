@@ -278,11 +278,12 @@
                                 <input type="hidden" name="id_post" value="{{ $row->post_id }}">
                                 <input type="hidden" name="id_comment" value="{{ $row->id }}">
                                 <div class="input-group me-2" style="flex: 1;">
-                                    <div class="image-preview-container2" id="imagePreviewContainer2"
+                                    <div class="image-preview-container2" id="imagePreviewContainer2_{{ $row->id }}"
                                         style="display: none;">
                                         <div class="image-preview-wrapper2">
-                                            <img id="imagePreview2" src="" alt="Preview">
-                                            <button type="button" class="remove-image2" onclick="removeImage2()">
+                                            <img id="imagePreview2_{{ $row->id }}" src="" alt="Preview">
+                                            <button type="button" class="remove-image2"
+                                                onclick="removeImage2({{ $row->id }})">
                                                 <i class="fas fa-times"></i>
                                             </button>
                                         </div>
@@ -290,10 +291,10 @@
                                     <textarea name="comment" id="reply-input" class="form-control" style="border-radius: 50px;" rows="1"
                                         placeholder="Add Reply...." required></textarea>
                                 </div>
-                                <input type="file" name="clip" id="buttonFile2" hidden>
+                                <input type="file" name="clip" id="buttonFile2_{{ $row->id }}" hidden>
                                 <button type="button" class="btn btn-danger btn-sm me-1" title="PICTURE/VIDEO"
                                     style="border-radius: 50px;"
-                                    onclick="document.getElementById('buttonFile2').click();"><i
+                                    onclick="document.getElementById('buttonFile2_{{ $row->id }}').click();"><i
                                         class="fa fa-paperclip"></i></button>
                                 <button type="submit" class="btn btn-primary btn-sm me-2"
                                     style="border-radius: 50px;">Send</button>
@@ -425,40 +426,46 @@
 
 @push('after-script')
     <script>
-        document.getElementById('buttonFile2').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
+        function handleFileChange(id) {
+            document.getElementById(`buttonFile2_${id}`).addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
 
-                const maxSize = 5 * 1024 * 1024;
-                if (file.size > maxSize) {
-                    alert('File size should not exceed 5MB');
-                    this.value = '';
-                    return;
+                    const maxSize = 5 * 1024 * 1024;
+                    if (file.size > maxSize) {
+                        alert('File size should not exceed 5MB');
+                        this.value = '';
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const previewContainer = document.getElementById(`imagePreviewContainer2_${id}`);
+                        const previewImage = document.getElementById(`imagePreview2_${id}`);
+
+                        previewImage.src = e.target.result;
+                        previewContainer.style.display = 'block';
+                        document.getElementById('fileClick2').style.display = 'none';
+                    };
+                    reader.readAsDataURL(file);
                 }
+            });
+        }
 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const previewContainer = document.getElementById('imagePreviewContainer2');
-                    const previewImage = document.getElementById('imagePreview2');
+        function removeImage2(id) {
+            const fileInput = document.getElementById(`buttonFile2_${id}`);
+            const previewContainer = document.getElementById(`imagePreviewContainer2_${id}`);
+            const previewImage = document.getElementById(`imagePreview2_${id}`);
 
-                    previewImage.src = e.target.result;
-                    previewContainer.style.display = 'block';
-                    document.getElementById('fileClick2').style.display = 'none';
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        function removeImage2() {
-            const fileInput = document.getElementById('buttonFile2');
-            const previewContainer = document.getElementById('imagePreviewContainer2');
-            const previewImage = document.getElementById('imagePreview2');
-
-            fileInput.value = ''; // Clear file input
-            previewImage.src = ''; // Clear preview
-            previewContainer.style.display = 'none'; // Hide preview container
+            fileInput.value = '';
+            previewImage.src = '';
+            previewContainer.style.display = 'none';
             document.getElementById('fileClick2').style.display = 'block';
         }
+
+        @foreach ($komen as $row)
+            handleFileChange({{ $row->id }});
+        @endforeach
     </script>
     <script>
         document.getElementById('buttonFile').addEventListener('change', function(event) {
@@ -490,9 +497,9 @@
             const previewContainer = document.getElementById('imagePreviewContainer');
             const previewImage = document.getElementById('imagePreview');
 
-            fileInput.value = ''; // Clear file input
-            previewImage.src = ''; // Clear preview
-            previewContainer.style.display = 'none'; // Hide preview container
+            fileInput.value = '';
+            previewImage.src = '';
+            previewContainer.style.display = 'none';
             document.getElementById('fileClick').style.display = 'block';
         }
     </script>

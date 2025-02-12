@@ -271,12 +271,14 @@
                                                             style="object-fit: cover;" />
                                                     @endif
                                                 </span>
-                                                <div class="image-preview-container" id="imagePreviewContainer"
+                                                <div class="image-preview-container"
+                                                    id="imagePreviewContainer_{{ $item->id }}"
                                                     style="display: none;">
                                                     <div class="image-preview-wrapper">
-                                                        <img id="imagePreview" src="" alt="Preview">
+                                                        <img id="imagePreview_{{ $item->id }}" src=""
+                                                            alt="Preview">
                                                         <button type="button" class="remove-image"
-                                                            onclick="removeImage()">
+                                                            onclick="removeImage({{ $item->id }})">
                                                             <i class="fas fa-times"></i>
                                                         </button>
                                                     </div>
@@ -284,10 +286,11 @@
                                                 <textarea name="comment" class="form-control" style="border-radius: 50px; margin-left: 10px;" id="komentar"
                                                     rows="1" placeholder="Add Comments...." required></textarea>
                                             </div>
-                                            <input type="file" name="clip" id="buttonFile" hidden>
+                                            <input type="file" name="clip" id="buttonFile_{{ $item->id }}"
+                                                hidden>
                                             <button type="button" class="btn btn-danger btn-sm me-1"
                                                 title="PICTURE/VIDEO" style="border-radius: 50px;"
-                                                onclick="document.getElementById('buttonFile').click();"><i
+                                                onclick="document.getElementById('buttonFile_{{ $item->id }}').click();"><i
                                                     class="fa fa-paperclip"></i></button>
                                             <button type="submit" class="btn btn-primary btn-sm me-2"
                                                 style="border-radius: 50px;">Send</button>

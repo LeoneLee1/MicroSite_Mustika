@@ -6,6 +6,35 @@
     $no = 1;
 @endphp
 
+@push('after-style')
+    <style>
+        .back-button {
+            background-color: #ffffff;
+            color: #6366f1;
+            border: 2px solid #6366f1;
+            border-radius: 20px;
+            padding: 8px 20px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            background-color: #6366f1;
+            color: white;
+        }
+    </style>
+@endpush
+
+@section('navbar-item')
+    <a href="javascript:void(0)" class="back-button btn-sm" onclick="window.history.go(-1); return false;">
+        <i class="fa fa-arrow-left"></i>
+        <span class="d-none d-sm-block">Back</span>
+    </a>
+@endsection
+
 @section('content')
     <div class="row justify-content-center">
         <div class="col col-18 col-md-9">

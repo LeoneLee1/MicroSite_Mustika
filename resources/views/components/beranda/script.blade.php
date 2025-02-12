@@ -2,40 +2,46 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="js/slideshow.js"></script>
 <script>
-    document.getElementById('buttonFile').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
+    function handleFileChange(id) {
+        document.getElementById(`buttonFile_${id}`).addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
 
-            const maxSize = 5 * 1024 * 1024;
-            if (file.size > maxSize) {
-                alert('File size should not exceed 5MB');
-                this.value = '';
-                return;
+                const maxSize = 5 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    alert('File size should not exceed 5MB');
+                    this.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewContainer = document.getElementById(`imagePreviewContainer_${id}`);
+                    const previewImage = document.getElementById(`imagePreview_${id}`);
+
+                    previewImage.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                    document.getElementById('fileClick').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
             }
+        });
+    }
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const previewContainer = document.getElementById('imagePreviewContainer');
-                const previewImage = document.getElementById('imagePreview');
+    function removeImage(id) {
+        const fileInput = document.getElementById(`buttonFile_${id}`);
+        const previewContainer = document.getElementById(`imagePreviewContainer_${id}`);
+        const previewImage = document.getElementById(`imagePreview_${id}`);
 
-                previewImage.src = e.target.result;
-                previewContainer.style.display = 'block';
-                document.getElementById('fileClick').style.display = 'none';
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    function removeImage() {
-        const fileInput = document.getElementById('buttonFile');
-        const previewContainer = document.getElementById('imagePreviewContainer');
-        const previewImage = document.getElementById('imagePreview');
-
-        fileInput.value = ''; // Clear file input
-        previewImage.src = ''; // Clear preview
-        previewContainer.style.display = 'none'; // Hide preview container
+        fileInput.value = '';
+        previewImage.src = '';
+        previewContainer.style.display = 'none';
         document.getElementById('fileClick').style.display = 'block';
     }
+
+    @foreach ($post as $item)
+        handleFileChange({{ $item->id }});
+    @endforeach
 </script>
 <script>
     function askAI() {
@@ -325,7 +331,7 @@
         });
     });
 </script>
-<script type="text/javascript">
+{{-- <script type="text/javascript">
     $(document).ready(function() {
         $('.comment-form').each(function() {
             var form = $(this);
@@ -354,4 +360,4 @@
             });
         });
     })
-</script>
+</script> --}}

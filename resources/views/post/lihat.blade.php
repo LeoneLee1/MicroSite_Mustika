@@ -115,6 +115,56 @@
             background-color: #6366f1;
             color: white;
         }
+
+        .image-preview-container {
+            width: 100px;
+            background: #f8fafc;
+            padding: 8px;
+            border-radius: 10px;
+            border: 1px dashed #e5e7eb;
+        }
+
+        .image-preview-wrapper {
+            position: relative;
+            display: inline-block;
+            max-width: 150px;
+            /* Reduced from 200px */
+        }
+
+        .image-preview-wrapper img {
+            width: 80px;
+            /* Fixed width */
+            height: 80px;
+            /* Fixed height */
+            border-radius: 8px;
+            object-fit: cover;
+            /* This will maintain aspect ratio */
+            border: 1px solid #e5e7eb;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0;
+            font-size: 10px;
+        }
+
+        .remove-image:hover {
+            background: #cc0000;
+            transform: scale(1.1);
+        }
     </style>
 @endpush
 
@@ -237,60 +287,6 @@
                                     <span style="color: #ffffff;">&#10095;</span>
                                 </a>
                             </div>
-                            {{-- @if (strpos($item->media_file, '.mp4') !== false || strpos($item->media_file, '.webm') !== false || strpos($item->media_file, '.ogg') !== false)
-                                <video controls class="img-fluid" style="max-width: 50%; height: auto;">
-                                    <source src="{{ asset('media/' . $item->media_file) }}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            @elseif (strpos($item->media, 'youtube.com') !== false || strpos($item->media, 'youtu.be') !== false)
-                                @php
-                                    preg_match(
-                                        '/(youtube\.com\/(watch\?v=|shorts\/)|youtu\.be\/)([^\&\?\/]+)/',
-                                        $item->media,
-                                        $matches,
-                                    );
-                                    $youtubeId = $matches[3] ?? null;
-                                @endphp
-                                @if ($youtubeId)
-                                    <div class="d-none d-sm-block">
-                                        <iframe style="max-width: 750px; min-width: 750px; height: 350px;"
-                                            src="https://www.youtube.com/embed/{{ $youtubeId }}" frameborder="0"
-                                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                            allowfullscreen class="img-fluid lazyload"></iframe>
-                                    </div>
-                                    <div class="d-block d-sm-none">
-                                        <iframe style="max-width: 260px; min-width: 260px; height: 200px;"
-                                            src="https://www.youtube.com/embed/{{ $youtubeId }}" frameborder="0"
-                                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                                            allowfullscreen class="img-fluid lazyload"></iframe>
-                                    </div>
-                                @endif
-                            @elseif (strpos($item->media, '.jpg') !== false ||
-                                    strpos($item->media, '.jpeg') !== false ||
-                                    strpos($item->media, '.png') !== false ||
-                                    strpos($item->media, 'data:image') !== false ||
-                                    strpos($item->media, '.gif') !== false)
-                                <a href="{{ $item->media }}">
-                                    <img src="{{ $item->media }}" alt="media gambar" class="img-fluid lazyload"
-                                        style="min-width: 300px; height: 300px;">
-                                </a>
-                            @else
-                                @if (filter_var($item->media, FILTER_VALIDATE_URL))
-                                    <div>
-                                        <a href="{{ $item->media }}" target="_blank" class="btn btn-primary btn-sm">Read
-                                            Article
-                                            or
-                                            View
-                                            Material</a>
-                                    </div>
-                                @elseif($item->media_file !== null)
-                                    <a href="{{ asset('media/' . $item->media_file) }}">
-                                        <img src="{{ asset('media/' . $item->media_file) }}" alt="media gambar"
-                                            class="img-fluid lazyload" style="height: 300px;">
-                                    </a>
-                                @else
-                                @endif
-                            @endif --}}
                         </div>
                         <div class="text-left mt-4">
                             <h5 style="color: black; font-weight: bold;">{{ $item->judul }}</h5>
@@ -298,7 +294,7 @@
                         <div class="d-flex justify-content-start">
                             @if (Auth::user()->role == 'Pengamat')
                                 <div class="d-flex align-items-center me-3">
-                                    <i class="fa fa-heart" style="font-size: 1.70em; color: red;"></i>
+                                    <i class="fa fa-heart" style="font-size: 1.70em; color: grey;"></i>
                                 </div>
                                 <div class="d-flex align-items-center me-3">
                                     <a href="{{ route('comment', $item->id) }}">
@@ -306,33 +302,33 @@
                                     </a>
                                 </div>
                             @else
-                                @if ($item->liked)
-                                    <div class="d-flex align-items-center me-3">
-                                        <i class="fa fa-heart" style="font-size: 1.70em; cursor: pointer; color: red;"
-                                            onclick="return like({{ $item->id }})"></i>
-                                    </div>
-                                @else
-                                    <div class="d-flex align-items-center me-3">
-                                        <i class="fa fa-heart" style="font-size: 1.70em; cursor: pointer;"
-                                            onclick="return like({{ $item->id }})"></i>
-                                    </div>
-                                @endif
+                                <div class="d-flex align-items-center me-3">
+                                    <i class="fa fa-heart me-2 like-button" id="like-button{{ $item->id }}"
+                                        data-post-id="{{ $item->id }}"
+                                        style="font-size: 1.70rem; cursor: pointer; color: {{ Auth::user()->hasLiked($item->id) ? 'red' : 'grey' }};">
+                                    </i>
+                                    <a href="#" data-bs-toggle="modal"
+                                        data-bs-target="#menyukai{{ $item->id }}">
+                                        <span style="color: black; font-weight: bold;"
+                                            id="like-count{{ $item->id }}">{{ $item->like }}</span>
+                                    </a>
+                                </div>
                                 <div class="d-flex align-items-center me-3">
                                     <a href="{{ route('comment', $item->id) }}">
                                         <i class="fa fa-comment" style="font-size: 1.70em; color: #696cff;"></i>
                                     </a>
                                 </div>
+                                <div class="d-flex align-items-center">
+                                    <a href="{{ route('analyze', $item->id) }}" class="btn btn-sm btn-danger"
+                                        onclick="askAI()" id="buttonTanyaAI">Tanya
+                                        AI</a>
+                                    <button class="buttonload btn btn-danger" style="display: none;">
+                                        <i class="fa fa-spinner fa-spin"></i>
+                                    </button>
+                                </div>
                             @endif
                         </div>
                         <div class="text-left mt-2">
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#menyukai{{ $item->id }}">
-                                <span style="color: black; font-weight: bold;">{{ $item->like }}
-                                    suka</span>
-                            </a>
-
-                        </div>
-                        <div class="text-left mt-2">
-                            {{-- <span id="deskripsi" style="color: black;">{!! $item->deskripsi !!}</span> --}}
                             @php
                                 $fullText = $item->deskripsi;
                                 $truncated = Str::limit(strip_tags($fullText), 500, '...');
@@ -399,12 +395,24 @@
                                                         style="object-fit: cover;" />
                                                 @endif
                                             </span>
-                                            {{-- <input type="text" name="comment" id="komentar" class="form-control"
-                                                style="border-radius: 50px; margin-left: 10px;"
-                                                placeholder="Add Comments...." required> --}}
+                                            <div class="image-preview-container" id="imagePreviewContainer"
+                                                style="display: none;">
+                                                <div class="image-preview-wrapper">
+                                                    <img id="imagePreview" src="" alt="Preview">
+                                                    <button type="button" class="remove-image"
+                                                        onclick="removeImage()">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                             <textarea name="comment" class="form-control" style="border-radius: 50px; margin-left: 10px;" id="komentar"
                                                 rows="1" placeholder="Add Comments...." required></textarea>
                                         </div>
+                                        <input type="file" name="clip" id="buttonFile" hidden>
+                                        <button type="button" class="btn btn-danger btn-sm me-1"
+                                            title="PICTURE/VIDEO" style="border-radius: 50px;"
+                                            onclick="document.getElementById('buttonFile').click();"><i
+                                                class="fa fa-paperclip"></i></button>
                                         <button type="submit" class="btn btn-primary btn-sm me-2"
                                             style="border-radius: 50px;">Send</button>
                                     </form>
@@ -425,49 +433,41 @@
                                     <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
                                         <div class="row">
                                             <div class="col-md-8">
-                                                @php
-                                                    $userVotedOption = null;
-                                                    foreach ($jawaban as $a) {
-                                                        if (
-                                                            $a->id_post == $item->id &&
-                                                            $a->poll_id == $p->id &&
-                                                            $a->voted
-                                                        ) {
-                                                            $userVotedOption = $a->id;
-                                                            break;
-                                                        }
-                                                    }
-                                                @endphp
                                                 @foreach ($jawaban as $a)
                                                     @if ($a->id_post == $item->id && $a->poll_id == $p->id)
+                                                        @php
+                                                            $userVotedPoll = DB::table('answer_vote')
+                                                                ->where('nik', Auth::user()->nik)
+                                                                ->where('poll_id', $a->poll_id)
+                                                                ->exists();
+
+                                                            $userVote = DB::table('answer_vote')
+                                                                ->where('nik', Auth::user()->nik)
+                                                                ->where('poll_id', $a->poll_id)
+                                                                ->where('id_post', $a->id_post)
+                                                                ->where('id_jawaban', $a->id)
+                                                                ->exists();
+                                                        @endphp
                                                         <div
                                                             class="mb-2 d-flex justify-content-between align-items-center">
                                                             <div class="form-check">
-                                                                @if ($userVotedOption !== null)
-                                                                    <input type="radio"
-                                                                        id="option{{ $a->id }}"
-                                                                        name="poll{{ $p->id }}"
-                                                                        class="form-check-input"
-                                                                        {{ $userVotedOption == $a->id ? 'checked' : '' }}
+                                                                <input type="radio" class="form-check-input"
+                                                                    id="vote{{ $a->id }}"
+                                                                    data-answer-id="{{ $a->id }}"
+                                                                    data-poll-id="{{ $a->poll_id }}"
+                                                                    data-post-id="{{ $a->id_post }}"
+                                                                    data-answer="{{ $a->jawaban }}"
+                                                                    {{ $userVotedPoll ? 'disabled' : '' }}
+                                                                    {{ $userVote ? 'checked' : '' }}>
+                                                                @if (Auth::user()->role === 'Pengamat')
+                                                                    <input type="radio" class="form-check-input"
                                                                         disabled>
-                                                                @else
-                                                                    @if (Auth::user()->role === 'Pengamat')
-                                                                        <input type="radio"
-                                                                            id="option{{ $a->id }}"
-                                                                            name="poll{{ $p->id }}"
-                                                                            class="form-check-input" disabled>
-                                                                    @else
-                                                                        <input type="radio"
-                                                                            id="option{{ $a->id }}"
-                                                                            name="poll{{ $p->id }}"
-                                                                            class="form-check-input"
-                                                                            onclick="return vote({{ $a->id }})">
-                                                                    @endif
                                                                 @endif
-                                                                <label class="form-check-label"
-                                                                    for="option{{ $a->id }}">{{ $a->jawaban }}</label>
+                                                                <label
+                                                                    class="form-check-label">{{ $a->jawaban }}</label>
                                                             </div>
-                                                            <span class="badge bg-primary">{{ $a->value }}</span>
+                                                            <span class="badge bg-primary"
+                                                                id="vote-count{{ $a->id }}">{{ $a->value }}</span>
                                                         </div>
                                                     @endif
                                                 @endforeach
@@ -486,11 +486,6 @@
                                     @foreach ($poll as $p)
                                         @if ($p->id_post == $item->id)
                                             <div class="text-center mb-4">
-                                                {{-- <a href="#" data-bs-toggle="modal"
-                                                data-bs-target="#viewVote{{ $p->id }}"
-                                                class="btn btn-success">View
-                                                votes</a>
-                                                @include('modal.viewVote') --}}
                                                 <a href="{{ route('viewVote', $p->id) }}"
                                                     class="btn btn-success">View
                                                     votes</a>
@@ -511,6 +506,42 @@
 @push('after-script')
 <script src="{{ asset('js/jquery.jscroll.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    document.getElementById('buttonFile').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+
+            const maxSize = 5 * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert('File size should not exceed 5MB');
+                this.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewContainer = document.getElementById('imagePreviewContainer');
+                const previewImage = document.getElementById('imagePreview');
+
+                previewImage.src = e.target.result;
+                previewContainer.style.display = 'block';
+                document.getElementById('fileClick').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function removeImage() {
+        const fileInput = document.getElementById('buttonFile');
+        const previewContainer = document.getElementById('imagePreviewContainer');
+        const previewImage = document.getElementById('imagePreview');
+
+        fileInput.value = ''; // Clear file input
+        previewImage.src = ''; // Clear preview
+        previewContainer.style.display = 'none'; // Hide preview container
+        document.getElementById('fileClick').style.display = 'block';
+    }
+</script>
 <script>
     function plusSlides(n, id) {
         const container = document.getElementById(`slide-container-${id}`);
@@ -747,62 +778,81 @@
     }
 </script>
 <script>
-    function like(postId) {
-        console.log("Id Post:", postId);
-        // var scrollPosition = $(window).scrollTop();
-        $.ajax({
-            url: '/like/' + postId,
-            type: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            success: function(response) {
-                if (response.success) {
-                    console.log("Liked");
-                    window.location.reload();
-                } else {
-                    console.error("Failed Like");
-                }
-            },
-            error: function(xhr) {
-                console.error("Terjadi Kesalahan:", xhr.responseText);
+    $(document).ready(function() {
+        $('.like-button').click(function() {
+            var postId = $(this).data('post-id');
+            var icon = $(this);
+            var likeCount = $('#like-count' + postId);
+
+            if (icon.css('color') === 'rgb(255, 0, 0)') {
+                $.ajax({
+                    url: "{{ route('unlike') }}",
+                    method: 'POST',
+                    data: {
+                        id_post: postId,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        icon.css('color', 'grey');
+                        likeCount.text(parseInt(likeCount.text()) - 1);
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: "{{ route('like') }}",
+                    method: 'POST',
+                    data: {
+                        id_post: postId,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        icon.css('color', 'red');
+                        likeCount.text(parseInt(likeCount.text()) + 1);
+                    }
+                });
             }
         });
-        // $(window).on('load', function() {
-        //     $(window).scrollTop(scrollPosition);
-        // });
-        // return false;
-    }
+    });
 </script>
 <script>
-    function vote(answerId) {
-        console.log("Id Answer:", answerId);
-        var scrollPosition = $(window).scrollTop();
-        $.ajax({
-            url: '/vote/' + answerId,
-            type: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            success: function(response) {
-                if (response.success) {
-                    console.log("Voted");
-                    window.location.reload();
-                } else {
-                    console.error("Failed Vote");
-                }
-            },
-            error: function(xhr) {
-                console.error("Terjadi Kesalahan:", xhr.responseText);
+    $(document).ready(function() {
+        $('input[type="radio"].form-check-input').click(function() {
+            var answerId = $(this).data('answer-id');
+            var pollId = $(this).data('poll-id');
+            var postId = $(this).data('post-id');
+            var jawaban = $(this).data('answer');
+            var voteCount = $('#vote-count' + answerId);
+            var input = $(this);
+
+            if (input.prop('disabled')) {
+                return;
             }
+
+            $.ajax({
+                url: "{{ route('vote') }}",
+                method: 'POST',
+                data: {
+                    poll_id: pollId,
+                    id_jawaban: answerId,
+                    id_post: postId,
+                    jawaban: jawaban,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        input.prop('checked', true);
+                        voteCount.text(parseInt(voteCount.text()) + 1);
+                        $('input[type="radio"][data-poll-id="' + pollId + '"]').prop(
+                            'disabled', true);
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
         });
-        $(window).on('load', function() {
-            $(window).scrollTop(scrollPosition);
-        });
-        return false;
-    }
+    });
 </script>
-<script type="text/javascript">
+{{-- <script type="text/javascript">
     $(document).ready(function() {
         $('.comment-form').each(function() {
             var form = $(this);
@@ -831,5 +881,5 @@
             });
         });
     })
-</script>
+</script> --}}
 @endpush

@@ -96,6 +96,7 @@
         }
 
         #loader {
+            position: fixed;
             border: 12px solid #070440;
             border-radius: 50%;
             border-top: 12px solid #ffffff;
