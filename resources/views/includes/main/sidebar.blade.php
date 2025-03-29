@@ -25,19 +25,19 @@
                 <div data-i18n="Analytics">Cari</div>
             </a>
         </li>
-        {{-- <li class="menu-item {{ request()->is('chat') ? 'active' : '' }} mb-2">
-            <a href="{{ route('chat') }}" class="menu-link">
-                <i class="menu-icon fa fa-comments"></i>
-                <div data-i18n="Chat">Chat</div>
-            </a>
-        </li> --}}
         <li class="menu-item {{ request()->is('log*') ? 'active' : '' }} mb-2">
             <a href="{{ route('log') }}" class="menu-link">
                 <i class="menu-icon fa fa-clock-rotate-left"></i>
                 <div data-i18n="LogHistory">Log History</div>
             </a>
         </li>
-        @if (Auth::user()->role === 'Admin' || Auth::user()->role === 'Anonymous')
+        <li class="menu-item {{ request()->is('analysis*') ? 'active' : '' }} mb-2">
+            <a href="{{ route('analysis') }}" class="menu-link">
+                <i class="menu-icon fa fa-chart-simple"></i>
+                <div data-i18n="Analytics">Analysis</div>
+            </a>
+        </li>
+        @if (Auth::user()->role === 'User' || Auth::user()->role === 'Anonymous')
             <li
                 class="menu-item {{ request()->is('post*') ? 'active' : '' }} {{ request()->is('polling/create*') ? 'active' : '' }} mb-2">
                 <a href="{{ route('post') }}" class="menu-link">
@@ -46,13 +46,14 @@
                 </a>
             </li>
         @endif
-        <li class="menu-item {{ request()->is('analysis*') ? 'active' : '' }} mb-2">
-            <a href="{{ route('analysis') }}" class="menu-link">
-                <i class="menu-icon fa fa-chart-simple"></i>
-                <div data-i18n="Analytics">Analysis</div>
-            </a>
-        </li>
         @if (Auth::user()->role === 'Admin')
+            <li
+                class="menu-item {{ request()->is('post*') ? 'active' : '' }} {{ request()->is('polling/create*') ? 'active' : '' }} mb-2">
+                <a href="{{ route('post') }}" class="menu-link">
+                    <i class="menu-icon fa fa-square-plus"></i>
+                    <div data-i18n="Analytics">Buat</div>
+                </a>
+            </li>
             <li class="menu-item {{ request()->is('user*') ? 'active' : '' }} mb-2">
                 <a href="{{ route('user') }}" class="menu-link">
                     <i class="menu-icon fa fa-users"></i>

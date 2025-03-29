@@ -157,7 +157,28 @@
                             <span>Profile</span>
                         </a>
                     @endif
-                    @if (Auth::user()->role === 'User' || Auth::user()->role === 'Pengamat')
+                    @if (Auth::user()->role === 'User' || Auth::user()->role === 'Anonymous')
+                        <a href="{{ route('beranda') }}"
+                            class="nav-item {{ request()->is('beranda') ? 'active' : '' }}">
+                            <i class="fa fa-home"></i>
+                            <span>Beranda</span>
+                        </a>
+                        <a href="{{ route('analysis') }}"
+                            class="nav-item {{ request()->is('analysis') ? 'active' : '' }}">
+                            <i class="fa fa-chart-simple"></i>
+                            <span>Analysis</span>
+                        </a>
+                        <a href="{{ route('post') }}" class="nav-item {{ request()->is('post') ? 'active' : '' }}">
+                            <i class="fa fa-square-plus"></i>
+                            <span>Buat</span>
+                        </a>
+                        <a href="{{ route('profile') }}"
+                            class="nav-item {{ request()->is('profile') ? 'active' : '' }}">
+                            <i class="fa fa-user-pen"></i>
+                            <span>Profile</span>
+                        </a>
+                    @endif
+                    @if (Auth::user()->role === 'Pengamat')
                         <a href="{{ route('beranda') }}"
                             class="nav-item {{ request()->is('beranda') ? 'active' : '' }}">
                             <i class="fa fa-home"></i>

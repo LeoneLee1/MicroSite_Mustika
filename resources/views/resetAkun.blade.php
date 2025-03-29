@@ -46,7 +46,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="Password" class="form-label">NO HP</label>
-                            <input type="password" name="no_hp" id="Password" class="form-control mb-1"
+                            <input type="number" name="no_hp" id="Password" class="form-control mb-1"
                                 placeholder="08662123123" required>
                         </div>
                         <button type="submit" class="btn btn-primary me-1">Reset</button>

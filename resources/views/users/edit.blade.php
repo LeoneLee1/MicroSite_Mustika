@@ -22,7 +22,7 @@
                                 class="form-control" placeholder="NIK">
                         </div>
                         <div class="mb-3">
-                            <label for="Nik" class="form-label">NIK</label>
+                            <label for="Nik" class="form-label">Nomor Hp</label>
                             <input type="number" name="no_hp" value="{{ $data->no_hp }}" id="Nik"
                                 class="form-control" placeholder="0822812381">
                         </div>
