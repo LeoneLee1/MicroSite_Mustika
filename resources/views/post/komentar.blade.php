@@ -174,10 +174,10 @@
                                         data-comment-text="{{ $row->comment }}"
                                         style="font-size: 17px; cursor: pointer; color: {{ Auth::user()->hasLikedComment($row->id) ? 'red' : 'grey' }};">
                                     </i>
-                                    @if (Auth::user()->nik == 'daniel.it')
+                                    {{-- @if (Auth::user()->nik == 'daniel.it')
                                         <a href="{{ route('comment.delete', $row->id) }}" class="btn btn-sm btn-danger"
                                             onclick="return DeleteComment()"><i class="fa fa-trash"></i></a>
-                                    @endif
+                                    @endif --}}
                                 </div>
                             </div>
                             <div class="text-left mb-3" style="margin-left: 40px;">
@@ -228,10 +228,10 @@
                                         data-comment-text="{{ $row->comment }}"
                                         style="font-size: 17px; cursor: pointer; color: {{ Auth::user()->hasLikedComment($row->id) ? 'red' : 'grey' }};">
                                     </i>
-                                    @if (Auth::user()->nik == 'daniel.it')
+                                    {{-- @if (Auth::user()->nik == 'daniel.it')
                                         <a href="{{ route('comment.delete', $row->id) }}" class="btn btn-sm btn-danger"
                                             onclick="return DeleteComment()"><i class="fa fa-trash"></i></a>
-                                    @endif
+                                    @endif --}}
                                 </div>
                             </div>
                             <div class="text-left mb-3" style="margin-left: 40px;">

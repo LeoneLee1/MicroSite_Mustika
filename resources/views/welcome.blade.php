@@ -242,157 +242,157 @@
                                                 </span>{{ $k->comment }}
                                             </div>
                                         @else
-                                        @break
+                                            @break
+                                        @endif
                                     @endif
-                                @endif
-                            @endforeach
-                            @if (Auth::user()->role == 'Pengamat')
-                            @else
-                                <div class="mt-2">
-                                    <div class="d-flex justify-content-start">
-                                        <form method="POST" action="{{ route('comment.insert') }}"
-                                            enctype="multipart/form-data"
-                                            class="d-flex align-items-left w-100 comment-form">
-                                            @csrf
-                                            <input type="hidden" name="nik" value="{{ Auth::user()->nik }}">
-                                            <input type="hidden" name="id_post" value="{{ $item->id }}">
-                                            <div class="input-group me-2" style="flex: 1;">
-                                                <span class="input-group-text bg-white border-0 p-0"
-                                                    id="basic-addon1">
-                                                    @if (Auth::user()->foto == '' || null)
-                                                        <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
-                                                            alt="User Avatar"
-                                                            class="w-px-40 h-auto rounded-circle lazyload"
-                                                            style="object-fit: cover;" />
-                                                    @else
-                                                        <img src="{{ asset('img/foto/' . Auth::user()->foto) }}"
-                                                            alt="User Avatar"
-                                                            class="w-px-40 h-auto rounded-circle lazyload"
-                                                            style="object-fit: cover;" />
-                                                    @endif
-                                                </span>
-                                                <div class="image-preview-container"
-                                                    id="imagePreviewContainer_{{ $item->id }}"
-                                                    style="display: none;">
-                                                    <div class="image-preview-wrapper">
-                                                        <img id="imagePreview_{{ $item->id }}" src=""
-                                                            alt="Preview">
-                                                        <button type="button" class="remove-image"
-                                                            onclick="removeImage({{ $item->id }})">
-                                                            <i class="fas fa-times"></i>
-                                                        </button>
+                                @endforeach
+                                @if (Auth::user()->role == 'Pengamat')
+                                @else
+                                    <div class="mt-2">
+                                        <div class="d-flex justify-content-start">
+                                            <form method="POST" action="{{ route('comment.insert') }}"
+                                                enctype="multipart/form-data"
+                                                class="d-flex align-items-left w-100 comment-form">
+                                                @csrf
+                                                <input type="hidden" name="nik" value="{{ Auth::user()->nik }}">
+                                                <input type="hidden" name="id_post" value="{{ $item->id }}">
+                                                <div class="input-group me-2" style="flex: 1;">
+                                                    <span class="input-group-text bg-white border-0 p-0"
+                                                        id="basic-addon1">
+                                                        @if (Auth::user()->foto == '' || null)
+                                                            <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
+                                                                alt="User Avatar"
+                                                                class="w-px-40 h-auto rounded-circle lazyload"
+                                                                style="object-fit: cover;" />
+                                                        @else
+                                                            <img src="{{ asset('img/foto/' . Auth::user()->foto) }}"
+                                                                alt="User Avatar"
+                                                                class="w-px-40 h-auto rounded-circle lazyload"
+                                                                style="object-fit: cover;" />
+                                                        @endif
+                                                    </span>
+                                                    <div class="image-preview-container"
+                                                        id="imagePreviewContainer_{{ $item->id }}"
+                                                        style="display: none;">
+                                                        <div class="image-preview-wrapper">
+                                                            <img id="imagePreview_{{ $item->id }}" src=""
+                                                                alt="Preview">
+                                                            <button type="button" class="remove-image"
+                                                                onclick="removeImage({{ $item->id }})">
+                                                                <i class="fas fa-times"></i>
+                                                            </button>
+                                                        </div>
                                                     </div>
+                                                    <textarea name="comment" class="form-control" style="border-radius: 50px; margin-left: 10px;" id="komentar"
+                                                        rows="1" placeholder="Add Comments...." required></textarea>
                                                 </div>
-                                                <textarea name="comment" class="form-control" style="border-radius: 50px; margin-left: 10px;" id="komentar"
-                                                    rows="1" placeholder="Add Comments...." required></textarea>
-                                            </div>
-                                            <input type="file" name="clip" id="buttonFile_{{ $item->id }}"
-                                                hidden>
-                                            <button type="button" class="btn btn-danger btn-sm me-1"
-                                                title="PICTURE/VIDEO" style="border-radius: 50px;"
-                                                onclick="document.getElementById('buttonFile_{{ $item->id }}').click();"><i
-                                                    class="fa fa-paperclip"></i></button>
-                                            <button type="submit" class="btn btn-primary btn-sm me-2"
-                                                style="border-radius: 50px;">Send</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            @endif
-                            <div class="mt-3">
-                                <small>{{ \Carbon\Carbon::parse($item->time_post)->format('d M Y') }}</small>
-                            </div>
-                            <div class="mt-4">
-                                @foreach ($poll as $p)
-                                    @if ($p->id_post == $item->id)
-                                        <div class="text-center mb-4">
-                                            <h4 style="font-weight: bold; color: black;">
-                                                {{ $p->soal }}
-                                            </h4>
+                                                <input type="file" name="clip" id="buttonFile_{{ $item->id }}"
+                                                    hidden>
+                                                <button type="button" class="btn btn-danger btn-sm me-1"
+                                                    title="PICTURE/VIDEO" style="border-radius: 50px;"
+                                                    onclick="document.getElementById('buttonFile_{{ $item->id }}').click();"><i
+                                                        class="fa fa-paperclip"></i></button>
+                                                <button type="submit" class="btn btn-primary btn-sm me-2"
+                                                    style="border-radius: 50px;">Send</button>
+                                            </form>
                                         </div>
-                                        <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
-                                            <div class="row">
-                                                <div class="col-md-8">
-                                                    @foreach ($jawaban as $a)
-                                                        @if ($a->id_post == $item->id && $a->poll_id == $p->id)
-                                                            @php
-                                                                $userVotedPoll = DB::table('answer_vote')
-                                                                    ->where('nik', Auth::user()->nik)
-                                                                    ->where('poll_id', $a->poll_id)
-                                                                    ->exists();
+                                    </div>
+                                @endif
+                                <div class="mt-3">
+                                    <small>{{ \Carbon\Carbon::parse($item->time_post)->format('d M Y') }}</small>
+                                </div>
+                                <div class="mt-4">
+                                    @foreach ($poll as $p)
+                                        @if ($p->id_post == $item->id)
+                                            <div class="text-center mb-4">
+                                                <h4 style="font-weight: bold; color: black;">
+                                                    {{ $p->soal }}
+                                                </h4>
+                                            </div>
+                                            <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        @foreach ($jawaban as $a)
+                                                            @if ($a->id_post == $item->id && $a->poll_id == $p->id)
+                                                                @php
+                                                                    $userVotedPoll = DB::table('answer_vote')
+                                                                        ->where('nik', Auth::user()->nik)
+                                                                        ->where('poll_id', $a->poll_id)
+                                                                        ->exists();
 
-                                                                $userVote = DB::table('answer_vote')
-                                                                    ->where('nik', Auth::user()->nik)
-                                                                    ->where('poll_id', $a->poll_id)
-                                                                    ->where('id_post', $a->id_post)
-                                                                    ->where('id_jawaban', $a->id)
-                                                                    ->exists();
-                                                            @endphp
-                                                            <div
-                                                                class="mb-2 d-flex justify-content-between align-items-center">
-                                                                <div class="form-check">
-                                                                    <input type="radio" class="form-check-input"
-                                                                        id="vote{{ $a->id }}"
-                                                                        data-answer-id="{{ $a->id }}"
-                                                                        data-poll-id="{{ $a->poll_id }}"
-                                                                        data-post-id="{{ $a->id_post }}"
-                                                                        data-answer="{{ $a->jawaban }}"
-                                                                        {{ $userVotedPoll ? 'disabled' : '' }}
-                                                                        {{ $userVote ? 'checked' : '' }}>
-                                                                    @if (Auth::user()->role === 'Pengamat')
+                                                                    $userVote = DB::table('answer_vote')
+                                                                        ->where('nik', Auth::user()->nik)
+                                                                        ->where('poll_id', $a->poll_id)
+                                                                        ->where('id_post', $a->id_post)
+                                                                        ->where('id_jawaban', $a->id)
+                                                                        ->exists();
+                                                                @endphp
+                                                                <div
+                                                                    class="mb-2 d-flex justify-content-between align-items-center">
+                                                                    <div class="form-check">
                                                                         <input type="radio" class="form-check-input"
-                                                                            disabled>
-                                                                    @endif
-                                                                    <label
-                                                                        class="form-check-label">{{ $a->jawaban }}</label>
+                                                                            id="vote{{ $a->id }}"
+                                                                            data-answer-id="{{ $a->id }}"
+                                                                            data-poll-id="{{ $a->poll_id }}"
+                                                                            data-post-id="{{ $a->id_post }}"
+                                                                            data-answer="{{ $a->jawaban }}"
+                                                                            {{ $userVotedPoll ? 'disabled' : '' }}
+                                                                            {{ $userVote ? 'checked' : '' }}>
+                                                                        @if (Auth::user()->role === 'Pengamat')
+                                                                            <input type="radio" class="form-check-input"
+                                                                                disabled>
+                                                                        @endif
+                                                                        <label
+                                                                            class="form-check-label">{{ $a->jawaban }}</label>
+                                                                    </div>
+                                                                    <span class="badge bg-primary"
+                                                                        id="vote-count{{ $a->id }}">{{ $a->value }}</span>
                                                                 </div>
-                                                                <span class="badge bg-primary"
-                                                                    id="vote-count{{ $a->id }}">{{ $a->value }}</span>
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                    @foreach ($poll as $p)
+                                                        @if ($p->id_post == $item->id)
+                                                            <div class="col-md-4">
+                                                                <div style="position: relative; height:250px; width:100%;">
+                                                                    <canvas id="myChart{{ $p->id }}"></canvas>
+                                                                </div>
                                                             </div>
                                                         @endif
                                                     @endforeach
                                                 </div>
-                                                @foreach ($poll as $p)
-                                                    @if ($p->id_post == $item->id)
-                                                        <div class="col-md-4">
-                                                            <div style="position: relative; height:250px; width:100%;">
-                                                                <canvas id="myChart{{ $p->id }}"></canvas>
-                                                            </div>
-                                                        </div>
-                                                    @endif
-                                                @endforeach
                                             </div>
-                                        </div>
-                                        @foreach ($poll as $p)
-                                            @if ($p->id_post == $item->id)
-                                                <div class="text-center mb-4">
-                                                    <a href="{{ route('viewVote', $p->id) }}"
-                                                        class="btn btn-success">View
-                                                        votes</a>
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    @endif
-                                @endforeach
+                                            @foreach ($poll as $p)
+                                                @if ($p->id_post == $item->id)
+                                                    <div class="text-center mb-4">
+                                                        <a href="{{ route('viewVote', $p->id) }}"
+                                                            class="btn btn-success">View
+                                                            votes</a>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        @endif
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        @endforeach
-        <div class="d-flex justify-content-center mt-3">
-            <div class="card" style="width: 55rem;">
-                <div class="card-body">
-                    {{ $post->links('pagination::bootstrap-4') }}
+            @endforeach
+            <div class="d-flex justify-content-center mt-3">
+                <div class="card" style="width: 55rem;">
+                    <div class="card-body">
+                        {{ $post->links('pagination::bootstrap-4') }}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="d-block d-sm-none">
-        <button id="refreshButton" class="refresh-button"data-bs-toggle="modal" data-bs-target="#searchPost"><i
-                class="fa fa-search"></i></button>
-    </div>
-@endsection
+        <div class="d-block d-sm-none">
+            <button id="refreshButton" class="refresh-button"data-bs-toggle="modal" data-bs-target="#searchPost"><i
+                    class="fa fa-search"></i></button>
+        </div>
+    @endsection
 
-@push('after-script')
-    @include('components.beranda.script')
-@endpush
+    @push('after-script')
+        @include('components.beranda.script')
+    @endpush
