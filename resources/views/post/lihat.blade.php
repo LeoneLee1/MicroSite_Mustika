@@ -367,492 +367,483 @@
                                             </span>{{ $k->comment }}
                                         </div>
                                     @else
-                                    @break
-                                @endif
-                            @endif
-                        @endforeach
-                        @if (Auth::user()->role == 'Pengamat')
-                        @else
-                            <div class="mt-2">
-                                <div class="d-flex justify-content-start">
-                                    <form method="POST" action="{{ route('comment.insert') }}"
-                                        enctype="multipart/form-data"
-                                        class="d-flex align-items-left w-100 comment-form">
-                                        @csrf
-                                        <input type="hidden" name="nik" value="{{ Auth::user()->nik }}">
-                                        <input type="hidden" name="id_post" value="{{ $item->id }}">
-                                        <div class="input-group me-2" style="flex: 1;">
-                                            <span class="input-group-text bg-white border-0 p-0" id="basic-addon1">
-                                                @if (Auth::user()->foto == '' || null)
-                                                    <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
-                                                        alt="User Avatar"
-                                                        class="w-px-40 h-auto rounded-circle lazyload"
-                                                        style="object-fit: cover;" />
-                                                @else
-                                                    <img src="{{ asset('img/foto/' . Auth::user()->foto) }}"
-                                                        alt="User Avatar"
-                                                        class="w-px-40 h-auto rounded-circle lazyload"
-                                                        style="object-fit: cover;" />
-                                                @endif
-                                            </span>
-                                            <div class="image-preview-container" id="imagePreviewContainer"
-                                                style="display: none;">
-                                                <div class="image-preview-wrapper">
-                                                    <img id="imagePreview" src="" alt="Preview">
-                                                    <button type="button" class="remove-image"
-                                                        onclick="removeImage()">
-                                                        <i class="fas fa-times"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <textarea name="comment" class="form-control" style="border-radius: 50px; margin-left: 10px;" id="komentar"
-                                                rows="1" placeholder="Add Comments...." required></textarea>
-                                        </div>
-                                        <input type="file" name="clip" id="buttonFile" hidden>
-                                        <button type="button" class="btn btn-danger btn-sm me-1"
-                                            title="PICTURE/VIDEO" style="border-radius: 50px;"
-                                            onclick="document.getElementById('buttonFile').click();"><i
-                                                class="fa fa-paperclip"></i></button>
-                                        <button type="submit" class="btn btn-primary btn-sm me-2"
-                                            style="border-radius: 50px;">Send</button>
-                                    </form>
-                                </div>
-                            </div>
-                        @endif
-                        <div class="mt-3">
-                            <small>{{ \Carbon\Carbon::parse($item->time_post)->format('d M Y') }}</small>
-                        </div>
-                        <div class="mt-4">
-                            @foreach ($poll as $p)
-                                @if ($p->id_post == $item->id)
-                                    <div class="text-center mb-4">
-                                        <h4 style="font-weight: bold; color: black;">
-                                            {{ $p->soal }}
-                                        </h4>
-                                    </div>
-                                    <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                                @foreach ($jawaban as $a)
-                                                    @if ($a->id_post == $item->id && $a->poll_id == $p->id)
-                                                        @php
-                                                            $userVotedPoll = DB::table('answer_vote')
-                                                                ->where('nik', Auth::user()->nik)
-                                                                ->where('poll_id', $a->poll_id)
-                                                                ->exists();
-
-                                                            $userVote = DB::table('answer_vote')
-                                                                ->where('nik', Auth::user()->nik)
-                                                                ->where('poll_id', $a->poll_id)
-                                                                ->where('id_post', $a->id_post)
-                                                                ->where('id_jawaban', $a->id)
-                                                                ->exists();
-                                                        @endphp
-                                                        <div
-                                                            class="mb-2 d-flex justify-content-between align-items-center">
-                                                            <div class="form-check">
-                                                                <input type="radio" class="form-check-input"
-                                                                    id="vote{{ $a->id }}"
-                                                                    data-answer-id="{{ $a->id }}"
-                                                                    data-poll-id="{{ $a->poll_id }}"
-                                                                    data-post-id="{{ $a->id_post }}"
-                                                                    data-answer="{{ $a->jawaban }}"
-                                                                    {{ $userVotedPoll ? 'disabled' : '' }}
-                                                                    {{ $userVote ? 'checked' : '' }}>
-                                                                @if (Auth::user()->role === 'Pengamat')
-                                                                    <input type="radio" class="form-check-input"
-                                                                        disabled>
-                                                                @endif
-                                                                <label
-                                                                    class="form-check-label">{{ $a->jawaban }}</label>
-                                                            </div>
-                                                            <span class="badge bg-primary"
-                                                                id="vote-count{{ $a->id }}">{{ $a->value }}</span>
-                                                        </div>
-                                                    @endif
-                                                @endforeach
-                                            </div>
-                                            @foreach ($poll as $p)
-                                                @if ($p->id_post == $item->id)
-                                                    <div class="col-md-4">
-                                                        <div style="position: relative; height:250px; width:100%;">
-                                                            <canvas id="myChart{{ $p->id }}"></canvas>
-                                                        </div>
-                                                    </div>
-                                                @endif
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                    @foreach ($poll as $p)
-                                        @if ($p->id_post == $item->id)
-                                            <div class="text-center mb-4">
-                                                <a href="{{ route('viewVote', $p->id) }}"
-                                                    class="btn btn-success">View
-                                                    votes</a>
-                                            </div>
-                                        @endif
-                                    @endforeach
+                                        @break
+                                    @endif
                                 @endif
                             @endforeach
+                            @if (Auth::user()->role == 'Pengamat')
+                            @else
+                                <div class="mt-2">
+                                    <div class="d-flex justify-content-start">
+                                        <form method="POST" action="{{ route('comment.insert') }}"
+                                            enctype="multipart/form-data"
+                                            class="d-flex align-items-left w-100 comment-form">
+                                            @csrf
+                                            <input type="hidden" name="nik" value="{{ Auth::user()->nik }}">
+                                            <input type="hidden" name="id_post" value="{{ $item->id }}">
+                                            <div class="input-group me-2" style="flex: 1;">
+                                                <span class="input-group-text bg-white border-0 p-0" id="basic-addon1">
+                                                    @if (Auth::user()->foto == '' || null)
+                                                        <img src="{{ url('https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg') }}"
+                                                            alt="User Avatar"
+                                                            class="w-px-40 h-auto rounded-circle lazyload"
+                                                            style="object-fit: cover;" />
+                                                    @else
+                                                        <img src="{{ asset('img/foto/' . Auth::user()->foto) }}"
+                                                            alt="User Avatar"
+                                                            class="w-px-40 h-auto rounded-circle lazyload"
+                                                            style="object-fit: cover;" />
+                                                    @endif
+                                                </span>
+                                                <div class="image-preview-container" id="imagePreviewContainer"
+                                                    style="display: none;">
+                                                    <div class="image-preview-wrapper">
+                                                        <img id="imagePreview" src="" alt="Preview">
+                                                        <button type="button" class="remove-image"
+                                                            onclick="removeImage()">
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <textarea name="comment" class="form-control" style="border-radius: 50px; margin-left: 10px;" id="komentar"
+                                                    rows="1" placeholder="Add Comments...." required></textarea>
+                                            </div>
+                                            <input type="file" name="clip" id="buttonFile" hidden>
+                                            <button type="button" class="btn btn-danger btn-sm me-1"
+                                                title="PICTURE/VIDEO" style="border-radius: 50px;"
+                                                onclick="document.getElementById('buttonFile').click();"><i
+                                                    class="fa fa-paperclip"></i></button>
+                                            <button type="submit" class="btn btn-primary btn-sm me-2"
+                                                style="border-radius: 50px;">Send</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            @endif
+                            <div class="mt-3">
+                                <small>{{ \Carbon\Carbon::parse($item->time_post)->format('d M Y') }}</small>
+                            </div>
+                            <div class="mt-4">
+                                @foreach ($poll as $p)
+                                    @if ($p->id_post == $item->id)
+                                        <div class="text-center mb-4">
+                                            <h4 style="font-weight: bold; color: black;">
+                                                {{ $p->soal }}
+                                            </h4>
+                                        </div>
+                                        <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    @foreach ($jawaban as $a)
+                                                        @if ($a->id_post == $item->id && $a->poll_id == $p->id)
+                                                            @php
+                                                                $userVotedPoll = DB::table('answer_vote')
+                                                                    ->where('nik', Auth::user()->nik)
+                                                                    ->where('poll_id', $a->poll_id)
+                                                                    ->exists();
+
+                                                                $userVote = DB::table('answer_vote')
+                                                                    ->where('nik', Auth::user()->nik)
+                                                                    ->where('poll_id', $a->poll_id)
+                                                                    ->where('id_post', $a->id_post)
+                                                                    ->where('id_jawaban', $a->id)
+                                                                    ->exists();
+                                                            @endphp
+                                                            <div
+                                                                class="mb-2 d-flex justify-content-between align-items-center">
+                                                                <div class="form-check">
+                                                                    <input type="radio" class="form-check-input"
+                                                                        id="vote{{ $a->id }}"
+                                                                        data-answer-id="{{ $a->id }}"
+                                                                        data-poll-id="{{ $a->poll_id }}"
+                                                                        data-post-id="{{ $a->id_post }}"
+                                                                        data-answer="{{ $a->jawaban }}"
+                                                                        {{ $userVotedPoll ? 'disabled' : '' }}
+                                                                        {{ $userVote ? 'checked' : '' }}>
+                                                                    @if (Auth::user()->role === 'Pengamat')
+                                                                        <input type="radio" class="form-check-input"
+                                                                            disabled>
+                                                                    @endif
+                                                                    <label
+                                                                        class="form-check-label">{{ $a->jawaban }}</label>
+                                                                </div>
+                                                                <span class="badge bg-primary"
+                                                                    id="vote-count{{ $a->id }}">{{ $a->value }}</span>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div style="position: relative; height:250px; width:100%;">
+                                                        <canvas id="myChart{{ $p->id }}"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="text-center mb-4">
+                                            <a href="{{ route('viewVote', $p->id) }}" class="btn btn-success">View
+                                                votes</a>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    @endforeach
-</div>
+        @endforeach
+    </div>
 @endsection
 
 @push('after-script')
-<script src="{{ asset('js/jquery.jscroll.min.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script>
-    document.getElementById('buttonFile').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
+    <script src="{{ asset('js/jquery.jscroll.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.getElementById('buttonFile').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
 
-            const maxSize = 5 * 1024 * 1024;
-            if (file.size > maxSize) {
-                alert('File size should not exceed 5MB');
-                this.value = '';
+                const maxSize = 5 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    alert('File size should not exceed 5MB');
+                    this.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewContainer = document.getElementById('imagePreviewContainer');
+                    const previewImage = document.getElementById('imagePreview');
+
+                    previewImage.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                    document.getElementById('fileClick').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function removeImage() {
+            const fileInput = document.getElementById('buttonFile');
+            const previewContainer = document.getElementById('imagePreviewContainer');
+            const previewImage = document.getElementById('imagePreview');
+
+            fileInput.value = ''; // Clear file input
+            previewImage.src = ''; // Clear preview
+            previewContainer.style.display = 'none'; // Hide preview container
+            document.getElementById('fileClick').style.display = 'block';
+        }
+    </script>
+    <script>
+        function plusSlides(n, id) {
+            const container = document.getElementById(`slide-container-${id}`);
+            const slides = container.querySelectorAll(`[data-slide-id="${id}"]`);
+            let slideIndex = parseInt(container.getAttribute("data-slide-index")) || 1;
+
+            slideIndex += n;
+            if (slideIndex > slides.length) {
+                slideIndex = 1;
+            }
+            if (slideIndex < 1) {
+                slideIndex = slides.length;
+            }
+
+            container.setAttribute("data-slide-index", slideIndex);
+
+            slides.forEach((slide) => (slide.style.display = "none"));
+            slides[slideIndex - 1].style.display = "block";
+        }
+
+        document.querySelectorAll(".slide-container").forEach((container) => {
+            container.setAttribute("data-slide-index", 1);
+            const slides = container.querySelectorAll(`[data-slide-id]`);
+            if (slides.length > 0) slides[0].style.display = "block";
+            const prev = container.querySelector(".prev");
+            const next = container.querySelector(".next");
+            if (slides.length <= 1) {
+                if (prev) prev.style.display = "none";
+                if (next) next.style.display = "none";
+            }
+        });
+    </script>
+    <script>
+        function toggleText(uniqueId) {
+            const shortText = document.getElementById('shortText-' + uniqueId);
+            const fullText = document.getElementById('fullText-' + uniqueId);
+            const readMoreBtn = document.getElementById('readMoreBtn-' + uniqueId);
+
+            if (shortText.style.display === 'none') {
+                shortText.style.display = 'block';
+                fullText.style.display = 'none';
+                readMoreBtn.textContent = 'Baca Selengkapnya';
+            } else {
+                shortText.style.display = 'none';
+                fullText.style.display = 'block';
+                readMoreBtn.textContent = 'Lebih Sedikit';
+            }
+        }
+    </script>
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        searchInput.addEventListener('input', debounce(function() {
+            const searchTerm = this.value.trim();
+
+            if (searchTerm === '') {
+                searchResults.innerHTML = '';
                 return;
             }
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const previewContainer = document.getElementById('imagePreviewContainer');
-                const previewImage = document.getElementById('imagePreview');
+            axios.get('/search', {
+                    params: {
+                        query: searchTerm
+                    }
+                })
+                .then(response => {
+                    displayResults(response.data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }, 300));
 
-                previewImage.src = e.target.result;
-                previewContainer.style.display = 'block';
-                document.getElementById('fileClick').style.display = 'none';
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    function removeImage() {
-        const fileInput = document.getElementById('buttonFile');
-        const previewContainer = document.getElementById('imagePreviewContainer');
-        const previewImage = document.getElementById('imagePreview');
-
-        fileInput.value = ''; // Clear file input
-        previewImage.src = ''; // Clear preview
-        previewContainer.style.display = 'none'; // Hide preview container
-        document.getElementById('fileClick').style.display = 'block';
-    }
-</script>
-<script>
-    function plusSlides(n, id) {
-        const container = document.getElementById(`slide-container-${id}`);
-        const slides = container.querySelectorAll(`[data-slide-id="${id}"]`);
-        let slideIndex = parseInt(container.getAttribute("data-slide-index")) || 1;
-
-        slideIndex += n;
-        if (slideIndex > slides.length) {
-            slideIndex = 1;
-        }
-        if (slideIndex < 1) {
-            slideIndex = slides.length;
-        }
-
-        container.setAttribute("data-slide-index", slideIndex);
-
-        slides.forEach((slide) => (slide.style.display = "none"));
-        slides[slideIndex - 1].style.display = "block";
-    }
-
-    document.querySelectorAll(".slide-container").forEach((container) => {
-        container.setAttribute("data-slide-index", 1);
-        const slides = container.querySelectorAll(`[data-slide-id]`);
-        if (slides.length > 0) slides[0].style.display = "block";
-        const prev = container.querySelector(".prev");
-        const next = container.querySelector(".next");
-        if (slides.length <= 1) {
-            if (prev) prev.style.display = "none";
-            if (next) next.style.display = "none";
-        }
-    });
-</script>
-<script>
-    function toggleText(uniqueId) {
-        const shortText = document.getElementById('shortText-' + uniqueId);
-        const fullText = document.getElementById('fullText-' + uniqueId);
-        const readMoreBtn = document.getElementById('readMoreBtn-' + uniqueId);
-
-        if (shortText.style.display === 'none') {
-            shortText.style.display = 'block';
-            fullText.style.display = 'none';
-            readMoreBtn.textContent = 'Baca Selengkapnya';
-        } else {
-            shortText.style.display = 'none';
-            fullText.style.display = 'block';
-            readMoreBtn.textContent = 'Lebih Sedikit';
-        }
-    }
-</script>
-<script>
-    const searchInput = document.getElementById('searchInput');
-    const searchResults = document.getElementById('searchResults');
-
-    searchInput.addEventListener('input', debounce(function() {
-        const searchTerm = this.value.trim();
-
-        if (searchTerm === '') {
+        function displayResults(results) {
             searchResults.innerHTML = '';
-            return;
-        }
-
-        axios.get('/search', {
-                params: {
-                    query: searchTerm
-                }
-            })
-            .then(response => {
-                displayResults(response.data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }, 300));
-
-    function displayResults(results) {
-        searchResults.innerHTML = '';
-        if (results.length === 0) {
-            searchResults.innerHTML = '<p>No results found.</p>';
-        } else {
-            const ul = document.createElement('ul');
-            ul.className = 'list-unstyled';
-            results.forEach(post => {
-                const li = document.createElement('li');
-                li.className = 'mb-2';
-                li.innerHTML = `
+            if (results.length === 0) {
+                searchResults.innerHTML = '<p>No results found.</p>';
+            } else {
+                const ul = document.createElement('ul');
+                ul.className = 'list-unstyled';
+                results.forEach(post => {
+                    const li = document.createElement('li');
+                    li.className = 'mb-2';
+                    li.innerHTML = `
                 <a href="/post/lihat/${post.id}" class="text-decoration-none">
                     <strong>${post.judul}</strong>
                     <br>
                     <small>${post.deskripsi.substring(0, 100)}...</small>
                 </a>
             `;
-                ul.appendChild(li);
-            });
-            searchResults.appendChild(ul);
-        }
-    }
-
-    function debounce(func, delay) {
-        let debounceTimer;
-        return function() {
-            const context = this;
-            const args = arguments;
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => func.apply(context, args), delay);
-        }
-    }
-
-    // Tambahkan event listener untuk menutup modal saat link diklik
-    document.addEventListener('click', function(event) {
-        if (event.target.closest('#searchResults a')) {
-            $('#searchPost').modal('hide');
-        }
-    });
-</script>
-
-<script type="text/javascript">
-    function initializeCharts() {
-        const polling = @json($polling);
-
-        const groupedPolling = polling.reduce((acc, item) => {
-            if (!acc[item.poll_id]) {
-                acc[item.poll_id] = [];
+                    ul.appendChild(li);
+                });
+                searchResults.appendChild(ul);
             }
-            acc[item.poll_id].push(item);
-            return acc;
-        }, {});
-
-        function truncateLabel(label, maxLength = 15) {
-            return label.length > maxLength ? label.slice(0, maxLength) + '...' : label;
         }
 
-        Chart.register(ChartDataLabels);
+        function debounce(func, delay) {
+            let debounceTimer;
+            return function() {
+                const context = this;
+                const args = arguments;
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => func.apply(context, args), delay);
+            }
+        }
 
-        Object.entries(groupedPolling).forEach(([pollId, items]) => {
-            const xValues = items.map(item => item.jawaban);
-            const yValues = items.map(item => item.value);
-            const truncatedLabels = xValues.map(label => truncateLabel(label));
-            const barColors = [
-                "#3498db", "#2ecc71", "#e74c3c", "#f39c12", "#9b59b6",
-                "#1abc9c", "#d35400", "#34495e", "#16a085", "#2980b9"
-            ];
+        // Tambahkan event listener untuk menutup modal saat link diklik
+        document.addEventListener('click', function(event) {
+            if (event.target.closest('#searchResults a')) {
+                $('#searchPost').modal('hide');
+            }
+        });
+    </script>
 
-            const canvasId = "myChart" + pollId;
-            const canvasElement = document.getElementById(canvasId);
+    <script type="text/javascript">
+        function initializeCharts() {
+            const polling = @json($polling);
 
-            if (canvasElement) {
-                new Chart(canvasElement, {
-                    type: "pie",
-                    data: {
-                        labels: xValues,
-                        datasets: [{
-                            backgroundColor: barColors.slice(0, xValues.length),
-                            data: yValues
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        const label = context.label || '';
-                                        const value = context.parsed || 0;
-                                        const dataset = context.dataset;
-                                        const total = dataset.data.reduce((acc, data) => acc + data,
-                                            0);
-                                        const percentage = ((value / total) * 100).toFixed(1);
-                                        return `${label}: ${value} (${percentage}%)`;
-                                    }
-                                }
-                            },
-                            datalabels: {
-                                color: '#fff',
-                                font: {
-                                    weight: 'bold',
-                                    size: 11
+            const groupedPolling = polling.reduce((acc, item) => {
+                if (!acc[item.poll_id]) {
+                    acc[item.poll_id] = [];
+                }
+                acc[item.poll_id].push(item);
+                return acc;
+            }, {});
+
+            function truncateLabel(label, maxLength = 15) {
+                return label.length > maxLength ? label.slice(0, maxLength) + '...' : label;
+            }
+
+            Chart.register(ChartDataLabels);
+
+            Object.entries(groupedPolling).forEach(([pollId, items]) => {
+                const xValues = items.map(item => item.jawaban);
+                const yValues = items.map(item => item.value);
+                const truncatedLabels = xValues.map(label => truncateLabel(label));
+                const barColors = [
+                    "#3498db", "#2ecc71", "#e74c3c", "#f39c12", "#9b59b6",
+                    "#1abc9c", "#d35400", "#34495e", "#16a085", "#2980b9"
+                ];
+
+                const canvasId = "myChart" + pollId;
+                const canvasElement = document.getElementById(canvasId);
+
+                if (canvasElement) {
+                    new Chart(canvasElement, {
+                        type: "pie",
+                        data: {
+                            labels: xValues,
+                            datasets: [{
+                                backgroundColor: barColors.slice(0, xValues.length),
+                                data: yValues
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
                                 },
-                                formatter: (value, ctx) => {
-                                    const dataset = ctx.chart.data.datasets[0];
-                                    const total = dataset.data.reduce((acc, data) => acc + data, 0);
-                                    const percentage = ((value / total) * 100).toFixed(1);
-                                    return percentage + '%';
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const label = context.label || '';
+                                            const value = context.parsed || 0;
+                                            const dataset = context.dataset;
+                                            const total = dataset.data.reduce((acc, data) => acc + data,
+                                                0);
+                                            const percentage = ((value / total) * 100).toFixed(1);
+                                            return `${label}: ${value} (${percentage}%)`;
+                                        }
+                                    }
+                                },
+                                datalabels: {
+                                    color: '#fff',
+                                    font: {
+                                        weight: 'bold',
+                                        size: 11
+                                    },
+                                    formatter: (value, ctx) => {
+                                        const dataset = ctx.chart.data.datasets[0];
+                                        const total = dataset.data.reduce((acc, data) => acc + data, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return percentage + '%';
+                                    }
                                 }
                             }
                         }
-                    }
-                });
-            } else {
-                console.warn(`Canvas element with ID ${canvasId} not found.`);
-            }
-        });
-    }
-    // Inisialisasi chart saat dokumen pertama kali dimuat
-    $(document).ready(function() {
-        initializeCharts();
-    });
-</script>
-
-<script>
-    function save(Id) {
-        event.preventDefault();
-        console.log("Id Post:", Id);
-        var scrollPosition = $(window).scrollTop();
-        $.ajax({
-            url: '/save/' + Id,
-            type: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            success: function(response) {
-                if (response.success) {
-                    console.log("Saved");
-                    alert("Berhasil menyimpan postingan.");
-                    return true;
-                    window.location.reload();
+                    });
                 } else {
-                    console.error("Failed Saved");
-                    alert("Postingan ini sudah tersimpan.");
-                    return false;
+                    console.warn(`Canvas element with ID ${canvasId} not found.`);
                 }
-            },
-            error: function(xhr) {
-                console.error("Terjadi Kesalahan:", xhr.responseText);
-            }
+            });
+        }
+        // Inisialisasi chart saat dokumen pertama kali dimuat
+        $(document).ready(function() {
+            initializeCharts();
         });
-        $(window).on('load', function() {
-            $(window).scrollTop(scrollPosition);
-        });
-        return false;
-    }
-</script>
-<script>
-    $(document).ready(function() {
-        $('.like-button').click(function() {
-            var postId = $(this).data('post-id');
-            var icon = $(this);
-            var likeCount = $('#like-count' + postId);
+    </script>
 
-            if (icon.css('color') === 'rgb(255, 0, 0)') {
-                $.ajax({
-                    url: "{{ route('unlike') }}",
-                    method: 'POST',
-                    data: {
-                        id_post: postId,
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        icon.css('color', 'grey');
-                        likeCount.text(parseInt(likeCount.text()) - 1);
-                    }
-                });
-            } else {
-                $.ajax({
-                    url: "{{ route('like') }}",
-                    method: 'POST',
-                    data: {
-                        id_post: postId,
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function(response) {
-                        icon.css('color', 'red');
-                        likeCount.text(parseInt(likeCount.text()) + 1);
-                    }
-                });
-            }
-        });
-    });
-</script>
-<script>
-    $(document).ready(function() {
-        $('input[type="radio"].form-check-input').click(function() {
-            var answerId = $(this).data('answer-id');
-            var pollId = $(this).data('poll-id');
-            var postId = $(this).data('post-id');
-            var jawaban = $(this).data('answer');
-            var voteCount = $('#vote-count' + answerId);
-            var input = $(this);
-
-            if (input.prop('disabled')) {
-                return;
-            }
-
+    <script>
+        function save(Id) {
+            event.preventDefault();
+            console.log("Id Post:", Id);
+            var scrollPosition = $(window).scrollTop();
             $.ajax({
-                url: "{{ route('vote') }}",
-                method: 'POST',
-                data: {
-                    poll_id: pollId,
-                    id_jawaban: answerId,
-                    id_post: postId,
-                    jawaban: jawaban,
-                    _token: "{{ csrf_token() }}"
+                url: '/save/' + Id,
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 success: function(response) {
-                    if (response.status === 'success') {
-                        input.prop('checked', true);
-                        voteCount.text(parseInt(voteCount.text()) + 1);
-                        $('input[type="radio"][data-poll-id="' + pollId + '"]').prop(
-                            'disabled', true);
+                    if (response.success) {
+                        console.log("Saved");
+                        alert("Berhasil menyimpan postingan.");
+                        return true;
+                        window.location.reload();
                     } else {
-                        alert(response.message);
+                        console.error("Failed Saved");
+                        alert("Postingan ini sudah tersimpan.");
+                        return false;
                     }
+                },
+                error: function(xhr) {
+                    console.error("Terjadi Kesalahan:", xhr.responseText);
+                }
+            });
+            $(window).on('load', function() {
+                $(window).scrollTop(scrollPosition);
+            });
+            return false;
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('.like-button').click(function() {
+                var postId = $(this).data('post-id');
+                var icon = $(this);
+                var likeCount = $('#like-count' + postId);
+
+                if (icon.css('color') === 'rgb(255, 0, 0)') {
+                    $.ajax({
+                        url: "{{ route('unlike') }}",
+                        method: 'POST',
+                        data: {
+                            id_post: postId,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            icon.css('color', 'grey');
+                            likeCount.text(parseInt(likeCount.text()) - 1);
+                        }
+                    });
+                } else {
+                    $.ajax({
+                        url: "{{ route('like') }}",
+                        method: 'POST',
+                        data: {
+                            id_post: postId,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            icon.css('color', 'red');
+                            likeCount.text(parseInt(likeCount.text()) + 1);
+                        }
+                    });
                 }
             });
         });
-    });
-</script>
-{{-- <script type="text/javascript">
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('input[type="radio"].form-check-input').click(function() {
+                var answerId = $(this).data('answer-id');
+                var pollId = $(this).data('poll-id');
+                var postId = $(this).data('post-id');
+                var jawaban = $(this).data('answer');
+                var voteCount = $('#vote-count' + answerId);
+                var input = $(this);
+
+                if (input.prop('disabled')) {
+                    return;
+                }
+
+                $.ajax({
+                    url: "{{ route('vote') }}",
+                    method: 'POST',
+                    data: {
+                        poll_id: pollId,
+                        id_jawaban: answerId,
+                        id_post: postId,
+                        jawaban: jawaban,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            input.prop('checked', true);
+                            voteCount.text(parseInt(voteCount.text()) + 1);
+                            $('input[type="radio"][data-poll-id="' + pollId + '"]').prop(
+                                'disabled', true);
+                        } else {
+                            alert(response.message);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+    {{-- <script type="text/javascript">
     $(document).ready(function() {
         $('.comment-form').each(function() {
             var form = $(this);

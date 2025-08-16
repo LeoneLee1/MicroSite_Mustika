@@ -420,7 +420,7 @@ class UserController extends Controller
 
         Alert::success('Berhasil!', 'Mengubah Profile.');
 
-        return redirect()->route('profile');
+        return redirect()->back();
     }
 
 

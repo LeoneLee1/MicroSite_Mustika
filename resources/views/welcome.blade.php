@@ -166,7 +166,7 @@
                             <div class="text-left mt-4">
                                 <h5 style="color: black; font-weight: bold;">{{ $item->judul }}</h5>
                             </div>
-                            <div class="d-flex justify-content-start">
+                            <div class="d-flex justify-content-start" id="post-{{ $item->id }}">
                                 @if (Auth::user()->role == 'Pengamat')
                                     <div class="d-flex align-items-center me-3">
                                         <i class="fa fa-heart" style="font-size: 1.70em; color: grey;"></i>
@@ -250,7 +250,8 @@
                                 @else
                                     <div class="mt-2">
                                         <div class="d-flex justify-content-start">
-                                            <form method="POST" action="{{ route('comment.insert') }}"
+                                            <form method="POST"
+                                                action="{{ route('comment.insert') }}#post-{{ $item->id }}"
                                                 enctype="multipart/form-data"
                                                 class="d-flex align-items-left w-100 comment-form">
                                                 @csrf
@@ -305,9 +306,7 @@
                                     @foreach ($poll as $p)
                                         @if ($p->id_post == $item->id)
                                             <div class="text-center mb-4">
-                                                <h4 style="font-weight: bold; color: black;">
-                                                    {{ $p->soal }}
-                                                </h4>
+                                                <h4 style="font-weight: bold; color: black;">{{ $p->soal }}</h4>
                                             </div>
                                             <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
                                                 <div class="row">
@@ -351,26 +350,17 @@
                                                             @endif
                                                         @endforeach
                                                     </div>
-                                                    @foreach ($poll as $p)
-                                                        @if ($p->id_post == $item->id)
-                                                            <div class="col-md-4">
-                                                                <div style="position: relative; height:250px; width:100%;">
-                                                                    <canvas id="myChart{{ $p->id }}"></canvas>
-                                                                </div>
-                                                            </div>
-                                                        @endif
-                                                    @endforeach
+                                                    <div class="col-md-4">
+                                                        <div style="position: relative; height:250px; width:100%;">
+                                                            <canvas id="myChart{{ $p->id }}"></canvas>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            @foreach ($poll as $p)
-                                                @if ($p->id_post == $item->id)
-                                                    <div class="text-center mb-4">
-                                                        <a href="{{ route('viewVote', $p->id) }}"
-                                                            class="btn btn-success">View
-                                                            votes</a>
-                                                    </div>
-                                                @endif
-                                            @endforeach
+                                            <div class="text-center mb-4">
+                                                <a href="{{ route('viewVote', $p->id) }}" class="btn btn-success">View
+                                                    votes</a>
+                                            </div>
                                         @endif
                                     @endforeach
                                 </div>
@@ -379,13 +369,18 @@
                     </div>
                 </div>
             @endforeach
-            <div class="d-flex justify-content-center mt-3">
-                <div class="card" style="width: 55rem;">
-                    <div class="card-body">
-                        {{ $post->links('pagination::bootstrap-4') }}
+            @php
+                $itemCount = count($post);
+            @endphp
+            @if ($itemCount > 15)
+                <div class="d-flex justify-content-center mt-3">
+                    <div class="card" style="width: 55rem;">
+                        <div class="card-body">
+                            {{ $post->links('pagination::bootstrap-4') }}
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
         <div class="d-block d-sm-none">
             <button id="refreshButton" class="refresh-button"data-bs-toggle="modal" data-bs-target="#searchPost"><i

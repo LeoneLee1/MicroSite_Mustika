@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Poll;
 use App\Models\Post;
+use App\Models\Save;
 use App\Models\Comment;
 use App\Models\PostLike;
 use App\Models\NotifPost;
@@ -80,7 +81,6 @@ class PostController extends Controller
         $request->validate([
             'nik' => 'required',
             'judul' => 'required',
-            'deskripsi' => 'required',
         ]);
 
         $post = new Post();
@@ -358,7 +358,7 @@ class PostController extends Controller
 
         $jawaban = DB::select("SELECT a.*, an.nik AS voted , a.value FROM poll_answers a
                 LEFT JOIN polls p ON p.id = a.poll_id
-                LEFT JOIN answer_vote an ON an.jawaban = a.jawaban AND an.nik = ?
+                LEFT JOIN answer_vote an ON an.id_jawaban = a.id AND an.nik = ?
                 ORDER BY a.id ASC", [$user]);
 
         $polling = DB::select("SELECT pa.jawaban, pa.id_post, pa.poll_id, p.id, pl.id , pa.value 
@@ -752,6 +752,7 @@ class PostController extends Controller
             $notif4 = NotifPostCommentLike::where('id_post',$id)->delete();
             $notif5 = NotifPostCommentReplies::where('id_post',$id)->delete();
             $pg = PostGambar::where('id_post',$id)->delete();
+            $savePost = Save::where('id_post',$id)->delete();
             $notifBadge = NotifBadge::all();
             foreach ($notifBadge as $item){
                 $item->value = 0;

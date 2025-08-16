@@ -64,7 +64,7 @@ class DashboardController extends Controller
 
         $jawaban = DB::select("SELECT a.*, an.nik AS voted , a.value FROM poll_answers a
                                 LEFT JOIN polls p ON p.id = a.poll_id
-                                LEFT JOIN answer_vote an ON an.jawaban = a.jawaban
+                                LEFT JOIN answer_vote an ON an.id_jawaban = a.id
                                 AND an.nik = '$user'
                                 ORDER BY a.id ASC;");
 
